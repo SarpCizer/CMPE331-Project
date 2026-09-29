@@ -74,9 +74,11 @@ Food, Home, and Lifestyle / Smart Kitchen Assistants. Potential customers and en
 
 ### AI Stack
 
-- OpenAI API / Anthropic Claude API (recipe, calorie, and cooking-time generation and prompt engineering)
-
-- LLM Prompt Pipelines & Response Parsing
+ - Runtime AI Integration (Application Level):* OpenAI API (GPT-4o-mini) / Anthropic Claude API (For generating recipes, calculating calories, cooking times, and processing prompt pipelines).
+ - Developer-Facing AI Tools (Coding Assistants & Pipelines):* 
+ - Claude 3.5 Sonnet / ChatGPT:* Used for architectural planning, prompt engineering, and complex backend logic generation.
+ - GitHub Copilot / Cursor IDE:* Used for real-time code completion, boilerplate reduction, and writing unit/functional test templates.
+ - AI Agents / Multi-Agent Frameworks:* Experimenting with automated code generation pipelines and code review workflows throughout the development lifecycle.
 
 ## 5. Project Milestones
 
