@@ -6,6 +6,8 @@ Fridgely is a web-based assistant that lets users manually add ingredients they 
 
 ## 2. Stakeholders & Roles
 
+Potential Customers & End-Users:Target end-users include university students living in dorms or apartments, busy young professionals who want to cook with limited ingredients at home, and health-conscious individuals following specific dietary restrictions (such as gluten-free or lactose-free). Overall, the system is designed for individuals who want to manage their available food ingredients, discover recipes based on what they have at home, reduce food waste, and receive personalized recipe suggestions tailored to their specific dietary preferences and allergies.
+
 **Product Owner:** İrem Demircan
 
 **Software Engineering Team:** Team members and their roles (include the project manager as Member 1)
