@@ -1,0 +1,3 @@
+# Documentation export only; not production application dependencies.
+reportlab
+Pillow
