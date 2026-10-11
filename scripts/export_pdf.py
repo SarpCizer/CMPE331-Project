@@ -22,15 +22,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 ROOT = Path(__file__).resolve().parents[1]
 IMAGES = ROOT/'docs/plans/images'
 BASE = 'https://github.com/SarpCizer/CMPE331-Project/blob/requirements_work/docs/'
-PHASES = [
- ('A','Requirements','2026-10-07','2026-10-08',2),
- ('B','Review and PDF','2026-10-09','2026-10-11',3),
- ('C','Analysis','2026-10-12','2026-10-18',7),
- ('D','Architecture','2026-10-19','2026-11-01',14),
- ('E','Design and integration','2026-11-02','2026-11-15',14),
- ('F','Testing evaluation','2026-11-16','2026-11-22',7),
- ('G','Release and code','2026-11-23','2026-11-30',8),
-]
+
 
 def fonts(font_dir=None):
     directory = Path(font_dir or 'C:/Windows/Fonts')
@@ -71,47 +63,9 @@ def diagrams(font_regular,font_bold):
     centered(d,(950,735),'Owners, work windows and exit artifacts are specified in wbs.md',25)
     im.save(IMAGES/'wbs.png')
 
-    im,d=canvas(1900,560)
-    text(d,(35,25),'PERT phase readiness network',44,True)
-    text(d,(35,88),'Expected calendar days = (optimistic + 4 x most likely + pessimistic) / 6',28)
-    for i,(sid,label,start,end,days) in enumerate(PHASES):
-        x=25+i*266
-        d.rounded_rectangle((x,175,x+240,365),radius=10,fill=grey,outline=navy,width=3)
-        centered(d,(x+120,211),f'{sid}   {days} days',31,True)
-        words=label.split(); lines=[]; current=''
-        for word in words:
-            if len(current+' '+word)>16:
-                lines.append(current); current=word
-            else: current=(current+' '+word).strip()
-        lines.append(current)
-        for j,txt in enumerate(lines): centered(d,(x+120,267+j*36),txt,25)
-        if i<6:
-            d.line((x+240,270,x+263,270),fill=navy,width=5)
-            d.polygon([(x+263,270),(x+252,262),(x+252,278)],fill=navy)
-    text(d,(35,410),'Critical path: A > B > C > D > E > F > G   |   55 days   |   Zero baseline float',30,True)
-    text(d,(35,467),'7 October to 30 November 2026. Review is external; estimates require team agreement.',27)
-    im.save(IMAGES/'pert.png')
+    from requirements_diagrams import render
+    render(font_regular,font_bold)
 
-    im,d=canvas(1900,1030)
-    text(d,(35,25),'Fridgely Gantt baseline',44,True)
-    text(d,(35,85),'Inclusive calendar days. Course milestone dates are fixed; internal windows are proposed.',27)
-    start_day=date(2026,10,7); x0=510; x1=1835; daywidth=(x1-x0)/55
-    rows=[(label,start,end) for sid,label,start,end,days in PHASES]
-    rows.insert(4,('Parallel feature development','2026-10-19','2026-11-15'))
-    rows.append(('Continuous TDD and CI','2026-10-07','2026-11-30'))
-    for v in ['2026-10-07','2026-10-14','2026-10-21','2026-10-28','2026-11-04','2026-11-11','2026-11-18','2026-11-25']:
-        dd=date.fromisoformat(v); x=x0+(dd-start_day).days*daywidth
-        centered(d,(x,165),dd.strftime('%d %b'),24)
-        d.line((x,193,x,833),fill='#D9E0E6',width=2)
-    for i,(label,s,e) in enumerate(rows):
-        y=205+i*68
-        text(d,(35,y+7),label,29,True)
-        sx=x0+(date.fromisoformat(s)-start_day).days*daywidth
-        ex=x0+((date.fromisoformat(e)-start_day).days+1)*daywidth
-        d.rounded_rectangle((sx,y,ex,y+44),radius=5,fill=navy if i<8 else '#577A97')
-    text(d,(35,875),'Milestones: PR 8 Oct | PDF 11 Oct | Analysis 18 Oct | Design 15 Nov',29,True)
-    text(d,(35,925),'Testing 22 Nov | Code 30 Nov | Presentation TBA | Europe/Istanbul',29,True)
-    im.save(IMAGES/'gantt.png')
 
 def inline(raw):
     raw=raw.replace('≤','<=')
@@ -160,7 +114,7 @@ def export(output,font_dir=None):
                 if not all(re.fullmatch(r'\s*:?-+:?\s*',c) for c in row): rows.append([c.strip() for c in row])
                 i+=1
             cells=[[Paragraph(inline(c),styles['header'] if r==0 else styles['cell']) for c in row] for r,row in enumerate(rows)]
-            table=Table(cells,colWidths=[width*.20,width*.80] if len(rows[0])==2 else None,repeatRows=1,hAlign='LEFT')
+            table=Table(cells,colWidths=([width*.20,width*.80] if len(rows[0])==2 else [width/len(rows[0])]*len(rows[0])),repeatRows=1,hAlign='LEFT')
             table.setStyle(TableStyle([
                 ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#19354D')),
                 ('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#F0F4F7')]),
@@ -195,7 +149,7 @@ def export(output,font_dir=None):
     story=grouped
     def footer(c,doc):
         c.saveState(); c.setFont('Body',8); c.setFillColor(colors.HexColor('#56616C'))
-        c.drawString(50,25,'Fridgely requirements | Review copy | 7 October 2026')
+        c.drawString(50,25,'Fridgely requirements | Review copy | Revised 11 October 2026')
         c.drawRightString(A4[0]-50,25,str(doc.page)); c.restoreState()
     output=Path(output); output.parent.mkdir(parents=True,exist_ok=True)
     doc=SimpleDocTemplate(str(output),pagesize=A4,rightMargin=50,leftMargin=50,topMargin=42,bottomMargin=44,

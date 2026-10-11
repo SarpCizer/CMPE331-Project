@@ -5,7 +5,7 @@ This is a test boundary proposal for review, not an implemented API. Production 
 | Method and route | Request | Expected response |
 |---|---|---|
 | POST /accounts | email, password | 201 `{id,email}`; 409 duplicate; no password/hash exposed |
-| POST /sessions | email, password | 200 `{token}`; 401 wrong credentials |
+| POST /sessions | email, password | 200 `{token}` signed JWT with a finite `exp`; 401 wrong credentials |
 | GET /profile/preferences | none | 200 `{dietary:[],allergens:[]}` |
 | PUT /profile/preferences | dietary and allergens string arrays | 200 saved preference object |
 | GET /inventory | none | 200 ingredient array |
@@ -22,6 +22,6 @@ This is a test boundary proposal for review, not an implemented API. Production 
 | DELETE /favorites/:recipeId | none | 204; viewed history unaffected |
 | GET /history | none | 200 `[{recipe,lastViewedAt}]`, newest first |
 
-A recipe is `{id,title,ingredients:string[],steps:string[],cookingMinutes,caloriesPerServing,servings}`. Cooking time is positive, calories nonnegative and serving count a positive integer. All accepted recipes belong to the requesting account. Provider-generated IDs are test fixture IDs; the production service should allocate safe internal IDs and isolate them by account.
+A recipe is `{id,title,ingredients:string[],steps:string[],cookingMinutes,caloriesPerServing,servings}`. Ingredient names and steps must be nonblank and their arrays nonempty. Cooking time is positive, calories nonnegative and serving count a positive integer. All accepted recipes belong to the requesting account. Provider IDs in fixtures are sample data. The application allocates internal IDs, and tests use the IDs returned by generation rather than requiring those fixture IDs. All recipe lookups remain isolated by account.
 
-The injected provider implements `generate({ingredients,dietary,allergens})` and returns recipe candidates. The injected clock returns a UTC ISO 8601 timestamp. Validate the entire batch before persisting; a declared allergen conflict returns 422 with no partial recipes saved. At minimum, compare normalized declared ingredient names against the normalized allergen vocabulary; the final taxonomy and synonym strategy require review. Mock-provider tests are supplemented by later live-service checks.
+The injected provider implements `generate({ingredients,dietary,allergens})` and returns recipe candidates. The injected clock returns a UTC ISO 8601 timestamp and is also the source of time for JWT expiry checks in acceptance tests. Validate the entire batch before persisting; a declared allergen conflict returns 422 with no partial recipes saved. At minimum, compare normalized declared ingredient names against the normalized allergen vocabulary; the final taxonomy and synonym strategy require review. Mock-provider tests are supplemented by later live-service checks.

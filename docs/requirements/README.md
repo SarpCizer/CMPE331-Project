@@ -23,3 +23,5 @@ This baseline contains 15 user stories derived from the charter, proposed accept
 - [Proposed decisions](decisions.md)
 - [Proposed HTTP contract](api-contract.md)
 - [Requirements specification report](../requirements-specification.md)
+
+- [Use-case diagram and PlantUML source](use-case-diagram.md)
