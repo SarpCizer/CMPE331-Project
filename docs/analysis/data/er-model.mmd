@@ -1,0 +1,69 @@
+erDiagram
+    ACCOUNT ||--o{ DIETARY_PREFERENCE : selects
+    ACCOUNT ||--o{ ALLERGEN_EXCLUSION : declares
+    ACCOUNT ||..o{ INVENTORY_ENTRY : owns
+    ACCOUNT ||..o{ RECIPE : owns
+    ACCOUNT ||..o{ SHOPPING_ENTRY : owns
+    ACCOUNT ||--o{ FAVORITE : saves
+    ACCOUNT ||--o{ RECIPE_VIEW : views
+    RECIPE ||--|{ RECIPE_INGREDIENT : contains
+    RECIPE ||--|{ RECIPE_STEP : orders
+    RECIPE ||--o| FAVORITE : has
+    RECIPE ||--o| RECIPE_VIEW : has
+    ACCOUNT {
+        uuid account_id PK
+        string email
+        string normalized_email UK
+        string password_hash
+    }
+    DIETARY_PREFERENCE {
+        uuid account_id PK,FK
+        string value_key PK
+        string display_value
+    }
+    ALLERGEN_EXCLUSION {
+        uuid account_id PK,FK
+        string value_key PK
+        string display_value
+    }
+    INVENTORY_ENTRY {
+        uuid entry_id PK
+        uuid account_id FK
+        string ingredient_name
+        string normalized_name
+        timestamp added_at
+    }
+    RECIPE {
+        uuid recipe_id PK
+        uuid account_id FK
+        string title
+        decimal cooking_minutes
+        decimal calories_per_serving
+        integer servings
+    }
+    RECIPE_INGREDIENT {
+        uuid recipe_id PK,FK
+        integer position PK
+        string ingredient_name
+        string normalized_name
+    }
+    RECIPE_STEP {
+        uuid recipe_id PK,FK
+        integer position PK
+        string instruction
+    }
+    SHOPPING_ENTRY {
+        uuid entry_id PK
+        uuid account_id FK
+        string ingredient_name
+        string normalized_name
+    }
+    FAVORITE {
+        uuid account_id PK,FK
+        uuid recipe_id PK,FK
+    }
+    RECIPE_VIEW {
+        uuid account_id PK,FK
+        uuid recipe_id PK,FK
+        timestamp last_viewed_at
+    }

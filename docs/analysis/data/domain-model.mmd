@@ -1,0 +1,56 @@
+classDiagram
+direction TB
+class Account {
+  accountId
+  email
+  credential
+}
+class PreferenceProfile {
+  dietaryChoices
+  allergenExclusions
+}
+class InventoryEntry {
+  entryId
+  ingredientName
+  addedAt
+}
+class Recipe {
+  recipeId
+  title
+  estimatedCookingMinutes
+  estimatedCaloriesPerServing
+  servings
+}
+class RecipeIngredient {
+  ingredientName
+  position
+}
+class CookingStep {
+  instruction
+  position
+}
+class ShoppingEntry {
+  entryId
+  ingredientName
+}
+class Favorite {
+  recipeReference
+}
+class RecipeView {
+  recipeReference
+  lastViewedAt
+}
+Account "1" *-- "1" PreferenceProfile : maintains
+Account "1" *-- "0..*" InventoryEntry : owns
+Account "1" *-- "0..*" Recipe : owns accepted results
+Account "1" *-- "0..*" ShoppingEntry : owns
+Account "1" *-- "0..*" Favorite : saves
+Account "1" *-- "0..*" RecipeView : views
+Recipe "1" *-- "1..*" RecipeIngredient : contains
+Recipe "1" *-- "1..*" CookingStep : orders
+Favorite "0..1" --> "1" Recipe : references owned recipe
+RecipeView "0..1" --> "1" Recipe : records owned recipe
+note for Recipe "Accept whole batch before storage. Provider candidates are transient."
+note for InventoryEntry "Addition time only. No quantities or expiry."
+note for Favorite "At most one favorite per account and recipe."
+note for RecipeView "At most one view record per account and recipe."
