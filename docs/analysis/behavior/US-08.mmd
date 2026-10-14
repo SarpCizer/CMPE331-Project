@@ -1,0 +1,8 @@
+flowchart TD
+S([Open an accepted recipe id]) --> G[US-15 authentication and owner gate]
+G --> Q{Recipe owned by current account?}
+Q -- No --> E[404 or 403; no history mutation]
+Q -- Yes --> V[Load complete title, ingredient list, ordered steps and estimates]
+V --> H[US-14 atomically upsert owned view timestamp]
+H --> R[200 recipe; show minutes and calories per serving as estimates]
+R --> F([Show serving count and ingredients for review; inventory unchanged])

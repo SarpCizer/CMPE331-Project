@@ -1,0 +1,9 @@
+flowchart TD
+S([Open fridge]) --> G[US-15 authentication and owner gate]
+G --> Q[Read only this account inventory entries]
+Q --> N{Any entries?}
+N -- No --> E[200 empty array; show add-first-ingredient state]
+N -- Yes --> R[200 names and original addedAt values]
+R --> D[Display addition dates in local format]
+E --> F([No state mutation])
+D --> F

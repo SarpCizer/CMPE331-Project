@@ -1,0 +1,37 @@
+sequenceDiagram
+autonumber
+actor User
+participant UI as Web UI
+participant App as Application boundary
+participant Auth as Owner gate
+participant Store as Owned data store
+participant AI as Recipe provider
+User->>UI: Generate recipes
+UI->>App: POST /recipes/generate with JWT
+App->>Auth: Verify signature, expiry and subject
+Auth-->>App: Verified account id or deny
+Note over App,Auth: Denied requests stop with 401 before provider/data access
+App->>Store: Snapshot current account inventory and preferences
+Store-->>App: Ingredient names, dietary and allergen lists
+alt Inventory empty
+ App-->>UI: 400 add ingredients first, no AI call
+else Inventory nonempty
+ App->>AI: generate(ingredients, dietary, allergens)
+ alt Timeout or unavailable
+  App-->>UI: Retryable 503, no state changes
+ else Provider returns candidates
+  AI-->>App: Candidate batch
+  App->>App: Validate every candidate and declared allergen names
+  alt Malformed batch
+   App-->>UI: Sanitized 502, store nothing
+  else Declared allergen conflict
+   App-->>UI: 422, reject entire batch
+  else Complete valid batch
+   App->>Store: BEGIN, assign ids and insert recipes with children, COMMIT
+   Store-->>App: Complete owned batch committed
+   App-->>UI: 200 recipes with internal ids
+  end
+ end
+end
+Note over App,Store: No inventory deduction or history views, failed writes roll back
+UI-->>User: Results or a clear error, prior personal data retained

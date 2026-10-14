@@ -1,0 +1,124 @@
+{
+  "diagrams": [
+    {
+      "source": "docs/analysis/data/domain-model.mmd",
+      "svg": "docs/analysis/data/images/domain-model.svg",
+      "source_sha256": "89e12d3dbd93d384477671f5e7cb2970113f0be7d6cdd6f5c6b19ce4da7eb8e5",
+      "svg_sha256": "21039de6d56059bd605c1a7ac40a37029c75777eb2f83dc0fe1d3d1b577662a3"
+    },
+    {
+      "source": "docs/analysis/data/er-model.mmd",
+      "svg": "docs/analysis/data/images/er-model.svg",
+      "source_sha256": "8fd6880e25cf2a1292662207e4a8f582e2e12e7f5735566c700be65e50fc1026",
+      "svg_sha256": "e12810aa58b4d7e6a64dc4e46ff2ed5a5e6d204ecd6edc789ba41a2b4bcb4bd5"
+    },
+    {
+      "source": "docs/analysis/behavior/US-01.mmd",
+      "svg": "docs/analysis/behavior/images/US-01.svg",
+      "source_sha256": "6cdb982bdbe2dfd675b7d46089b6a67233b4b0be838ca979e9be46bc4d16e234",
+      "svg_sha256": "2dec1e9bfe5146794c7508362cfc60a3780f03752db6881f053474510e0dd434"
+    },
+    {
+      "source": "docs/analysis/behavior/US-02.mmd",
+      "svg": "docs/analysis/behavior/images/US-02.svg",
+      "source_sha256": "9c277c5fbb264522bb17bdf3ee64b8e1c64375b155348db2d848ca9c2a4a25bb",
+      "svg_sha256": "1c2c3d952170280fd48435e065a185563cbb184a1885616a7b739b180c7193fa"
+    },
+    {
+      "source": "docs/analysis/behavior/US-03.mmd",
+      "svg": "docs/analysis/behavior/images/US-03.svg",
+      "source_sha256": "7b25de30a2ccc6154efbc4fb8e8f8715048e7de35d4f2a77cbd37be46eaa2219",
+      "svg_sha256": "7d7a1354038493d1a5eb924202cdeb79e834e3ce8fd5ca44626dc132a4b15fcc"
+    },
+    {
+      "source": "docs/analysis/behavior/US-04.mmd",
+      "svg": "docs/analysis/behavior/images/US-04.svg",
+      "source_sha256": "b64b320c82277d1c56b92b51e806f1be550769bb814ef8ef04a1e29a07cb927c",
+      "svg_sha256": "4d3248214a9745b65838c75c1ea10bb8f39970c9e14d59c16b2f4aa551aaab0e"
+    },
+    {
+      "source": "docs/analysis/behavior/US-05.mmd",
+      "svg": "docs/analysis/behavior/images/US-05.svg",
+      "source_sha256": "eecf7971de1c4a92449e6216381d11d80c081215bc55d3359e14fd9fd1f18375",
+      "svg_sha256": "45cdddb8ee60b93bb566dd68e7f1ad2520b60f485b43c14e5e3c7bb04eea8fbf"
+    },
+    {
+      "source": "docs/analysis/behavior/US-06.mmd",
+      "svg": "docs/analysis/behavior/images/US-06.svg",
+      "source_sha256": "b9a4c175a26be824452d0fb1a24885840b43f8d3f9cb700b3bba570b3ec0846e",
+      "svg_sha256": "6f130329590187fbc8cb54b3f29c7550123ede74bc85100bd9bbf2210b1eb29f"
+    },
+    {
+      "source": "docs/analysis/behavior/US-07.mmd",
+      "svg": "docs/analysis/behavior/images/US-07.svg",
+      "source_sha256": "7959794ba9be793ab80f6cba561702b974b446aedf88b407a3cfad9f1f535e88",
+      "svg_sha256": "170762773d15935548f9f631b116f616a6a36e8d6047f2c97e00efe1d9ad0036"
+    },
+    {
+      "source": "docs/analysis/behavior/US-08.mmd",
+      "svg": "docs/analysis/behavior/images/US-08.svg",
+      "source_sha256": "353a67bf7cc3d1929ca310cea33b451e323738992dceac9eacd96dad3518a105",
+      "svg_sha256": "787a464a51c6eaf12f5cb74efb2cc3eacb604041450426bfd1f61f2163c6949b"
+    },
+    {
+      "source": "docs/analysis/behavior/US-09.mmd",
+      "svg": "docs/analysis/behavior/images/US-09.svg",
+      "source_sha256": "2041dfb5be2b27c4861509c7df476d4b100099d9bced88bce19d25f35d2e1ff8",
+      "svg_sha256": "fb6ad7c9c51f348947af24352381ccb76b747a7d22c5bbfa2ffc595b260b9a34"
+    },
+    {
+      "source": "docs/analysis/behavior/US-10.mmd",
+      "svg": "docs/analysis/behavior/images/US-10.svg",
+      "source_sha256": "57851e7dca28b0cb644bdef716df5167d6e89de7f61ac37716c3a6adacdc9283",
+      "svg_sha256": "b3a26854c23baf6554d8096e952ee7b748d7b65dfde1c4247f8cca723d9c981d"
+    },
+    {
+      "source": "docs/analysis/behavior/US-11.mmd",
+      "svg": "docs/analysis/behavior/images/US-11.svg",
+      "source_sha256": "6ea07a7b25c9ea457513e8ffd212f0c4b434dc53d842fa81e633a41f1d0fca44",
+      "svg_sha256": "d117765f42f569d2cd439259464fb0991806674042d7bfe955dc63f1a34d627d"
+    },
+    {
+      "source": "docs/analysis/behavior/US-12.mmd",
+      "svg": "docs/analysis/behavior/images/US-12.svg",
+      "source_sha256": "b11785e86284d176ee8488f13bb3ca8000449a852223ba861eeb12126505e4cf",
+      "svg_sha256": "8bb1b95f473de1d56a18312c6f9dd06da8680f159c1d8c9aec206032cd96b01e"
+    },
+    {
+      "source": "docs/analysis/behavior/US-13.mmd",
+      "svg": "docs/analysis/behavior/images/US-13.svg",
+      "source_sha256": "a748005bbc3aa8ce13a2a3702a03f7eca1d645877b7ab535c6016468e0bd2945",
+      "svg_sha256": "a2d7d76dd95b226c68c176fa9828b520dbeeb1ab34bf61fb677c9d57c137df6f"
+    },
+    {
+      "source": "docs/analysis/behavior/US-14.mmd",
+      "svg": "docs/analysis/behavior/images/US-14.svg",
+      "source_sha256": "cbd8795a5b753bf34fdbe1dac2bba4bd6dc710975656b47165f6afec80fbf0f0",
+      "svg_sha256": "7feeaf5243e0a92b3ffc6c20ba6ae5a275e4c9afa262b1e92510f668cf46094f"
+    },
+    {
+      "source": "docs/analysis/behavior/US-15.mmd",
+      "svg": "docs/analysis/behavior/images/US-15.svg",
+      "source_sha256": "c039b337917d18db8c3614313b377879aac6612bf4595b6fd2338d17cfdaefdf",
+      "svg_sha256": "10571071c9ffc4295b60495634a422ca018bd43a28ca25621f392a2fb5d642e9"
+    },
+    {
+      "source": "docs/analysis/behavior/authorization-sequence.mmd",
+      "svg": "docs/analysis/behavior/images/authorization-sequence.svg",
+      "source_sha256": "cf44b61ca5d8136c2e8c2ed3d5cd1214887f62ea2643c5350abb01daf82d81ec",
+      "svg_sha256": "f6fd94180a24a7adab09f17b95a91d5a30e2faff7a927286a3390e5784a5fba4"
+    },
+    {
+      "source": "docs/analysis/behavior/generation-sequence.mmd",
+      "svg": "docs/analysis/behavior/images/generation-sequence.svg",
+      "source_sha256": "fe1b56a97866394ce635aa0798c00b003ea63989556e6210d76a287212bc36de",
+      "svg_sha256": "5fcc45a3c980c625b37acb7c7671a337c4fffa51a803cba46c05cf8b1369e744"
+    },
+    {
+      "source": "docs/analysis/behavior/shopping-sequence.mmd",
+      "svg": "docs/analysis/behavior/images/shopping-sequence.svg",
+      "source_sha256": "818cd14efed9b76f3c442257ddb0a73c9f2486a4e3e2dfd216a39128adae45b4",
+      "svg_sha256": "dbbde7fd9f11123751b5aa85a25b5aecdb5bd4c645e25f0874df401f764ba9b2"
+    }
+  ]
+}

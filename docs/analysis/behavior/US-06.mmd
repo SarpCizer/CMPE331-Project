@@ -1,0 +1,7 @@
+flowchart TD
+S([Delete selected inventory entry]) --> G[US-15 authentication and owner gate]
+G --> Q{Entry id belongs to current account?}
+Q -- No --> E[404 or 403 for foreign entry; no mutation]
+Q -- Yes --> D[Delete only selected entry]
+D --> R[204; refresh owned inventory]
+R --> F([Other entries and saved recipes remain unchanged])

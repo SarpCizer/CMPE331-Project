@@ -1,0 +1,6 @@
+flowchart TD
+S([Submit email and password]) --> L[Find account by normalized email]
+L --> V{Account exists and password hash verifies?}
+V -- No --> E[401 generic error; no token]
+V -- Yes --> T[Issue signed JWT with account subject and finite expiry]
+T --> R([200 token; protected features available])

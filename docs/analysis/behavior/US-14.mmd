@@ -1,0 +1,12 @@
+flowchart TD
+S([Authenticated history operation]) --> G[US-15 authentication and owner gate]
+G --> A{Trigger?}
+A -- Owned recipe detail opened --> U[Upsert one view record with server lastViewedAt]
+U --> D[Return details after history commit]
+A -- List history --> L[Read owned views joined to owned recipes]
+L --> O[Order by lastViewedAt descending; stable id tie-breaker]
+O --> R[200 recipes and timestamps or empty list]
+A -- Generate or favorite only --> N[Do not create a view record]
+D --> F([Inventory unchanged])
+R --> F
+N --> F
