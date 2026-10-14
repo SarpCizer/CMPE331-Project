@@ -1,0 +1,11 @@
+{
+  "name": "fridgely-requirements",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/functional/requirements.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

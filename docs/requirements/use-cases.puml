@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+actor Visitor
+actor "Signed-in user" as User
+actor "Recipe AI service" as AI
+rectangle Fridgely {
+  usecase "US-01 Register" as UC01
+  usecase "US-02 Sign in" as UC02
+  usecase "US-03 Save preferences" as UC03
+  usecase "US-04 Add ingredient" as UC04
+  usecase "US-05 List ingredients and dates" as UC05
+  usecase "US-06 Delete ingredient" as UC06
+  usecase "US-07 Generate recipes" as UC07
+  usecase "US-08 View recipe details" as UC08
+  usecase "US-09 Handle generation failure" as UC09
+  usecase "US-10 Add missing ingredients" as UC10
+  usecase "US-11 Manage shopping list" as UC11
+  usecase "US-12 Save favorite" as UC12
+  usecase "US-13 Manage favorites" as UC13
+  usecase "US-14 View recipe history" as UC14
+}
+Visitor -- UC01
+Visitor -- UC02
+User -- UC03
+User -- UC04
+User -- UC05
+User -- UC06
+User -- UC07
+User -- UC08
+User -- UC10
+User -- UC11
+User -- UC12
+User -- UC13
+User -- UC14
+AI -- UC07
+UC09 ..> UC07 : <<extend>>
+[provider failure or invalid output]
+note bottom of Fridgely
+  US-15: All personal use cases require authenticated,
+  owner-only access. Recipe details record a history entry.
+end note
+@enduml

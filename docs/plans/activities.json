@@ -1,0 +1,203 @@
+[
+  {
+    "id": "A",
+    "title": "Requirements package",
+    "wbs": "1.1 / 1.2",
+    "optimistic": 1,
+    "most_likely": 2,
+    "pessimistic": 3,
+    "predecessors": [],
+    "owner": "İrem + all members"
+  },
+  {
+    "id": "Q0",
+    "title": "Acceptance and CI baseline",
+    "wbs": "4.1a",
+    "optimistic": 1,
+    "most_likely": 1,
+    "pessimistic": 1,
+    "predecessors": [],
+    "owner": "Kerem + story owners"
+  },
+  {
+    "id": "B",
+    "title": "Requirements review and PDF",
+    "wbs": "1.3",
+    "optimistic": 1,
+    "most_likely": 3,
+    "pessimistic": 5,
+    "predecessors": [
+      "A",
+      "Q0"
+    ],
+    "owner": "Team contact + all members"
+  },
+  {
+    "id": "C",
+    "title": "Requirements analysis",
+    "wbs": "2.1 / 2.2",
+    "optimistic": 5,
+    "most_likely": 7,
+    "pessimistic": 9,
+    "predecessors": [
+      "B"
+    ],
+    "owner": "Berfin + İrem + all members"
+  },
+  {
+    "id": "D",
+    "title": "Architecture and interfaces",
+    "wbs": "3.1",
+    "optimistic": 3,
+    "most_likely": 5,
+    "pessimistic": 7,
+    "predecessors": [
+      "C"
+    ],
+    "owner": "Berfin + Ayşe + Kerem"
+  },
+  {
+    "id": "E",
+    "title": "Accounts and preferences",
+    "wbs": "3.2",
+    "optimistic": 8,
+    "most_likely": 10,
+    "pessimistic": 12,
+    "predecessors": [
+      "D"
+    ],
+    "owner": "Berfin"
+  },
+  {
+    "id": "F",
+    "title": "Fridge services",
+    "wbs": "3.3",
+    "optimistic": 6,
+    "most_likely": 8,
+    "pessimistic": 10,
+    "predecessors": [
+      "D"
+    ],
+    "owner": "İrem"
+  },
+  {
+    "id": "G",
+    "title": "Recipe integration",
+    "wbs": "3.4",
+    "optimistic": 12,
+    "most_likely": 15,
+    "pessimistic": 18,
+    "predecessors": [
+      "D"
+    ],
+    "owner": "Ayşe"
+  },
+  {
+    "id": "H",
+    "title": "Shopping favorites history",
+    "wbs": "3.5",
+    "optimistic": 10,
+    "most_likely": 12,
+    "pessimistic": 14,
+    "predecessors": [
+      "D"
+    ],
+    "owner": "Sarp"
+  },
+  {
+    "id": "I",
+    "title": "Responsive web interface",
+    "wbs": "3.6",
+    "optimistic": 12,
+    "most_likely": 14,
+    "pessimistic": 16,
+    "predecessors": [
+      "D"
+    ],
+    "owner": "Mustafa"
+  },
+  {
+    "id": "Q1",
+    "title": "Shared TDD and CI cycles",
+    "wbs": "4.1b",
+    "optimistic": 12,
+    "most_likely": 14,
+    "pessimistic": 16,
+    "predecessors": [
+      "D",
+      "Q0"
+    ],
+    "owner": "Kerem + feature owners"
+  },
+  {
+    "id": "J",
+    "title": "End-to-end integration",
+    "wbs": "4.1c",
+    "optimistic": 2,
+    "most_likely": 3,
+    "pessimistic": 4,
+    "predecessors": [
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "Q1"
+    ],
+    "owner": "Kerem + all members"
+  },
+  {
+    "id": "K",
+    "title": "Design report finalization",
+    "wbs": "3.7a",
+    "optimistic": 3,
+    "most_likely": 4,
+    "pessimistic": 5,
+    "predecessors": [
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "Q1"
+    ],
+    "owner": "All members"
+  },
+  {
+    "id": "L",
+    "title": "Design review and submission",
+    "wbs": "3.7b",
+    "optimistic": 2,
+    "most_likely": 3,
+    "pessimistic": 4,
+    "predecessors": [
+      "J",
+      "K"
+    ],
+    "owner": "All members"
+  },
+  {
+    "id": "M",
+    "title": "Testing evaluation and report",
+    "wbs": "4.2",
+    "optimistic": 5,
+    "most_likely": 7,
+    "pessimistic": 9,
+    "predecessors": [
+      "L"
+    ],
+    "owner": "Kerem + all members"
+  },
+  {
+    "id": "N",
+    "title": "Cloud release and code",
+    "wbs": "5.1",
+    "optimistic": 6,
+    "most_likely": 8,
+    "pessimistic": 10,
+    "predecessors": [
+      "M"
+    ],
+    "owner": "Kerem + all members"
+  }
+]
