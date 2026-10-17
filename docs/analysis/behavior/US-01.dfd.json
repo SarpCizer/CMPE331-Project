@@ -1,0 +1,52 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-01 DFD: register an account",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-01"
+  ],
+  "nodes": [
+    {
+      "id": "V",
+      "kind": "external",
+      "label": "Visitor"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "1.1\nRegister account"
+    },
+    {
+      "id": "D1",
+      "kind": "store",
+      "label": "D1 Accounts"
+    }
+  ],
+  "flows": [
+    {
+      "from": "V",
+      "to": "P",
+      "label": "Email and password"
+    },
+    {
+      "from": "D1",
+      "to": "P",
+      "label": "Existing normalized email records"
+    },
+    {
+      "from": "P",
+      "to": "D1",
+      "label": "Validated account with salted password hash"
+    },
+    {
+      "from": "P",
+      "to": "V",
+      "label": "201 account id/email or 400/409 error"
+    }
+  ],
+  "rules": [
+    "Reject malformed email or a password shorter than eight characters with 400 and no write.",
+    "Enforce normalized email uniqueness atomically; a duplicate produces 409 and no second account.",
+    "Successful output excludes password/hash and requires no email-verification step. The logical preference lists are initially empty."
+  ]
+}

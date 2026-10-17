@@ -9,8 +9,8 @@ Unless noted otherwise attributes are required and non-null. IDs are opaque appl
 | Entity | Key and attributes | Integrity / lifecycle | Requirements |
 |---|---|---|---|
 | ACCOUNT | PK account_id; email; UK normalized_email; password_hash | Case-insensitive email uniqueness enforced atomically, including concurrent registration. Store salted hash, never plaintext; no verification flag or email workflow. Account deletion is outside scope. | US-01, US-02, US-15 |
-| DIETARY_PREFERENCE | Composite PK (account_id, value_key); FK account_id; display_value | Zero rows means an empty dietary list. Replace the complete list atomically together with allergen exclusions. Duplicate normalized values need not be stored. Vocabulary remains open. | US-03, US-07 |
-| ALLERGEN_EXCLUSION | Composite PK (account_id, value_key); FK account_id; display_value | Zero rows means no declared exclusions. Empty replacement clears prior values. This is a declared-ingredient filter, not a safety guarantee. | US-03, US-07 |
+| DIETARY_PREFERENCE | Composite PK (account_id, position); FK account_id; value_key; display_value | Zero rows means an empty dietary list. Replace the complete list atomically together with allergen exclusions. Preserve each submitted string, its position and repeated values on reads and provider requests. value_key is only a derived lookup key, not uniqueness or returned-value normalization. Vocabulary remains open. | US-03, US-07 |
+| ALLERGEN_EXCLUSION | Composite PK (account_id, position); FK account_id; value_key; display_value | Zero rows means no declared exclusions. Empty replacement clears prior values. Preserve submitted strings, order and repeated values; compare derived normalized keys only for declared-ingredient filtering. This is not a safety guarantee. | US-03, US-07 |
 | INVENTORY_ENTRY | PK entry_id; FK account_id; ingredient_name; normalized_name; added_at | Nonblank trimmed name. added_at is server-generated UTC and immutable on reads. Duplicate names may exist; the approved requirements do not require inventory deduplication. Never infer quantity, freshness or expiry. | US-04, US-05, US-06 |
 | RECIPE | PK recipe_id; FK account_id; title; cooking_minutes; calories_per_serving; servings | Nonblank title; cooking_minutes > 0; calories_per_serving >= 0; servings is a positive integer. Estimates per serving, not measured nutrition. Also declare UNIQUE(account_id, recipe_id) for composite owner FKs. | US-07, US-08, US-15 |
 | RECIPE_INGREDIENT | Composite PK (recipe_id, position); FK recipe_id; ingredient_name; normalized_name | Positive ordinal, nonblank names, at least one row per accepted recipe. Order is preserved on API reconstruction. Ingredient text remains name-based; no quantity arithmetic is introduced. | US-07, US-08, US-10 |
@@ -39,17 +39,22 @@ The analysis does not select transaction isolation for concurrent preference edi
 
 ## NoSQL mapping if MongoDB is selected
 
-Keep an accounts collection with both preference arrays embedded; replacing them in one document is atomic. Store inventory and shopping as owner-keyed collections with the same name/unique rules. Recipes may embed ordered ingredient and step arrays, while favorites and views remain owner-qualified references. A unique index on (account_id, recipe_id) preserves idempotence. MongoDB references do not enforce foreign keys: application transactions must enforce owner and existence checks. Complete multi-recipe batches must commit atomically using an appropriate transaction or a reviewed equivalent; embedding one recipe does not make a whole batch atomic. The logical E-R cardinalities and invariants still apply.
+Keep an accounts collection with both preference arrays embedded; replacing them in one document is atomic. Retain preference array order, exact saved values and repeated entries; normalization for matching must not replace the saved API values. Store inventory and shopping as owner-keyed collections with the same name/unique rules. Recipes may embed ordered ingredient and step arrays, while favorites and views remain owner-qualified references. A unique index on (account_id, recipe_id) preserves idempotence. MongoDB references do not enforce foreign keys: application transactions must enforce owner and existence checks. Complete multi-recipe batches must commit atomically using an appropriate transaction or a reviewed equivalent; embedding one recipe does not make a whole batch atomic. The logical E-R cardinalities and invariants still apply.
 
 ## Decisions for analysis review
 
 | ID | Proposed detail | Existing behavior preserved |
 |---|---|---|
 | A-01 | Account-owned immutable accepted recipe snapshots | US-07/08/15; prevents global recipe lookup leakage |
-| A-02 | Separate dietary/allergen preference rows, or embedded profile arrays | US-03 lists and clearing semantics |
+| A-02 | Ordered dietary/allergen preference rows keyed by account and position, or order-preserving embedded arrays | US-03 lists and clearing semantics |
 | A-03 | Unique owner/name shopping key and owner/recipe association keys | US-10/12 idempotence under concurrency |
 | A-04 | Stable recipe_id tie-breaker when history timestamps tie | US-14 newest-first; tie ordering was unspecified |
 | A-05 | Consistent request-start inventory/preferences snapshot | US-07 latest saved input at request start; in-flight concurrency requires review |
 | A-06 | Successful detail reads include a committed history upsert | US-08/14; preserve observed view semantics |
 
 Framework, database engine, JWT algorithm/lifetime, allergen synonyms, retention, rate limiting and deployment remain software-design questions. Do not silently treat these proposals as new approved requirements.
+
+
+## Review correction: preference list fidelity
+
+US-03 promises the saved dietary/allergen lists back and US-07 supplies those latest saved lists to the provider. The original value-key primary key could collapse repeated normalized entries. Both preference relations now use (account_id, position), preserve display_value exactly and read by position. value_key is nonunique and derived for comparisons only. This fixes the analysis without altering the approved requirements or acceptance API.

@@ -3,122 +3,135 @@
     {
       "source": "docs/analysis/data/domain-model.mmd",
       "svg": "docs/analysis/data/images/domain-model.svg",
+      "kind": "data-model",
       "source_sha256": "89e12d3dbd93d384477671f5e7cb2970113f0be7d6cdd6f5c6b19ce4da7eb8e5",
-      "svg_sha256": "21039de6d56059bd605c1a7ac40a37029c75777eb2f83dc0fe1d3d1b577662a3"
+      "svg_sha256": "21fae83ce7430b9403ff5131353011cf785ccc5f71012b92889cbf776e80d80d"
     },
     {
       "source": "docs/analysis/data/er-model.mmd",
       "svg": "docs/analysis/data/images/er-model.svg",
-      "source_sha256": "8fd6880e25cf2a1292662207e4a8f582e2e12e7f5735566c700be65e50fc1026",
-      "svg_sha256": "e12810aa58b4d7e6a64dc4e46ff2ed5a5e6d204ecd6edc789ba41a2b4bcb4bd5"
+      "kind": "data-model",
+      "source_sha256": "e43e61737cacbda40b34c8b6c9a0a720d2ed50c7ddef56a3f687020f0c84c413",
+      "svg_sha256": "fea479f273eec2c39b86209632c49679c3bbd71f0ddc3a1aa63730a6b90227e9"
     },
     {
-      "source": "docs/analysis/behavior/US-01.mmd",
+      "source": "docs/analysis/behavior/US-01.dfd.json",
       "svg": "docs/analysis/behavior/images/US-01.svg",
-      "source_sha256": "6cdb982bdbe2dfd675b7d46089b6a67233b4b0be838ca979e9be46bc4d16e234",
-      "svg_sha256": "2dec1e9bfe5146794c7508362cfc60a3780f03752db6881f053474510e0dd434"
+      "kind": "DFD",
+      "source_sha256": "6e1975b4e61526bd047f74bd55afc0fe1ed388612dc357f60e6c08e0b6cea63f",
+      "svg_sha256": "adb22e77e9869a7f67db572eb398bb714a1f17d0c33fd06c66e82e6f38da5dfb"
     },
     {
-      "source": "docs/analysis/behavior/US-02.mmd",
+      "source": "docs/analysis/behavior/US-02.dfd.json",
       "svg": "docs/analysis/behavior/images/US-02.svg",
-      "source_sha256": "9c277c5fbb264522bb17bdf3ee64b8e1c64375b155348db2d848ca9c2a4a25bb",
-      "svg_sha256": "1c2c3d952170280fd48435e065a185563cbb184a1885616a7b739b180c7193fa"
+      "kind": "DFD",
+      "source_sha256": "2805bb2b45dec82cb18169656a192840a455a7d702714ddeb8395567dce20746",
+      "svg_sha256": "bb4262f6327538cd1b7e3018710c93c4e9b1624eea3eee19d9ec3db42231a66a"
     },
     {
-      "source": "docs/analysis/behavior/US-03.mmd",
+      "source": "docs/analysis/behavior/US-03.dfd.json",
       "svg": "docs/analysis/behavior/images/US-03.svg",
-      "source_sha256": "7b25de30a2ccc6154efbc4fb8e8f8715048e7de35d4f2a77cbd37be46eaa2219",
-      "svg_sha256": "7d7a1354038493d1a5eb924202cdeb79e834e3ce8fd5ca44626dc132a4b15fcc"
+      "kind": "DFD",
+      "source_sha256": "1ae36b1fb32069e0ccaf5f0e7dd0bb1bbe4f8562274a52bddef8e96d17019c9b",
+      "svg_sha256": "ba136ab7b6fc94a862ac24401c976ade398b6e1ab8bd13113d4881740b951f49"
     },
     {
-      "source": "docs/analysis/behavior/US-04.mmd",
+      "source": "docs/analysis/behavior/US-04.dfd.json",
       "svg": "docs/analysis/behavior/images/US-04.svg",
-      "source_sha256": "b64b320c82277d1c56b92b51e806f1be550769bb814ef8ef04a1e29a07cb927c",
-      "svg_sha256": "4d3248214a9745b65838c75c1ea10bb8f39970c9e14d59c16b2f4aa551aaab0e"
+      "kind": "DFD",
+      "source_sha256": "393b3df688418e7db8d5c0554920f8cda8dbca964f375042e60e1e0fbb2eab98",
+      "svg_sha256": "ccd9e29104b2c87cb5e147705efcf5a0b27842b8f2e8346bafaaee50ce374a3a"
     },
     {
-      "source": "docs/analysis/behavior/US-05.mmd",
+      "source": "docs/analysis/behavior/US-05.dfd.json",
       "svg": "docs/analysis/behavior/images/US-05.svg",
-      "source_sha256": "eecf7971de1c4a92449e6216381d11d80c081215bc55d3359e14fd9fd1f18375",
-      "svg_sha256": "45cdddb8ee60b93bb566dd68e7f1ad2520b60f485b43c14e5e3c7bb04eea8fbf"
+      "kind": "DFD",
+      "source_sha256": "f7debf69d4250f340b77762077ebb4b433ba2fd4af333d886de07546d48fb882",
+      "svg_sha256": "16c2962085a0d535cc6b6c0a217c3ced6246e0d302f368916eb1829571776262"
     },
     {
-      "source": "docs/analysis/behavior/US-06.mmd",
+      "source": "docs/analysis/behavior/US-06.dfd.json",
       "svg": "docs/analysis/behavior/images/US-06.svg",
-      "source_sha256": "b9a4c175a26be824452d0fb1a24885840b43f8d3f9cb700b3bba570b3ec0846e",
-      "svg_sha256": "6f130329590187fbc8cb54b3f29c7550123ede74bc85100bd9bbf2210b1eb29f"
+      "kind": "DFD",
+      "source_sha256": "7001eece8024c89fc3db4f1647b7a8cdc25c50492606d159ed93c46bfc91c87f",
+      "svg_sha256": "3b01dc8f668ffae0a7507d742df29a981c85111e0e470fd76cdbc3b749fadb25"
     },
     {
-      "source": "docs/analysis/behavior/US-07.mmd",
+      "source": "docs/analysis/behavior/US-07.dfd.json",
       "svg": "docs/analysis/behavior/images/US-07.svg",
-      "source_sha256": "7959794ba9be793ab80f6cba561702b974b446aedf88b407a3cfad9f1f535e88",
-      "svg_sha256": "170762773d15935548f9f631b116f616a6a36e8d6047f2c97e00efe1d9ad0036"
+      "kind": "DFD",
+      "source_sha256": "ebd8a288e262bd800dddec0538139bd2fc8d08d47210ebda950c973d9f2cd733",
+      "svg_sha256": "da1da30273b454344f45765ed31e3eb494ecb594496338e002443b4ce8d28c33"
     },
     {
-      "source": "docs/analysis/behavior/US-08.mmd",
+      "source": "docs/analysis/behavior/US-08.dfd.json",
       "svg": "docs/analysis/behavior/images/US-08.svg",
-      "source_sha256": "353a67bf7cc3d1929ca310cea33b451e323738992dceac9eacd96dad3518a105",
-      "svg_sha256": "787a464a51c6eaf12f5cb74efb2cc3eacb604041450426bfd1f61f2163c6949b"
+      "kind": "DFD",
+      "source_sha256": "d77a5c73406f0f543fb2fc1c078f512eb7d7db921e97ad025dc22971e89e15a6",
+      "svg_sha256": "a98a038ecc809808fae61514f61732d525fcf2cba171856fe7cdb1dd4aee535a"
     },
     {
-      "source": "docs/analysis/behavior/US-09.mmd",
+      "source": "docs/analysis/behavior/US-09.dfd.json",
       "svg": "docs/analysis/behavior/images/US-09.svg",
-      "source_sha256": "2041dfb5be2b27c4861509c7df476d4b100099d9bced88bce19d25f35d2e1ff8",
-      "svg_sha256": "fb6ad7c9c51f348947af24352381ccb76b747a7d22c5bbfa2ffc595b260b9a34"
+      "kind": "DFD",
+      "source_sha256": "f85fc1071a533d7cfbc14eb03065a91d9e80c2c3c4c65fa14a3230b2d2667df7",
+      "svg_sha256": "922f71035147eb61259ed08d522d03d48b8dbb0c648f1e2d1d75430a634b733d"
     },
     {
-      "source": "docs/analysis/behavior/US-10.mmd",
+      "source": "docs/analysis/behavior/US-10.dfd.json",
       "svg": "docs/analysis/behavior/images/US-10.svg",
-      "source_sha256": "57851e7dca28b0cb644bdef716df5167d6e89de7f61ac37716c3a6adacdc9283",
-      "svg_sha256": "b3a26854c23baf6554d8096e952ee7b748d7b65dfde1c4247f8cca723d9c981d"
+      "kind": "DFD",
+      "source_sha256": "79f1140770f0d8e32509d21e0f0a5dc5061c3a8fa94126b6de75b7e442ab495f",
+      "svg_sha256": "c566a9ce136dbaf484470c33284d459f2ad122b321db3ed47c309e2e41369ece"
     },
     {
-      "source": "docs/analysis/behavior/US-11.mmd",
+      "source": "docs/analysis/behavior/US-11.dfd.json",
       "svg": "docs/analysis/behavior/images/US-11.svg",
-      "source_sha256": "6ea07a7b25c9ea457513e8ffd212f0c4b434dc53d842fa81e633a41f1d0fca44",
-      "svg_sha256": "d117765f42f569d2cd439259464fb0991806674042d7bfe955dc63f1a34d627d"
+      "kind": "DFD",
+      "source_sha256": "ef310effc8c9509763839c278e73e8523908f7f5b10b9c288413e5b95356a730",
+      "svg_sha256": "7669409afe3bf7c640c124c401b920f2bcf1b424c8e068eaa0ba70fea3f156da"
     },
     {
-      "source": "docs/analysis/behavior/US-12.mmd",
+      "source": "docs/analysis/behavior/US-12.dfd.json",
       "svg": "docs/analysis/behavior/images/US-12.svg",
-      "source_sha256": "b11785e86284d176ee8488f13bb3ca8000449a852223ba861eeb12126505e4cf",
-      "svg_sha256": "8bb1b95f473de1d56a18312c6f9dd06da8680f159c1d8c9aec206032cd96b01e"
+      "kind": "DFD",
+      "source_sha256": "010af242fef8f6be7d725b2cd2c524a02553a5df124c418108bde95829fc7021",
+      "svg_sha256": "b4639ea97323a8311c76aae2bb9ca271c6d76fe79bebe56eb6cbe0863edac3b3"
     },
     {
-      "source": "docs/analysis/behavior/US-13.mmd",
+      "source": "docs/analysis/behavior/US-13.dfd.json",
       "svg": "docs/analysis/behavior/images/US-13.svg",
-      "source_sha256": "a748005bbc3aa8ce13a2a3702a03f7eca1d645877b7ab535c6016468e0bd2945",
-      "svg_sha256": "a2d7d76dd95b226c68c176fa9828b520dbeeb1ab34bf61fb677c9d57c137df6f"
+      "kind": "DFD",
+      "source_sha256": "8917bf7476ed075cd166a2d1a79425410cf5e2a869700d3f5ba342b65f6e4232",
+      "svg_sha256": "a83d15d4be9a37ffda7cd9ec1f9c8af3a2303fb75f430555c6f55cbc0f861f8f"
     },
     {
-      "source": "docs/analysis/behavior/US-14.mmd",
+      "source": "docs/analysis/behavior/US-14.dfd.json",
       "svg": "docs/analysis/behavior/images/US-14.svg",
-      "source_sha256": "cbd8795a5b753bf34fdbe1dac2bba4bd6dc710975656b47165f6afec80fbf0f0",
-      "svg_sha256": "7feeaf5243e0a92b3ffc6c20ba6ae5a275e4c9afa262b1e92510f668cf46094f"
+      "kind": "DFD",
+      "source_sha256": "3371752bf081d5c9f36a32c4add688aa1a48e4639ff1d9c72d5f54c30c786cf5",
+      "svg_sha256": "49e27225cf59a018e5cdd6b5853baff9da6ad765f8b3c437b0218624a65127f1"
     },
     {
-      "source": "docs/analysis/behavior/US-15.mmd",
+      "source": "docs/analysis/behavior/US-15.dfd.json",
       "svg": "docs/analysis/behavior/images/US-15.svg",
-      "source_sha256": "c039b337917d18db8c3614313b377879aac6612bf4595b6fd2338d17cfdaefdf",
-      "svg_sha256": "10571071c9ffc4295b60495634a422ca018bd43a28ca25621f392a2fb5d642e9"
+      "kind": "DFD",
+      "source_sha256": "38dbb7610f0f9d87d9be5655448c1a1f3dc02b2584594e44fb4b7faecd6a81ab",
+      "svg_sha256": "1faa7a85839c0bbc99c6233dbe98d7b3f9cd8139a323c3a3c45f3235e7b3d545"
     },
     {
-      "source": "docs/analysis/behavior/authorization-sequence.mmd",
-      "svg": "docs/analysis/behavior/images/authorization-sequence.svg",
-      "source_sha256": "cf44b61ca5d8136c2e8c2ed3d5cd1214887f62ea2643c5350abb01daf82d81ec",
-      "svg_sha256": "f6fd94180a24a7adab09f17b95a91d5a30e2faff7a927286a3390e5784a5fba4"
+      "source": "docs/analysis/behavior/context-dfd.dfd.json",
+      "svg": "docs/analysis/behavior/images/context-dfd.svg",
+      "kind": "DFD",
+      "source_sha256": "3e95306393e36321570b2d586cec9c8bd5bed902f8ff850c09b02ac6bf7deec4",
+      "svg_sha256": "ac0b0920250aec2ae0f9f9b8cb7996ca22d3c6501c2dfe340b8f53eca7bfdb06"
     },
     {
-      "source": "docs/analysis/behavior/generation-sequence.mmd",
-      "svg": "docs/analysis/behavior/images/generation-sequence.svg",
-      "source_sha256": "fe1b56a97866394ce635aa0798c00b003ea63989556e6210d76a287212bc36de",
-      "svg_sha256": "5fcc45a3c980c625b37acb7c7671a337c4fffa51a803cba46c05cf8b1369e744"
-    },
-    {
-      "source": "docs/analysis/behavior/shopping-sequence.mmd",
-      "svg": "docs/analysis/behavior/images/shopping-sequence.svg",
-      "source_sha256": "818cd14efed9b76f3c442257ddb0a73c9f2486a4e3e2dfd216a39128adae45b4",
-      "svg_sha256": "dbbde7fd9f11123751b5aa85a25b5aecdb5bd4c645e25f0874df401f764ba9b2"
+      "source": "docs/analysis/behavior/level-1-dfd.dfd.json",
+      "svg": "docs/analysis/behavior/images/level-1-dfd.svg",
+      "kind": "DFD",
+      "source_sha256": "c961c8e211edec1614d2f6bbb56edfe690db657e9675f409b0dc071f3a93558e",
+      "svg_sha256": "b976e020fb207d7f12c87173c3296df745fe1e8932fade44c1d8543ec95060a2"
     }
   ]
 }

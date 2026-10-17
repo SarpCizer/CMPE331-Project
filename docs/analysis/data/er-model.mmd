@@ -18,12 +18,14 @@ erDiagram
     }
     DIETARY_PREFERENCE {
         uuid account_id PK,FK
-        string value_key PK
+        integer position PK
+        string value_key
         string display_value
     }
     ALLERGEN_EXCLUSION {
         uuid account_id PK,FK
-        string value_key PK
+        integer position PK
+        string value_key
         string display_value
     }
     INVENTORY_ENTRY {

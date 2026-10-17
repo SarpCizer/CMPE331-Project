@@ -1,0 +1,92 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-07 DFD: generate complete recipes",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-07",
+    "US-08",
+    "US-09"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "AI",
+      "kind": "external",
+      "label": "Recipe AI service"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "4.1\nValidate and accept recipe batch"
+    },
+    {
+      "id": "D2",
+      "kind": "store",
+      "label": "D2 Ordered preference lists"
+    },
+    {
+      "id": "D3",
+      "kind": "store",
+      "label": "D3 Fridge inventory"
+    },
+    {
+      "id": "D4",
+      "kind": "store",
+      "label": "D4 Accepted recipes and children"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Generation request and access token"
+    },
+    {
+      "from": "D3",
+      "to": "P",
+      "label": "Owned inventory ingredient names"
+    },
+    {
+      "from": "D2",
+      "to": "P",
+      "label": "Latest saved dietary and allergen lists"
+    },
+    {
+      "from": "P",
+      "to": "AI",
+      "label": "Ingredient names and saved preference lists"
+    },
+    {
+      "from": "AI",
+      "to": "P",
+      "label": "Recipe candidates or provider failure data"
+    },
+    {
+      "from": "P",
+      "to": "D4",
+      "label": "Complete validated owned recipe batch"
+    },
+    {
+      "from": "D4",
+      "to": "P",
+      "label": "Committed complete recipe objects"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "200 complete recipe array or 400/422/502/503 error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Empty fridge: 400 and no AI input flow. Snapshot request input from current committed owned records.",
+    "Validate every candidate before any accepted result is written. Malformed candidates yield 502; declared excluded allergens yield whole-batch 422 under the approved contract.",
+    "Only accepted batches allocate internal ids and atomically persist recipes plus ingredients and ordered steps. Provider timeout/unavailability yields retryable 503 within the required bound; no partial batch is saved.",
+    "No inventory write occurs: recipe, shopping, favorite and history actions never deduct or restock fridge ingredients.",
+    "Successful response is the complete recipe array specified by the approved API, not summaries. Generation does not create history views."
+  ]
+}

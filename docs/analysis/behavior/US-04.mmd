@@ -1,7 +1,0 @@
-flowchart TD
-S([Submit ingredient name]) --> G[US-15 authentication and owner gate]
-G --> V{Trimmed name nonblank?}
-V -- No --> E[400; inventory unchanged]
-V -- Yes --> C[Allocate id; take server UTC addition time]
-C --> P[Persist owner-qualified inventory entry]
-P --> R([201 id, name and addedAt])

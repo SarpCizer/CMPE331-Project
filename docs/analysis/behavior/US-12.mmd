@@ -1,7 +1,0 @@
-flowchart TD
-S([Select Save recipe]) --> G[US-15 authentication and owner gate]
-G --> O{Recipe owned?}
-O -- No --> E[403 or 404; no mutation]
-O -- Yes --> U[Upsert favorite by account id and recipe id]
-U --> R[200 recipe; at most one association]
-R --> F([Inventory unchanged; no history view created by saving alone])

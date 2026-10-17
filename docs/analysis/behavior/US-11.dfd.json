@@ -1,0 +1,53 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-11 DFD: manage the shopping list",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-11"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "6.2\nRead or edit shopping items"
+    },
+    {
+      "id": "D5",
+      "kind": "store",
+      "label": "D5 Shopping entries"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "List query, item name or deletion id and access token"
+    },
+    {
+      "from": "D5",
+      "to": "P",
+      "label": "Owned shopping entries and existence data"
+    },
+    {
+      "from": "P",
+      "to": "D5",
+      "label": "Validated owned shopping-item changes"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "Owned items; new-item 201; deletion 204; errors"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "A blank name yields 400 without list changes. List reads return the owned items or empty array. New items return 201.",
+    "Owner/name uniqueness is the existing D-07 deduplication rule; repeated normalized names retain the existing entry. Missing deletion targets return 404 and foreign targets 403/404.",
+    "No inventory write occurs: recipe, shopping, favorite and history actions never deduct or restock fridge ingredients."
+  ]
+}

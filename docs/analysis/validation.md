@@ -1,33 +1,23 @@
-# Analysis validation record
+# Analysis revision validation
 
-Date: 14 October 2026. Baseline: approved requirements `4839cdf`, merged `main` at `d9178ed`. The analysis remains proposed for review.
+Revision: 17 October 2026. Requirements baseline: approved `4839cdf`, merged to main as `d9178ed`. This record concerns the analysis revision, not implemented application behavior.
 
-## Checks performed
+## Structural and semantic checks
 
-| Check | Result |
-|---|---|
-| Requirements coverage | All 15 stories and their 48 numbered criteria mapped; no story omitted |
-| Exact criterion wording | Criterion-level JSON compared with the dedicated approved definitions |
-| Data structure review | Domain multiplicities, ten E-R entities, owner-qualified references, uniqueness and transaction invariants reviewed against the approved API and stories |
-| Diagram syntax and output | All 20 Mermaid sources parsed and rendered to SVG; source and image hashes recorded in render-manifest.json |
-| Source consistency | Each Markdown Mermaid block matches its editable .mmd file; stale rendered images fail hash validation |
-| Visual diagram review | Rendered domain/E-R/interaction diagrams and activity overview inspected for missing labels, overlap and readable flow structure |
-| Local links | Analysis report, model documents, frontend guide and tool instructions checked for missing local targets |
-| Frontend layout | Fridge, recipes, shopping, saved and preferences checked at 360, 768 and 1440 px: 15 route/viewport combinations with no horizontal page overflow; mobile recipe dialog also checked |
-| Frontend sample interactions | Blank-name validation; fridge add/delete; generation and detail view; repeated missing-item addition without duplicates; shopping removal without fridge changes; favorite removal retaining viewed history; preference clearing |
-| Frontend alternate states | Empty fridge and generation block; loading; service error/retry; expired-session display; sample sign-in/register navigation |
-| Keyboard spot checks | Ingredient submission with keyboard, dialog Escape close and focus return to the corresponding recipe action |
-| Browser isolation | No script errors or external requests during the local prototype checks; passwords neither stored nor sent |
-| Change boundaries | Charter, root README, approved requirements, existing plans, application scaffold and acceptance tests unchanged |
+- Retain all 15 stories and all 48 exact criterion texts; primary and supporting mappings link the transformations that realize each criterion.
+- Validate 17 DFD sources: only external entities, processes and stores; each edge touches a process; each process has input and output; no yes/no control-flow labels; context/level-1 external groups balance.
+- Retain ten E-R entities and use ordered preference keys so saved values/order/repeats are not silently collapsed.
+- Check 19 source/SVG hashes, DFD parallel-line store symbols, model/source prose consistency and local documentation links.
+- Confirm the report embeds all 19 analysis diagrams, with no obsolete activity/sequence figures.
+- Independently audit complete recipe response data, ownership of URL/body references, missing versus foreign deletion outcomes, no inventory deduction, favorite/history independence and detail/history process responsibilities.
+- Exported a 26-page review PDF: seven A4 text pages, eighteen A3 diagram sheets and one A1 level-1 overview sheet. All 19 analysis diagrams are embedded once, with pixels checked against the current rendered sources.
+- Visually inspected every page for clipping, overlap, legibility, figure titles and footers. Corrected the authorization diagram's label spacing and the US-04 heading/list page break. A final raster comparison confirmed pages 1-25 unchanged after the last diagram correction; page 26 was inspected again.
+- Checked all 62 unique PDF link destinations: 59 resolve to existing repository files on analysis_work; three refer to the approved requirements revision and review pages. Page numbering and review-copy status were checked on every page. GitHub file links require access to the private repository.
 
-The committed desktop/mobile screenshots show the reviewed concept and recipe details. Browser checks use sample data and do not claim that backend acceptance tests pass.
+## Existing frontend baseline
 
-## Reproduction
+The unchanged prototype was checked on 14 October at 360, 768 and 1440 px across five routes, including selected interactions and mobile modal/keyboard checks. Those results are retained as historical prototype evidence. This revision does not rerun or reinterpret them as backend, authentication, AI filtering, persistence, timing, deployment or accessibility certification. The [frontend guide](frontend/README.md) states the limitations.
 
-Follow [analysis tooling](../../scripts/analysis/README.md). `python scripts/analysis/validate.py` checks coverage, local links and model integrity. `node scripts/analysis/render.mjs` performs real Mermaid parsing and image rendering. No production service or credentials are needed. Browser interaction checks were run locally against the concept; the existing application tests were not broadened or altered for documentation work.
+## Reproduction and limits
 
-## Limits and review items
-
-Structural validation cannot prove that every diagram is semantically correct. Team/reviewer inspection is still required, especially the A-01 through A-06 concurrency, storage and ordering proposals. The models are not executed application code or database migrations. No real database restart, provider timeout, live recipe filtering, password verification, JWT cryptography, cross-user access, performance or deployment result is claimed.
-
-The mockup covers principal screens and selected feedback, not every production error. Its fake sign-in, fixed recipes and in-memory state are explicitly documented in the frontend guide. The exact preference vocabulary, visual direction and further error states remain iterative design work. Keyboard checks are a spot check, not a full accessibility/contrast audit. The analysis report's final submission copy should be prepared after review and approval.
+Follow [analysis tooling](../../scripts/analysis/README.md). The validator checks DFD structure and traceability; the renderer/exporter produces all embedded figures. Structural checks do not prove semantic completeness automatically, so independent and reviewer audits remain necessary. No production services, real users, database migrations or application tests are changed. Review proposals A-01 through A-06 remain open.

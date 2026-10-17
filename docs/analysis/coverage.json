@@ -11,7 +11,9 @@
           "data": [
             "ACCOUNT"
           ],
-          "frontend": "Register"
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         },
         {
           "id": "US-01-AC-2",
@@ -20,7 +22,9 @@
           "data": [
             "ACCOUNT"
           ],
-          "frontend": "Register"
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         },
         {
           "id": "US-01-AC-3",
@@ -29,7 +33,9 @@
           "data": [
             "ACCOUNT"
           ],
-          "frontend": "Register"
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         }
       ]
     },
@@ -43,7 +49,9 @@
           "data": [
             "ACCOUNT"
           ],
-          "frontend": "Sign in"
+          "frontend": "Sign in",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         },
         {
           "id": "US-02-AC-2",
@@ -52,7 +60,9 @@
           "data": [
             "ACCOUNT"
           ],
-          "frontend": "Sign in"
+          "frontend": "Sign in",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         }
       ]
     },
@@ -67,7 +77,11 @@
             "DIETARY_PREFERENCE",
             "ALLERGEN_EXCLUSION"
           ],
-          "frontend": "Preferences"
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-03-AC-2",
@@ -77,7 +91,11 @@
             "DIETARY_PREFERENCE",
             "ALLERGEN_EXCLUSION"
           ],
-          "frontend": "Preferences"
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-03-AC-3",
@@ -87,7 +105,12 @@
             "DIETARY_PREFERENCE",
             "ALLERGEN_EXCLUSION"
           ],
-          "frontend": "Preferences"
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -101,7 +124,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / add"
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-04-AC-2",
@@ -110,7 +137,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / add"
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-04-AC-3",
@@ -119,7 +150,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / add"
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -133,7 +168,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / empty and populated"
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-05-AC-2",
@@ -142,7 +181,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / empty and populated"
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-05-AC-3",
@@ -151,7 +194,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / empty and populated"
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -165,7 +212,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / remove"
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-06-AC-2",
@@ -174,7 +225,11 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / remove"
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-06-AC-3",
@@ -183,7 +238,13 @@
           "data": [
             "INVENTORY_ENTRY"
           ],
-          "frontend": "Fridge / remove"
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-08.md",
+            "behavior/US-12.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -202,7 +263,11 @@
             "RECIPE_INGREDIENT",
             "RECIPE_STEP"
           ],
-          "frontend": "Recipes / loading and results"
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-07-AC-2",
@@ -216,7 +281,11 @@
             "RECIPE_INGREDIENT",
             "RECIPE_STEP"
           ],
-          "frontend": "Recipes / loading and results"
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-07-AC-3",
@@ -230,7 +299,11 @@
             "RECIPE_INGREDIENT",
             "RECIPE_STEP"
           ],
-          "frontend": "Recipes / loading and results"
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-07-AC-4",
@@ -244,7 +317,11 @@
             "RECIPE_INGREDIENT",
             "RECIPE_STEP"
           ],
-          "frontend": "Recipes / loading and results"
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -261,7 +338,12 @@
             "RECIPE_STEP",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipe details"
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-14.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-08-AC-2",
@@ -273,7 +355,13 @@
             "RECIPE_STEP",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipe details"
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-09.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-08-AC-3",
@@ -285,7 +373,11 @@
             "RECIPE_STEP",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipe details"
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -305,7 +397,12 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipes / error and retry"
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-09-AC-2",
@@ -320,7 +417,11 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipes / error and retry"
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-09-AC-3",
@@ -335,7 +436,12 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Recipes / error and retry"
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -351,7 +457,11 @@
             "INVENTORY_ENTRY",
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Recipe details / add missing"
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-10-AC-2",
@@ -362,7 +472,12 @@
             "INVENTORY_ENTRY",
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Recipe details / add missing"
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-11.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-10-AC-3",
@@ -373,7 +488,11 @@
             "INVENTORY_ENTRY",
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Recipe details / add missing"
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-10-AC-4",
@@ -384,7 +503,11 @@
             "INVENTORY_ENTRY",
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Recipe details / add missing"
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -398,7 +521,11 @@
           "data": [
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Shopping / add, remove and empty"
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-11-AC-2",
@@ -407,7 +534,11 @@
           "data": [
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Shopping / add, remove and empty"
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-11-AC-3",
@@ -416,7 +547,11 @@
           "data": [
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Shopping / add, remove and empty"
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-11-AC-4",
@@ -425,7 +560,11 @@
           "data": [
             "SHOPPING_ENTRY"
           ],
-          "frontend": "Shopping / add, remove and empty"
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -440,7 +579,11 @@
             "FAVORITE",
             "RECIPE"
           ],
-          "frontend": "Recipe details / save"
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-12-AC-2",
@@ -450,7 +593,11 @@
             "FAVORITE",
             "RECIPE"
           ],
-          "frontend": "Recipe details / save"
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-12-AC-3",
@@ -460,7 +607,11 @@
             "FAVORITE",
             "RECIPE"
           ],
-          "frontend": "Recipe details / save"
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -476,7 +627,11 @@
             "RECIPE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Favorites / remove and empty"
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-13-AC-2",
@@ -487,7 +642,12 @@
             "RECIPE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Favorites / remove and empty"
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-14.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-13-AC-3",
@@ -498,7 +658,11 @@
             "RECIPE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Favorites / remove and empty"
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -513,7 +677,11 @@
             "RECIPE_VIEW",
             "RECIPE"
           ],
-          "frontend": "History / newest first"
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-14-AC-2",
@@ -523,7 +691,11 @@
             "RECIPE_VIEW",
             "RECIPE"
           ],
-          "frontend": "History / newest first"
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-14-AC-3",
@@ -533,7 +705,11 @@
             "RECIPE_VIEW",
             "RECIPE"
           ],
-          "frontend": "History / newest first"
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         },
         {
           "id": "US-14-AC-4",
@@ -543,7 +719,11 @@
             "RECIPE_VIEW",
             "RECIPE"
           ],
-          "frontend": "History / newest first"
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
         }
       ]
     },
@@ -564,7 +744,9 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Sign in / expired session; access checks require backend"
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         },
         {
           "id": "US-15-AC-2",
@@ -580,7 +762,9 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Sign in / expired session; access checks require backend"
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         },
         {
           "id": "US-15-AC-3",
@@ -596,7 +780,9 @@
             "FAVORITE",
             "RECIPE_VIEW"
           ],
-          "frontend": "Sign in / expired session; access checks require backend"
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
         }
       ]
     }

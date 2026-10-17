@@ -1,0 +1,99 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-15 DFD: authorize all personal references",
+  "scope": "Use-case DFD view",
+  "layout": {"nodeSpacing": 180, "rankSpacing": 90},
+  "requirements": [
+    "US-15"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P1",
+      "kind": "process",
+      "label": "8.1\nVerify token identity"
+    },
+    {
+      "id": "P2",
+      "kind": "process",
+      "label": "8.2\nValidate owner and references"
+    },
+    {
+      "id": "P3",
+      "kind": "process",
+      "label": "8.3\nExecute scoped operation"
+    },
+    {
+      "id": "D1",
+      "kind": "store",
+      "label": "D1 Accounts"
+    },
+    {
+      "id": "D0",
+      "kind": "store",
+      "label": "D0 Personal records (D2-D7)"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P1",
+      "label": "Personal request, JWT and referenced ids"
+    },
+    {
+      "from": "D1",
+      "to": "P1",
+      "label": "Account identity data"
+    },
+    {
+      "from": "P1",
+      "to": "P2",
+      "label": "Verified subject and operation/reference data"
+    },
+    {
+      "from": "P1",
+      "to": "U",
+      "label": "401 missing, invalid or expired token"
+    },
+    {
+      "from": "D0",
+      "to": "P2",
+      "label": "Referenced object existence and owner data"
+    },
+    {
+      "from": "P2",
+      "to": "P3",
+      "label": "Authorized request with derived account id"
+    },
+    {
+      "from": "P2",
+      "to": "U",
+      "label": "Rejected owner or foreign-object 403/404 error"
+    },
+    {
+      "from": "D0",
+      "to": "P3",
+      "label": "Only verified-account records"
+    },
+    {
+      "from": "P3",
+      "to": "D0",
+      "label": "Validated owner-scoped feature mutations"
+    },
+    {
+      "from": "P3",
+      "to": "U",
+      "label": "Feature data or sanitized error"
+    }
+  ],
+  "rules": [
+    "Validate token signature and expiry against server time, not merely JWT shape. Invalid/expired/missing token data produces 401 before feature access.",
+    "Derive the account from the verified subject. Client owner fields are ignored or rejected; they never select someone else's account.",
+    "Check every referenced object regardless of HTTP method or whether an id appears in a URL or request body. A collection mutation with recipeId is not exempt. A foreign object is denied with 403/404 and no write.",
+    "D0 is a compact view of D2-D7 for access analysis, not an extra table. Feature mutation flows expand into the feature DFDs and preserve their allowed-write restrictions. Registration/sign-in are the public exceptions."
+  ]
+}

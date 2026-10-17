@@ -1,0 +1,52 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-04 DFD: add a fridge ingredient",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-04"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "3.1\nValidate and add ingredient"
+    },
+    {
+      "id": "D3",
+      "kind": "store",
+      "label": "D3 Fridge inventory"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Ingredient name and access token"
+    },
+    {
+      "from": "P",
+      "to": "D3",
+      "label": "Owned ingredient id/name and server addedAt"
+    },
+    {
+      "from": "D3",
+      "to": "P",
+      "label": "Committed inventory entry"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "201 id/name/addedAt or 400 validation error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Blank trimmed names produce 400 without an inventory write. Nonblank names receive a server id and UTC addedAt.",
+    "addedAt is addition time, never expiry or freshness. No quantity arithmetic is modeled; repeated inventory names are not silently deduplicated."
+  ]
+}

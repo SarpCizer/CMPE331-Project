@@ -1,9 +1,0 @@
-flowchart TD
-S([Visitor submits email and password]) --> V{Valid email and password at least eight characters?}
-V -- No --> E[400 validation error; no account saved]
-V -- Yes --> N[Normalize email and create salted password hash]
-N --> C{Unique normalized email insert succeeds?}
-C -- Duplicate --> D[409 duplicate; no second account]
-C -- Yes --> A[Commit account and logical empty preferences]
-A --> R[201 account id and email; no hash returned]
-R --> F([Sign-in available immediately; no email verification])
