@@ -1,0 +1,88 @@
+@startuml
+title C1  Identity, preferences and inventory
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+hide circle
+skinparam classAttributeIconSize 0
+class Account {
+  +id: AccountId
+  +email: string
+  -passwordHash: string
+}
+class PreferenceProfile {
+  +dietary: string[]
+  +allergens: string[]
+}
+class InventoryEntry {
+  +id: EntryId
+  +owner: AccountId
+  +name: string
+  +nameKey: string
+  +addedAt: Instant
+}
+class IdentityService {
+  +register(email, password): AccountDTO
+  +signIn(email, password): JWT
+}
+class JwtGuard {
+  +requireOwner(token): AccountId
+}
+class PreferenceService {
+  +read(owner): PreferenceProfile
+  +replace(owner, dietary, allergens): PreferenceProfile
+}
+class InventoryService {
+  +add(owner, name): InventoryEntry
+  +list(owner): InventoryEntry[]
+  +remove(owner, entryId): void
+}
+interface AccountRepository {
+  +insertUnique(account): Account
+  +findByEmailKey(key): Account?
+}
+interface ProfileRepository {
+  +read(owner): PreferenceProfile
+  +replaceBoth(owner, profile): PreferenceProfile
+}
+interface InventoryRepository {
+  +insert(entry): InventoryEntry
+  +listByOwner(owner): InventoryEntry[]
+  +deleteOwned(owner, entryId): boolean
+}
+interface PasswordHasher {
+  +hash(password): string
+  +verify(password, hash): boolean
+}
+interface TokenService {
+  +issue(owner): JWT
+  +verify(token): AccountId
+}
+Account "1" *-- "1" PreferenceProfile : logical profile
+Account "1" *-- "0..*" InventoryEntry : owns
+IdentityService ..> AccountRepository
+IdentityService ..> PasswordHasher
+IdentityService ..> TokenService
+JwtGuard ..> TokenService
+PreferenceService ..> ProfileRepository
+InventoryService ..> InventoryRepository
+AccountRepository ..> Account
+ProfileRepository ..> PreferenceProfile
+InventoryRepository ..> InventoryEntry
+@enduml

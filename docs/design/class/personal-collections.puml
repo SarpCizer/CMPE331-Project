@@ -1,0 +1,83 @@
+@startuml
+title C3  Shopping, favorites and viewed history
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+hide circle
+skinparam classAttributeIconSize 0
+class ShoppingService {
+  +addMissing(owner, recipeId): ShoppingEntry[]
+  +list(owner): ShoppingEntry[]
+  +add(owner, name): ShoppingEntry
+  +remove(owner, entryId): void
+}
+class FavoriteService {
+  +save(owner, recipeId): Recipe
+  +list(owner): Recipe[]
+  +remove(owner, recipeId): void
+}
+class RecipeViewService {
+  +open(owner, recipeId): Recipe
+  +history(owner): ViewedRecipe[]
+}
+interface ShoppingRepository {
+  +upsertNames(owner, names): ShoppingEntry[]
+  +listByOwner(owner): ShoppingEntry[]
+  +deleteOwned(owner, entryId): boolean
+}
+interface FavoriteRepository {
+  +upsert(owner, recipeId): void
+  +listByOwner(owner): Recipe[]
+  +deleteOwned(owner, recipeId): boolean
+}
+interface HistoryRepository {
+  +recordLatest(owner, recipeId, at): void
+  +listRecent(owner): ViewedRecipe[]
+}
+class ShoppingEntry {
+  +id: EntryId
+  +owner: AccountId
+  +name: string
+  +nameKey: string
+}
+class Favorite {
+  +owner: AccountId
+  +recipeId: RecipeId
+}
+class RecipeView {
+  +owner: AccountId
+  +recipeId: RecipeId
+  +lastViewedAt: Instant
+}
+class Recipe <<from C2>>
+interface RecipeRepository <<from C2>>
+interface InventoryRepository <<from C1>>
+ShoppingService ..> ShoppingRepository
+ShoppingService ..> RecipeRepository
+ShoppingService ..> InventoryRepository : read only
+FavoriteService ..> FavoriteRepository
+FavoriteService ..> RecipeRepository
+RecipeViewService ..> HistoryRepository
+RecipeViewService ..> RecipeRepository
+ShoppingRepository ..> ShoppingEntry
+FavoriteRepository ..> Favorite
+HistoryRepository ..> RecipeView
+Recipe "1" -- "0..1" Favorite : same owner
+Recipe "1" -- "0..1" RecipeView : same owner
+@enduml
