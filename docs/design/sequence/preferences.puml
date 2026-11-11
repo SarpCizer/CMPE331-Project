@@ -1,0 +1,50 @@
+@startuml
+title S2  Read, replace and clear preferences  US-03
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant PreferenceService as Pref
+database "ProfileRepository" as Store
+User -> UI : open profile or save both lists
+UI -> API : GET or PUT /profile/preferences
+ref over API : S8: verified owner
+alt GET
+  API -> Pref : read(owner)
+  Pref -> Store : read(owner)
+  Store --> Pref : original ordered strings or empty arrays
+  Pref --> API : profile
+  API --> UI : 200 profile
+else PUT with invalid payload
+  API --> UI : 400; no write
+else PUT with valid lists
+  API -> Pref : replace(owner, dietary, allergens)
+  Pref -> Store : replaceBoth(owner, profile)
+  note right of Store
+    Single transaction; preserve values,
+    order and repeats. Empty clears.
+  end note
+  Store --> Pref : committed profile
+  Pref --> API : profile
+  API --> UI : 200 saved profile
+end
+@enduml
