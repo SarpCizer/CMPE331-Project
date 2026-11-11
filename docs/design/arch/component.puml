@@ -1,0 +1,48 @@
+@startuml
+title A1  Component architecture
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+top to bottom direction
+actor "Account holder" as User
+component "React web UI" as UI
+package "Express application" {
+  component "HTTP routes and DTO mapping" as API
+  component "JWT guard" as Guard
+  component "Accounts, preferences\nand inventory" as Core
+  component "Recipe generation,\ndetails and history" as Recipes
+  component "Shopping and favorites" as Lists
+  component "PostgreSQL repositories\nand unit of work" as Persistence
+  component "Recipe provider adapter" as Adapter
+}
+database "PostgreSQL" as DB
+cloud "External recipe provider" as Provider
+User --> UI : responsive browser screens
+UI --> API : HTTPS / JSON; bearer JWT
+API --> Guard : requireOwner(token)
+API --> Core : identity / profile / inventory
+API --> Recipes : generate / open / history
+API --> Lists : shopping / favorites
+Core --> Persistence : owned reads and writes
+Recipes --> Persistence : snapshot / batch write
+Lists --> Persistence : owned upserts
+Recipes --> Adapter : generate(input, signal)
+Adapter --> Provider : HTTPS; names and preference lists
+Persistence --> DB : parameterized SQL; transactions
+@enduml
