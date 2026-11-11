@@ -1,0 +1,75 @@
+@startuml
+title C2  Recipe generation and persistence
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+hide circle
+skinparam classAttributeIconSize 0
+class RecipeGenerationService {
+  +generate(owner): Recipe[]
+}
+interface GenerationInputReader {
+  +snapshot(owner): GenerationInput
+}
+class GenerationInput {
+  +ingredients: string[]
+  +dietary: string[]
+  +allergens: string[]
+}
+interface RecipeProvider {
+  +generate(input, signal): Candidate[]
+}
+class ExternalProviderAdapter {
+  +generate(input, signal): Candidate[]
+}
+class CandidateValidator {
+  +validateBatch(candidates, exclusions): ValidatedRecipe[]
+}
+interface RecipeRepository {
+  +insertBatch(owner, validated): Recipe[]
+  +findOwned(owner, recipeId): Recipe?
+}
+class Recipe {
+  +id: RecipeId
+  +owner: AccountId
+  +title: string
+  +cookingMinutes: number
+  +caloriesPerServing: number
+  +servings: integer
+}
+class RecipeIngredient {
+  +position: integer
+  +name: string
+  +nameKey: string
+}
+class RecipeStep {
+  +position: integer
+  +instruction: string
+}
+RecipeGenerationService ..> GenerationInputReader
+RecipeGenerationService ..> RecipeProvider
+RecipeGenerationService ..> CandidateValidator
+RecipeGenerationService ..> RecipeRepository
+GenerationInputReader ..> GenerationInput
+RecipeProvider ..> GenerationInput
+ExternalProviderAdapter ..|> RecipeProvider
+RecipeRepository ..> Recipe
+Recipe "1" *-- "1..*" RecipeIngredient : ordered
+Recipe "1" *-- "1..*" RecipeStep : ordered
+@enduml
