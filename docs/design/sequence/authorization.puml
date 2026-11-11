@@ -1,0 +1,54 @@
+@startuml
+title S8  Authorize each personal request  US-15
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant JwtGuard as Guard
+participant TokenService as Token
+participant "Feature service" as Feature
+database "Owner-qualified repository" as Store
+User -> UI : request a personal action
+UI -> API : personal request with bearer JWT
+API -> Guard : requireOwner(token)
+Guard -> Token : verify(token)
+alt missing, invalid or expired
+  Token --> Guard : authentication error
+  Guard --> API : denied
+  API --> UI : 401; feature not invoked
+else valid signature and claims
+  Token --> Guard : verified subject
+  Guard --> API : owner from subject
+  API -> Feature : action(owner, validated input)
+  note right of API : Ignore client-supplied owner fields.
+  Feature -> Store : read or mutate scoped by owner
+  alt referenced object has no owned match
+    Store --> Feature : absent; no mutation
+    Feature --> API : unavailable
+    API --> UI : 404
+  else authorized collection or object
+    Store --> Feature : owned result
+    Feature --> API : feature response
+    API --> UI : route-specific status and body
+  end
+end
+@enduml

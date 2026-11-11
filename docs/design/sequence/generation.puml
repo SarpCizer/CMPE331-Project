@@ -1,0 +1,65 @@
+@startuml
+title S4  Generate recipes and handle failures  US-07 / US-09
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant RecipeGenerationService as Gen
+database "Input reader /\nrecipe repository" as Store
+participant RecipeProvider as AI
+participant CandidateValidator as Validate
+User -> UI : request recipe suggestions
+UI -> API : POST /recipes/generate
+ref over API : S8: verified owner
+API -> Gen : generate(owner)
+Gen -> Store : snapshot(owner)
+Store --> Gen : fridge names and original preference lists
+alt empty fridge
+  Gen --> API : empty fridge
+  API --> UI : 400; prompt to add an ingredient
+else names available
+  Gen -> AI : generate(input, deadlineSignal)
+  alt timeout or provider unavailable
+    AI --> Gen : controlled provider failure
+    Gen --> API : sanitized retryable failure
+    API --> UI : 503 {error, retryable: true}
+  else candidate batch returned
+    AI --> Gen : candidate batch
+    Gen -> Validate : validateBatch(candidates, exclusions)
+    alt malformed or declared conflict
+      Validate --> Gen : invalid shape or allergen conflict
+      Gen --> API : sanitized validation failure
+      API --> UI : 502 malformed or 422 declared conflict
+    else entire batch accepted
+      Validate --> Gen : validated batch
+      Gen -> Store : insertBatch(owner, validated)
+      Store --> Gen : committed recipes with internal IDs
+      Gen --> API : complete Recipe[]
+      API --> UI : 200 recipes
+    end
+  end
+end
+note over UI, Store
+  Errors preserve prior state. Only accepted recipes are written.
+  A user retry starts a fresh request with a new snapshot.
+end note
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+title S5  Open recipe details and read history  US-08 / US-14
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant RecipeViewService as View
+database "RecipeRepository /\nHistoryRepository" as Store
+User -> UI : open a recipe
+UI -> API : GET /recipes/:id
+ref over API : S8: verified owner
+API -> View : open(owner, recipeId)
+group single transaction
+  View -> Store : findOwned(owner, recipeId)
+  alt owned recipe exists
+    Store --> View : recipe and ordered children
+    View -> Store : recordLatest(owner, recipeId, serverUTC)
+    Store --> View : committed latest view
+    View --> API : full recipe
+    API --> UI : 200; label minutes and kcal as estimates
+  else missing or foreign recipe
+    Store --> View : no owned row
+    View --> API : unavailable
+    API --> UI : 404; no view write
+  end
+end
+User -> UI : open viewed history
+UI -> API : GET /history
+ref over API : S8: verified owner
+API -> View : history(owner)
+View -> Store : listRecent(owner)
+Store --> View : viewed recipes newest first or []
+View --> API : recipe and lastViewedAt pairs
+API --> UI : 200 history
+@enduml

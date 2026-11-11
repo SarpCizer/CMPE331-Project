@@ -1,0 +1,71 @@
+@startuml
+title S6  Add missing ingredients and manage shopping  US-10 / US-11
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant ShoppingService as Shopping
+database "Owned data\nrepositories" as Store
+User -> UI : add missing, list, add manually or delete
+UI -> API : shopping action with bearer token
+ref over API : S8: verified owner
+alt POST /recipes/:id/shopping-items
+  API -> Shopping : addMissing(owner, recipeId)
+  group single transaction
+    Shopping -> Store : findOwned(owner, recipeId)
+    alt missing or foreign recipe
+      Store --> Shopping : no owned row
+      Shopping --> API : unavailable
+      API --> UI : 404; no write
+    else owned recipe
+      Shopping -> Store : listByOwner(owner) for inventory
+      Store --> Shopping : current inventory names
+      Shopping -> Shopping : normalize and subtract names
+      Shopping -> Store : upsertNames(owner, missing)
+      Store --> Shopping : committed list; preserve existing IDs
+      Shopping --> API : list
+      API --> UI : 200 resulting shopping list
+    end
+  end
+else GET /shopping-items
+  API -> Shopping : list(owner)
+  Shopping -> Store : listByOwner(owner) for shopping
+  Shopping --> API : owned items or []
+  API --> UI : 200 list
+else POST /shopping-items
+  API -> Shopping : add(owner, name)
+  alt blank name
+    Shopping --> API : invalid name; no write
+    API --> UI : 400
+  else nonblank name
+    Shopping -> Store : upsertNames(owner, [name])
+    Store --> Shopping : new or existing item
+    Shopping --> API : item and insertion outcome
+    API --> UI : 201 new; 200 existing
+  end
+else DELETE /shopping-items/:id
+  API -> Shopping : remove(owner, entryId)
+  Shopping -> Store : deleteOwned(owner, entryId)
+  Shopping --> API : removed or unavailable
+  API --> UI : 204 if removed; otherwise 404
+end
+@enduml

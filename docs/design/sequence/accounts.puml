@@ -1,0 +1,66 @@
+@startuml
+title S1  Register and sign in  US-01 / US-02
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "HTTP routes" as API
+participant IdentityService as Identity
+participant "PasswordHasher /\nTokenService" as Security
+database "AccountRepository" as Accounts
+group Registration
+  User -> UI : submit email and password
+  UI -> API : POST /accounts
+  API -> Identity : register(email, password)
+  alt invalid input
+    Identity --> API : validation error; no write
+    API --> UI : 400
+  else valid input
+    Identity -> Security : hash(password)
+    Identity -> Accounts : insertUnique(normalizedEmail, hash)
+    alt duplicate email
+      Accounts --> Identity : unique conflict
+      Identity --> API : conflict
+      API --> UI : 409
+    else created
+      Accounts --> Identity : new account
+      Identity --> API : account DTO
+      API --> UI : 201 {id, email}
+    end
+  end
+end
+group Sign in
+  User -> UI : submit credentials
+  UI -> API : POST /sessions
+  API -> Identity : signIn(email, password)
+  Identity -> Accounts : findByEmailKey(key)
+  Identity -> Security : verify(password, stored or dummy hash)
+  alt missing account or incorrect password
+    Identity --> API : invalid credentials
+    API --> UI : 401; no token
+  else verified
+    Identity -> Security : issue(accountId)
+    Security --> Identity : signed JWT with exp
+    Identity --> API : JWT
+    API --> UI : 200 {token}
+  end
+end
+@enduml

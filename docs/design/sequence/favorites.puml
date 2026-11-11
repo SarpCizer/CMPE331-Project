@@ -1,0 +1,57 @@
+@startuml
+title S7  Save, list and remove favorites  US-12 / US-13
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant FavoriteService as Favorite
+database "Owned recipe /\nfavorite repositories" as Store
+User -> UI : save, browse or remove favorite
+UI -> API : request /favorites
+ref over API : S8: verified owner
+alt POST /favorites with body recipeId
+  API -> Favorite : save(owner, recipeId)
+  Favorite -> Store : findOwned(owner, recipeId)
+  alt missing or foreign recipe
+    Store --> Favorite : no owned row
+    Favorite --> API : unavailable
+    API --> UI : 404; no write
+  else owned recipe
+    Store --> Favorite : recipe
+    Favorite -> Store : upsert(owner, recipeId)
+    Store --> Favorite : committed unique association
+    Favorite --> API : recipe
+    API --> UI : 200 recipe; repeats return same recipe
+  end
+else GET /favorites
+  API -> Favorite : list(owner)
+  Favorite -> Store : listByOwner(owner)
+  Favorite --> API : recipes or []
+  API --> UI : 200 list
+else DELETE /favorites/:recipeId
+  API -> Favorite : remove(owner, recipeId)
+  Favorite -> Store : deleteOwned(owner, recipeId)
+  Favorite --> API : removed or unavailable
+  API --> UI : 204 if removed; otherwise 404
+end
+note over Favorite, Store : No writes to recipes, history or inventory.
+@enduml

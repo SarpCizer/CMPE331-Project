@@ -1,0 +1,52 @@
+@startuml
+title S3  Manage fridge and addition dates  US-04 / US-05 / US-06
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+participant InventoryService as Inventory
+database "InventoryRepository" as Store
+User -> UI : add, list or remove a manual entry
+UI -> API : request /inventory or /inventory/:id
+ref over API : S8: verified owner
+alt POST valid name
+  API -> Inventory : add(owner, name)
+  Inventory -> Store : insert(id, owner, trimmedName, serverUTC)
+  Store --> Inventory : saved entry
+  Inventory --> API : entry
+  API --> UI : 201 entry with addedAt
+else POST blank name
+  API --> UI : 400; no write
+else GET
+  API -> Inventory : list(owner)
+  Inventory -> Store : listByOwner(owner)
+  Store --> Inventory : entries or []
+  Inventory --> API : entries
+  API --> UI : 200; show local addition dates or empty state
+else DELETE
+  API -> Inventory : remove(owner, entryId)
+  Inventory -> Store : deleteOwned(owner, entryId)
+  Store --> Inventory : affected row count
+  Inventory --> API : removed or unavailable
+  API --> UI : 204 if removed; otherwise 404
+end
+@enduml
