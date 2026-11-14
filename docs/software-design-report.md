@@ -16,7 +16,7 @@ The first release supports account registration without verification email, sign
 
 ## 2. Architecture and interfaces
 
-**A1** shows which components provide and require the interfaces defined in C1–C3. A dashed realization with a hollow triangle identifies the provider. A dashed usage dependency identifies the consumer. **A2** shows the proposed cloud deployment and trust boundaries. The application is one deployable with feature modules for identity, preferences, inventory, recipes and collections. This keeps owner checks and transaction management consistent across modules. Separate services would add network calls and distributed transaction complexity to a small application. The recipe provider and storage sit behind interfaces so feature tests can substitute an injected provider and clock.
+**A1** shows which components provide and require the interfaces defined in C1–C3. A dashed realization with a hollow triangle identifies the provider. A dashed dependency marked `«use»` identifies the consumer. **A2** shows the proposed cloud deployment and trust boundaries. The application is one deployable with feature modules for identity, preferences, inventory, recipes and collections. This keeps owner checks and transaction management consistent across modules. Separate services would add network calls and distributed transaction complexity to a small application. The recipe provider and storage sit behind interfaces so feature tests can substitute an injected provider and clock.
 
 | Interface | Inputs and outputs | Responsibility |
 | --- | --- | --- |
