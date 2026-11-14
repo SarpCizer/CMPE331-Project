@@ -20,31 +20,40 @@ skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 hide footbox
 autonumber
+skinparam maxMessageSize 220
 actor User
 participant "Web UI" as UI
 participant "Protected routes" as API
+
 participant PreferenceService as Pref
-database "ProfileRepository" as Store
+participant "profiles: ProfileRepository" as Profiles
+participant "tx: UnitOfWork" as Tx
 User -> UI : open profile or save both lists
 UI -> API : GET or PUT /profile/preferences
-ref over API : S8: verified owner
+ref over API : S8: obtain owner or end with 401
 alt GET
   API -> Pref : read(owner)
-  Pref -> Store : read(owner)
-  Store --> Pref : original ordered strings or empty arrays
-  Pref --> API : profile
+  Pref -> Profiles : read(owner)
+  Profiles --> Pref : PreferenceProfile (empty arrays if unset)
+  Pref --> API : PreferenceProfile
   API --> UI : 200 profile
-else PUT with invalid payload
-  API --> UI : 400; no write
-else PUT with valid lists
+else PUT
   API -> Pref : replace(owner, dietary, allergens)
-  Pref -> Store : replaceBoth(owner, profile)
-  note right of Store
-    Single transaction; preserve values,
-    order and repeats. Empty clears.
-  end note
-  Store --> Pref : committed profile
-  Pref --> API : profile
-  API --> UI : 200 saved profile
+  Pref -> Pref : validate the two string arrays
+  alt invalid lists
+    Pref --> API : validation error
+    API --> UI : 400
+  else valid lists
+    group Write transaction
+      Pref -> Tx : begin(WRITE)
+      Pref -> Profiles : replaceBoth(owner, profile)
+      Profiles --> Pref : saved PreferenceProfile
+      Pref -> Tx : commit()
+      Tx --> Pref : committed
+    end
+    Pref --> API : PreferenceProfile
+    API --> UI : 200 saved profile
+  end
 end
+note over Pref, Profiles : Preserve list order, repeats and original strings. Empty arrays clear the lists.
 @enduml

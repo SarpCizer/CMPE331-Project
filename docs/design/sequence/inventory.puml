@@ -20,33 +20,46 @@ skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 hide footbox
 autonumber
+skinparam maxMessageSize 220
 actor User
 participant "Web UI" as UI
 participant "Protected routes" as API
+
 participant InventoryService as Inventory
-database "InventoryRepository" as Store
+participant "inventory: InventoryRepository" as Entries
 User -> UI : add, list or remove a manual entry
 UI -> API : request /inventory or /inventory/:id
-ref over API : S8: verified owner
-alt POST valid name
+ref over API : S8: obtain owner or end with 401
+alt POST
   API -> Inventory : add(owner, name)
-  Inventory -> Store : insert(id, owner, trimmedName, serverUTC)
-  Store --> Inventory : saved entry
-  Inventory --> API : entry
-  API --> UI : 201 entry with addedAt
-else POST blank name
-  API --> UI : 400; no write
+  Inventory -> Inventory : validate and trim name
+  alt non-string or blank name
+    Inventory --> API : validation error
+    API --> UI : 400
+  else valid name
+    Inventory -> Inventory : build InventoryEntry with ID and server UTC time
+    Inventory -> Entries : insert(entry)
+    Entries --> Inventory : InventoryEntry after autocommit
+    Inventory --> API : saved entry
+    API --> UI : 201 {id, name, addedAt}
+  end
 else GET
   API -> Inventory : list(owner)
-  Inventory -> Store : listByOwner(owner)
-  Store --> Inventory : entries or []
+  Inventory -> Entries : listByOwner(owner)
+  Entries --> Inventory : InventoryEntry[] (possibly empty)
   Inventory --> API : entries
-  API --> UI : 200; show local addition dates or empty state
+  API --> UI : 200 list; show local addition dates
 else DELETE
   API -> Inventory : remove(owner, entryId)
-  Inventory -> Store : deleteOwned(owner, entryId)
-  Store --> Inventory : affected row count
-  Inventory --> API : removed or unavailable
-  API --> UI : 204 if removed; otherwise 404
+  Inventory -> Inventory : validate entry ID
+  alt invalid entry ID
+    Inventory --> API : validation error
+    API --> UI : 400
+  else valid entry ID
+    Inventory -> Entries : deleteOwned(owner, entryId)
+    Entries --> Inventory : deleted: boolean after autocommit
+    Inventory --> API : deleted: boolean
+    API --> UI : 204 if deleted; otherwise 404
+  end
 end
 @enduml

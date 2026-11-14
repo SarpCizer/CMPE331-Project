@@ -20,52 +20,82 @@ skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 hide footbox
 autonumber
+skinparam maxMessageSize 220
 actor User
 participant "Web UI" as UI
 participant "Protected routes" as API
-participant ShoppingService as Shopping
-database "Owned data\nrepositories" as Store
-User -> UI : add missing, list, add manually or delete
-UI -> API : shopping action with bearer token
-ref over API : S8: verified owner
+
+participant ShoppingService as Shop
+participant "tx: UnitOfWork" as Tx
+participant "recipes: RecipeRepository" as Recipes
+participant "inventory: InventoryRepository" as Inventory
+participant "shopping: ShoppingRepository" as Orders
+User -> UI : add missing, list, add manually, or delete
+UI -> API : shopping action with bearer JWT
+ref over API : S8: obtain owner or end with 401
 alt POST /recipes/:id/shopping-items
-  API -> Shopping : addMissing(owner, recipeId)
-  group single transaction
-    Shopping -> Store : findOwned(owner, recipeId)
-    alt missing or foreign recipe
-      Store --> Shopping : no owned row
-      Shopping --> API : unavailable
-      API --> UI : 404; no write
-    else owned recipe
-      Shopping -> Store : listByOwner(owner) for inventory
-      Store --> Shopping : current inventory names
-      Shopping -> Shopping : normalize and subtract names
-      Shopping -> Store : upsertNames(owner, missing)
-      Store --> Shopping : committed list; preserve existing IDs
-      Shopping --> API : list
+  API -> Shop : addMissing(owner, recipeId)
+  Shop -> Shop : validate recipe ID
+  alt invalid recipe ID
+    Shop --> API : validation error
+    API --> UI : 400
+  else valid recipe ID
+    group Snapshot and write transaction
+      Shop -> Tx : begin(WRITE_SNAPSHOT)
+      Shop -> Recipes : findOwned(owner, recipeId)
+      Recipes --> Shop : Recipe or null
+      alt owned recipe exists
+        Shop -> Inventory : listByOwner(owner)
+        Inventory --> Shop : InventoryEntry[]
+        Shop -> Shop : compute distinct missing names
+        Shop -> Orders : upsertNames(owner, missing)
+        Orders --> Shop : completed
+        Shop -> Orders : listByOwner(owner)
+        Orders --> Shop : ShoppingEntry[] with existing IDs preserved
+        Shop -> Tx : commit()
+        Tx --> Shop : committed
+      else no owned recipe
+        Shop -> Tx : rollback()
+        Tx --> Shop : rolled back
+      end
+    end
+    alt transaction committed
+      Shop --> API : ShoppingEntry[]
       API --> UI : 200 resulting shopping list
+    else no owned recipe
+      Shop --> API : unavailable
+      API --> UI : 404
     end
   end
 else GET /shopping-items
-  API -> Shopping : list(owner)
-  Shopping -> Store : listByOwner(owner) for shopping
-  Shopping --> API : owned items or []
+  API -> Shop : list(owner)
+  Shop -> Orders : listByOwner(owner)
+  Orders --> Shop : ShoppingEntry[] (possibly empty)
+  Shop --> API : ShoppingEntry[]
   API --> UI : 200 list
 else POST /shopping-items
-  API -> Shopping : add(owner, name)
-  alt blank name
-    Shopping --> API : invalid name; no write
+  API -> Shop : add(owner, name)
+  Shop -> Shop : validate and trim name
+  alt non-string or blank name
+    Shop --> API : validation error
     API --> UI : 400
-  else nonblank name
-    Shopping -> Store : upsertNames(owner, [name])
-    Store --> Shopping : new or existing item
-    Shopping --> API : item and insertion outcome
-    API --> UI : 201 new; 200 existing
+  else valid name
+    Shop -> Orders : upsertOne(owner, name)
+    Orders --> Shop : ShoppingAddResult after autocommit
+    Shop --> API : ShoppingAddResult {entry, created}
+    API --> UI : 201 new or 200 existing; {id, name}
   end
 else DELETE /shopping-items/:id
-  API -> Shopping : remove(owner, entryId)
-  Shopping -> Store : deleteOwned(owner, entryId)
-  Shopping --> API : removed or unavailable
-  API --> UI : 204 if removed; otherwise 404
+  API -> Shop : remove(owner, entryId)
+  Shop -> Shop : validate entry ID
+  alt invalid entry ID
+    Shop --> API : validation error
+    API --> UI : 400
+  else valid entry ID
+    Shop -> Orders : deleteOwned(owner, entryId)
+    Orders --> Shop : deleted: boolean after autocommit
+    Shop --> API : deleted: boolean
+    API --> UI : 204 if deleted; otherwise 404
+  end
 end
 @enduml

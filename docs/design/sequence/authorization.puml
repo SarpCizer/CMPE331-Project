@@ -20,35 +20,29 @@ skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 hide footbox
 autonumber
+skinparam maxMessageSize 220
 actor User
 participant "Web UI" as UI
 participant "Protected routes" as API
+
 participant JwtGuard as Guard
-participant TokenService as Token
-participant "Feature service" as Feature
-database "Owner-qualified repository" as Store
+participant "tokens: TokenService" as Token
 User -> UI : request a personal action
 UI -> API : personal request with bearer JWT
 API -> Guard : requireOwner(token)
 Guard -> Token : verify(token)
-alt missing, invalid or expired
+alt missing, invalid or expired token
   Token --> Guard : authentication error
-  Guard --> API : denied
-  API --> UI : 401; feature not invoked
-else valid signature and claims
-  Token --> Guard : verified subject
-  Guard --> API : owner from subject
-  API -> Feature : action(owner, validated input)
-  note right of API : Ignore client-supplied owner fields.
-  Feature -> Store : read or mutate scoped by owner
-  alt referenced object has no owned match
-    Store --> Feature : absent; no mutation
-    Feature --> API : unavailable
-    API --> UI : 404
-  else authorized collection or object
-    Store --> Feature : owned result
-    Feature --> API : feature response
-    API --> UI : route-specific status and body
-  end
+  Guard --> API : authentication error
+  API --> UI : 401; request ends
+else verified signature and claims
+  Token --> Guard : AccountId from subject
+  Guard --> API : verified AccountId
+  note right of API
+    Use only the verified subject as owner.
+    Continue with the feature service in S2-S7.
+    That service validates its arguments and
+    keeps repository queries scoped to this owner.
+  end note
 end
 @enduml

@@ -20,35 +20,52 @@ skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 hide footbox
 autonumber
+skinparam maxMessageSize 220
 actor User
 participant "Web UI" as UI
 participant "Protected routes" as API
+
 participant RecipeViewService as View
-database "RecipeRepository /\nHistoryRepository" as Store
+participant "tx: UnitOfWork" as Tx
+participant "recipes: RecipeRepository" as Recipes
+participant "history: HistoryRepository" as History
 User -> UI : open a recipe
 UI -> API : GET /recipes/:id
-ref over API : S8: verified owner
+ref over API : S8: obtain owner or end with 401
 API -> View : open(owner, recipeId)
-group single transaction
-  View -> Store : findOwned(owner, recipeId)
-  alt owned recipe exists
-    Store --> View : recipe and ordered children
-    View -> Store : recordLatest(owner, recipeId, serverUTC)
-    Store --> View : committed latest view
-    View --> API : full recipe
-    API --> UI : 200; label minutes and kcal as estimates
-  else missing or foreign recipe
-    Store --> View : no owned row
+View -> View : validate recipe ID
+alt invalid recipe ID
+  View --> API : validation error
+  API --> UI : 400
+else valid recipe ID
+  group Read recipe and record view in one transaction
+    View -> Tx : begin(WRITE)
+    View -> Recipes : findOwned(owner, recipeId)
+    Recipes --> View : Recipe with ordered children, or null
+    alt owned recipe exists
+      View -> History : recordLatest(owner, recipeId, serverUTC)
+      History --> View : completed
+      View -> Tx : commit()
+      Tx --> View : committed
+    else no owned recipe
+      View -> Tx : rollback()
+      Tx --> View : rolled back
+    end
+  end
+  alt committed view
+    View --> API : Recipe
+    API --> UI : 200 details; label minutes and kcal as estimates
+  else no owned recipe
     View --> API : unavailable
-    API --> UI : 404; no view write
+    API --> UI : 404
   end
 end
 User -> UI : open viewed history
 UI -> API : GET /history
-ref over API : S8: verified owner
+ref over API : S8: obtain owner or end with 401
 API -> View : history(owner)
-View -> Store : listRecent(owner)
-Store --> View : viewed recipes newest first or []
-View --> API : recipe and lastViewedAt pairs
-API --> UI : 200 history
+View -> History : listRecent(owner)
+History --> View : ViewedRecipe[] (newest first)
+View --> API : ViewedRecipe[]
+API --> UI : 200 [{recipe, lastViewedAt}]
 @enduml
