@@ -2,7 +2,7 @@
 
 CMPE 331 Software Engineering Concepts · Fall 2026–2027
 
-11 November 2026 · Design for review
+14 November 2026 · Design review revision
 
 **Project team:** Berfin Gökgöz, İrem Demircan, Sarp Çizer, Ayşe Döne, Mustafa Safa Bayrak, Kerem Sönmez
 
@@ -16,23 +16,23 @@ The first release supports account registration without verification email, sign
 
 ## 2. Architecture and interfaces
 
-**A1** shows the logical components and their interfaces. **A2** shows the proposed cloud deployment and trust boundaries. The application is one deployable with feature modules for identity, preferences, inventory, recipes and collections. This keeps owner checks and transaction management consistent across modules. Separate services would add network calls and distributed transaction complexity to a small application. The recipe provider and storage sit behind interfaces so feature tests can substitute an injected provider and clock.
+**A1** shows which components provide and require the interfaces defined in C1–C3. A dashed realization with a hollow triangle identifies the provider. A dashed usage dependency identifies the consumer. **A2** shows the proposed cloud deployment and trust boundaries. The application is one deployable with feature modules for identity, preferences, inventory, recipes and collections. This keeps owner checks and transaction management consistent across modules. Separate services would add network calls and distributed transaction complexity to a small application. The recipe provider and storage sit behind interfaces so feature tests can substitute an injected provider and clock.
 
 | Interface | Inputs and outputs | Responsibility |
 | --- | --- | --- |
 | Browser to HTTP routes | Same-origin HTTPS, JSON, `Authorization: Bearer <token>` for personal routes | React, Tailwind CSS and Axios present form, list and recipe states. Express maps HTTP inputs and domain results to the approved contract. |
-| Routes to JWT guard and services | Verified `AccountId` plus validated route arguments; typed success or error | Public routes are `POST /accounts` and `POST /sessions`. Every other feature route uses the guard. Controllers omit internal fields from responses. |
+| Routes to JWT guard and services | Verified `AccountId` and extracted arguments; service result or typed error | Public routes are `POST /accounts` and `POST /sessions`. Every other feature route uses the guard. The HTTP adapter delegates input validation to feature services and maps results to HTTP without exposing internal fields. |
 | Services to persistence | Owner-qualified repository methods and a transaction-scoped unit of work | Parameterized PostgreSQL queries, constraints and transactions enforce ownership and atomic writes. Services coordinate operations across repositories. |
 | Recipe service to provider adapter | `generate({ingredients,dietary,allergens}, signal)` returns untrusted candidates | Outbound HTTPS, server-only provider credential, cancellation budget and normalized error mapping. The outbound body contains ingredient names and both saved lists. |
 | Release pipeline to staging | Reviewed revision, versioned migrations, health and smoke checks | GitHub Actions builds and tests a pinned Node environment. Render hosts the same-origin app and managed PostgreSQL in the same region. |
 
 The production plan serves compiled front-end assets from Express on the Render web service. The browser can reach only public HTTPS routes. The database uses an internal Render connection with TLS and restricted ingress. A runtime database role handles application data. A separate release role applies reviewed migrations. Environment secrets hold the database URL, signing key and provider credential. The provider adapter is configured at deploy time, with OpenAI as the proposed initial provider. Provider and model selection can change through the adapter as long as the API and validation contract remain intact.
 
-The API contract remains the implementation boundary. Common validation errors return `400`, missing or invalid authentication returns `401`, and an owner-qualified lookup without a match returns `404`. This chooses one of the approved foreign-object outcomes and avoids disclosing object existence. Errors use `{error: string}`. Provider unavailability or timeout adds `retryable: true` to a sanitized `503`. Response bodies return the resources specified by the contract without a wrapper.
+The API contract remains the implementation boundary. Routes decode HTTP and extract fields. Feature services validate all request field values, including credentials, preference arrays, names and identifiers, before a write. JWT verification remains the guard’s responsibility. The recipe service checks that the fridge has ingredients and delegates provider output validation to `CandidateValidator`. Input validation errors return `400`, missing or invalid authentication returns `401`, and an owner-qualified lookup without a match returns `404`. This chooses one of the approved foreign-object outcomes and avoids disclosing object existence. Errors use `{error: string}`. Provider unavailability or timeout adds `retryable: true` to a sanitized `503`. Response bodies return the resources specified by the contract without a wrapper.
 
 ## 3. Static design and persistence
 
-**C1** covers identity, the logical preference profile and manual inventory. **C2** covers the generation service, provider port, validator and persisted recipe aggregate. **C3** covers shopping, favorites and viewed history. Classes specify planned responsibilities and method contracts. The SQL adapters implement the repository interfaces. The HTTP adapter converts request data to command arguments and maps DTOs back to JSON.
+**C1** covers identity, the logical preference profile and manual inventory. **C2** covers the generation service, provider port, validator and persisted recipe aggregate. **C3** covers shopping, favorites and viewed history. The class diagrams define the types used by the method contracts and show each PostgreSQL adapter realizing its interface. `ShoppingAddResult` contains the saved entry and its creation flag, `ViewedRecipe` pairs the complete recipe with its latest view time, and delete methods return a boolean. `AccountDTO` contains only the account ID and email. The routes map these results to the approved HTTP body and status.
 
 | Logical records | Storage rule | Transaction and access pattern |
 | --- | --- | --- |
@@ -44,11 +44,13 @@ The API contract remains the implementation boundary. Common validation errors r
 
 Index the account keys used by owned list and detail queries. Keep a unique key on `recipe(account_id, recipe_id)` for ownership-constrained foreign keys and an index on `recipe_view(account_id, last_viewed_at DESC, recipe_id)` for stable history pagination or ordering. The first release returns the existing contract's arrays. Ingredient and step position reconstructs original order. The application creates opaque IDs and uses UTC server time; the UI renders addition dates in local time.
 
-Generation captures a consistent, short read snapshot of the fridge and both preference lists when the request starts. Close the read transaction before invoking the provider. Edits committed later apply on the next request. Shopping uses a consistent owned snapshot and a database unique key so repeated and concurrent add-missing requests cannot duplicate entries. Detail writes use a monotonic latest-view upsert to avoid an older concurrent request overwriting a newer view. History sorts newest first and breaks timestamp ties by recipe ID. A detail response follows commit; a failed write yields an error. Generation and saving a favorite never create a history entry.
+Repository adapters share the unit of work's connection. The service commits before returning success and rolls back before reporting a transaction failure. Single-statement writes complete under autocommit.
+
+Generation closes its fridge and preference snapshot before calling the provider. Shopping reads an owned snapshot and uses a unique key to prevent concurrent duplicates. A serialization failure retries the entire shopping transaction before replying. Detail uses a monotonic upsert so older requests cannot overwrite newer views. History orders by latest timestamp, with recipe ID as a tiebreaker. Only detail opening records a view.
 
 ## 4. Dynamic design and traceability
 
-Eight sequence models explicitly cover **15 of 15 approved user stories (100%)**. The denominator is the 15 stories in the approved requirements. Each story is counted once in the table. For this baseline, 30% requires at least five stories. S8 is the shared guard interaction referenced by S2–S7; S1 documents the two public routes. The figures include the relevant failure paths and the intended order of writes.
+Eight sequence models explicitly cover **15 of 15 approved user stories (100%)**. The denominator is the 15 stories in the approved requirements. Each story is counted once in the table. For this baseline, 30% requires at least five stories. S8 is the shared guard interaction referenced by S2–S7. S1 documents the two public routes. Each repository and service has its own lifeline. Explicit transaction groups end before the route sends an HTTP response.
 
 | Approved story | Analysis DFD | Design figures | Existing test IDs |
 | --- | --- | --- | --- |
@@ -107,7 +109,7 @@ The design package provides 13 editable PlantUML models and their rendered figur
 
 ### A1. Component architecture
 
-Logical components, labeled interface boundaries and external dependencies. The route layer delegates personal actions only after JWT verification.
+Logical components with the provided and required interfaces defined in C1–C3. The route layer delegates personal actions only after JWT verification.
 
 [Editable PlantUML source](design/arch/component.puml)
 
@@ -123,7 +125,7 @@ Proposed topology for HTTPS, private database traffic, server-side secrets and C
 
 ### C1. Identity, preferences and inventory
 
-Account and inventory ownership, logical profile, security ports and persistence contracts.
+Account and inventory ownership, typed security and persistence contracts, and their PostgreSQL adapters.
 
 [Editable PlantUML source](design/class/identity-inventory.puml)
 
@@ -131,7 +133,7 @@ Account and inventory ownership, logical profile, security ports and persistence
 
 ### C2. Recipe generation and persistence
 
-Provider and validation interfaces, generation service and owned recipe aggregate with ordered children.
+Typed provider and validation contracts, PostgreSQL adapters, unit of work and the owned recipe aggregate with ordered children.
 
 [Editable PlantUML source](design/class/recipe-pipeline.puml)
 
@@ -139,7 +141,7 @@ Provider and validation interfaces, generation service and owned recipe aggregat
 
 ### C3. Shopping, favorites and viewed history
 
-Owner-qualified service and repository responsibilities. Favorite and view records independently reference an owned recipe.
+Owner-qualified repositories and SQL adapters. Shopping creation and history return the data needed by S5–S7.
 
 [Editable PlantUML source](design/class/personal-collections.puml)
 
@@ -195,7 +197,7 @@ US-10 and US-11. Subtract normalized fridge names and upsert missing shopping it
 
 ### S7. Save, list and remove favorites
 
-US-12 and US-13. Check the body recipe ID, write an idempotent association and keep any prior view when removing it.
+US-12 and US-13. The service validates the recipe ID, commits an idempotent association before reporting success, and preserves view history on removal.
 
 [Editable PlantUML source](design/sequence/favorites.puml)
 
