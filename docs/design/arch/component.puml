@@ -70,26 +70,26 @@ UnitOfWork <|.. Persistence
 PasswordHasher <|.. Security
 TokenService <|.. Security
 RecipeProvider <|.. Adapter
-Core ..> AccountRepository
-Core ..> ProfileRepository
-Core ..> InventoryRepository
-Core ..> UnitOfWork
-Core ..> PasswordHasher
-Core ..> TokenService
-Guard ..> TokenService
-Recipes ..> RecipeRepository
-Recipes ..> GenerationInputReader
-Recipes ..> HistoryRepository
-Recipes ..> UnitOfWork
-Recipes ..> RecipeProvider
-Lists ..> RecipeRepository
-Lists ..> InventoryRepository
-Lists ..> ShoppingRepository
-Lists ..> FavoriteRepository
-Lists ..> UnitOfWork
+Core ..> AccountRepository : <U+00AB>use<U+00BB>
+Core ..> ProfileRepository : <U+00AB>use<U+00BB>
+Core ..> InventoryRepository : <U+00AB>use<U+00BB>
+Core ..> UnitOfWork : <U+00AB>use<U+00BB>
+Core ..> PasswordHasher : <U+00AB>use<U+00BB>
+Core ..> TokenService : <U+00AB>use<U+00BB>
+Guard ..> TokenService : <U+00AB>use<U+00BB>
+Recipes ..> RecipeRepository : <U+00AB>use<U+00BB>
+Recipes ..> GenerationInputReader : <U+00AB>use<U+00BB>
+Recipes ..> HistoryRepository : <U+00AB>use<U+00BB>
+Recipes ..> UnitOfWork : <U+00AB>use<U+00BB>
+Recipes ..> RecipeProvider : <U+00AB>use<U+00BB>
+Lists ..> RecipeRepository : <U+00AB>use<U+00BB>
+Lists ..> InventoryRepository : <U+00AB>use<U+00BB>
+Lists ..> ShoppingRepository : <U+00AB>use<U+00BB>
+Lists ..> FavoriteRepository : <U+00AB>use<U+00BB>
+Lists ..> UnitOfWork : <U+00AB>use<U+00BB>
 
 legend bottom
   Dashed triangle: provided interface (realization)
-  Dashed open arrow: required interface (usage)
+  Dashed «use» arrow: required interface
 endlegend
 @enduml
