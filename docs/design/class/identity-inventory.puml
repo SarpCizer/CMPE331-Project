@@ -19,11 +19,14 @@ skinparam ParticipantBorderColor #417364
 skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 !pragma layout smetana
+left to right direction
 hide circle
 skinparam classAttributeIconSize 0
+skinparam nodesep 30
 class Account {
   +id: AccountId
   +email: string
+  +emailKey: string
   -passwordHash: string
 }
 class PreferenceProfile {
@@ -37,52 +40,71 @@ class InventoryEntry {
   +nameKey: string
   +addedAt: Instant
 }
+class AccountDTO <<DTO>> {
+  +id: AccountId
+  +email: string
+}
 class IdentityService {
-  +register(email, password): AccountDTO
-  +signIn(email, password): JWT
+  +register(email: string, password: string): AccountDTO
+  +signIn(email: string, password: string): JWT
 }
 class JwtGuard {
-  +requireOwner(token): AccountId
+  +requireOwner(token: JWT?): AccountId
 }
 class PreferenceService {
-  +read(owner): PreferenceProfile
-  +replace(owner, dietary, allergens): PreferenceProfile
+  +read(owner: AccountId): PreferenceProfile
+  +replace(owner: AccountId, dietary: string[], allergens: string[]): PreferenceProfile
 }
 class InventoryService {
-  +add(owner, name): InventoryEntry
-  +list(owner): InventoryEntry[]
-  +remove(owner, entryId): void
+  +add(owner: AccountId, name: string): InventoryEntry
+  +list(owner: AccountId): InventoryEntry[]
+  +remove(owner: AccountId, entryId: EntryId): boolean
 }
 interface AccountRepository {
-  +insertUnique(account): Account
-  +findByEmailKey(key): Account?
+  +insertUnique(account: Account): Account
+  +findByEmailKey(key: string): Account?
 }
 interface ProfileRepository {
-  +read(owner): PreferenceProfile
-  +replaceBoth(owner, profile): PreferenceProfile
+  +read(owner: AccountId): PreferenceProfile
+  +replaceBoth(owner: AccountId, profile: PreferenceProfile): PreferenceProfile
 }
 interface InventoryRepository {
-  +insert(entry): InventoryEntry
-  +listByOwner(owner): InventoryEntry[]
-  +deleteOwned(owner, entryId): boolean
+  +insert(entry: InventoryEntry): InventoryEntry
+  +listByOwner(owner: AccountId): InventoryEntry[]
+  +deleteOwned(owner: AccountId, entryId: EntryId): boolean
 }
 interface PasswordHasher {
-  +hash(password): string
-  +verify(password, hash): boolean
+  +hash(password: string): string
+  +verify(password: string, hash: string): boolean
 }
 interface TokenService {
-  +issue(owner): JWT
-  +verify(token): AccountId
+  +issue(owner: AccountId): JWT
+  +verify(token: JWT?): AccountId
 }
+interface UnitOfWork <<from C2>>
+class SqlAccountRepository <<SQL adapter>>
+class SqlProfileRepository <<SQL adapter>>
+class SqlInventoryRepository <<SQL adapter>>
+SqlAccountRepository ..|> AccountRepository
+SqlProfileRepository ..|> ProfileRepository
+SqlInventoryRepository ..|> InventoryRepository
 Account "1" *-- "1" PreferenceProfile : logical profile
 Account "1" *-- "0..*" InventoryEntry : owns
 IdentityService ..> AccountRepository
 IdentityService ..> PasswordHasher
 IdentityService ..> TokenService
+IdentityService ..> AccountDTO
 JwtGuard ..> TokenService
 PreferenceService ..> ProfileRepository
+PreferenceService ..> UnitOfWork
 InventoryService ..> InventoryRepository
 AccountRepository ..> Account
 ProfileRepository ..> PreferenceProfile
 InventoryRepository ..> InventoryEntry
+
+legend bottom
+  AccountId, EntryId: opaque string identifiers
+  Instant: UTC timestamp serialized as ISO 8601
+  JWT: signed token string. T? is optional. T[] is an ordered list.
+endlegend
 @enduml

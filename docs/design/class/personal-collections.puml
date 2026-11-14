@@ -19,42 +19,49 @@ skinparam ParticipantBorderColor #417364
 skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 !pragma layout smetana
+left to right direction
 hide circle
 skinparam classAttributeIconSize 0
+skinparam nodesep 30
 class ShoppingService {
-  +addMissing(owner, recipeId): ShoppingEntry[]
-  +list(owner): ShoppingEntry[]
-  +add(owner, name): ShoppingEntry
-  +remove(owner, entryId): void
+  +addMissing(owner: AccountId, recipeId: RecipeId): ShoppingEntry[]
+  +list(owner: AccountId): ShoppingEntry[]
+  +add(owner: AccountId, name: string): ShoppingAddResult
+  +remove(owner: AccountId, entryId: EntryId): boolean
 }
 class FavoriteService {
-  +save(owner, recipeId): Recipe
-  +list(owner): Recipe[]
-  +remove(owner, recipeId): void
+  +save(owner: AccountId, recipeId: RecipeId): Recipe
+  +list(owner: AccountId): Recipe[]
+  +remove(owner: AccountId, recipeId: RecipeId): boolean
 }
 class RecipeViewService {
-  +open(owner, recipeId): Recipe
-  +history(owner): ViewedRecipe[]
+  +open(owner: AccountId, recipeId: RecipeId): Recipe
+  +history(owner: AccountId): ViewedRecipe[]
 }
 interface ShoppingRepository {
-  +upsertNames(owner, names): ShoppingEntry[]
-  +listByOwner(owner): ShoppingEntry[]
-  +deleteOwned(owner, entryId): boolean
+  +upsertNames(owner: AccountId, names: string[]): void
+  +upsertOne(owner: AccountId, name: string): ShoppingAddResult
+  +listByOwner(owner: AccountId): ShoppingEntry[]
+  +deleteOwned(owner: AccountId, entryId: EntryId): boolean
 }
 interface FavoriteRepository {
-  +upsert(owner, recipeId): void
-  +listByOwner(owner): Recipe[]
-  +deleteOwned(owner, recipeId): boolean
+  +upsert(owner: AccountId, recipeId: RecipeId): void
+  +listByOwner(owner: AccountId): Recipe[]
+  +deleteOwned(owner: AccountId, recipeId: RecipeId): boolean
 }
 interface HistoryRepository {
-  +recordLatest(owner, recipeId, at): void
-  +listRecent(owner): ViewedRecipe[]
+  +recordLatest(owner: AccountId, recipeId: RecipeId, at: Instant): void
+  +listRecent(owner: AccountId): ViewedRecipe[]
 }
 class ShoppingEntry {
   +id: EntryId
   +owner: AccountId
   +name: string
   +nameKey: string
+}
+class ShoppingAddResult <<DTO>> {
+  +entry: ShoppingEntry
+  +created: boolean
 }
 class Favorite {
   +owner: AccountId
@@ -65,19 +72,41 @@ class RecipeView {
   +recipeId: RecipeId
   +lastViewedAt: Instant
 }
+class ViewedRecipe <<DTO>> {
+  +recipe: Recipe
+  +lastViewedAt: Instant
+}
 class Recipe <<from C2>>
 interface RecipeRepository <<from C2>>
 interface InventoryRepository <<from C1>>
+interface UnitOfWork <<from C2>>
+class SqlShoppingRepository <<SQL adapter>>
+class SqlFavoriteRepository <<SQL adapter>>
+class SqlHistoryRepository <<SQL adapter>>
+SqlShoppingRepository ..|> ShoppingRepository
+SqlFavoriteRepository ..|> FavoriteRepository
+SqlHistoryRepository ..|> HistoryRepository
 ShoppingService ..> ShoppingRepository
 ShoppingService ..> RecipeRepository
 ShoppingService ..> InventoryRepository : read only
+ShoppingService ..> UnitOfWork
 FavoriteService ..> FavoriteRepository
 FavoriteService ..> RecipeRepository
+FavoriteService ..> UnitOfWork
 RecipeViewService ..> HistoryRepository
 RecipeViewService ..> RecipeRepository
+RecipeViewService ..> UnitOfWork
 ShoppingRepository ..> ShoppingEntry
+ShoppingRepository ..> ShoppingAddResult
 FavoriteRepository ..> Favorite
 HistoryRepository ..> RecipeView
+HistoryRepository ..> ViewedRecipe
 Recipe "1" -- "0..1" Favorite : same owner
 Recipe "1" -- "0..1" RecipeView : same owner
+
+legend bottom
+  AccountId, EntryId and Instant: defined in C1. RecipeId: defined in C2.
+  ShoppingAddResult carries the persisted item and selects HTTP 201 or 200.
+  ViewedRecipe pairs the complete owned recipe with the latest view time.
+endlegend
 @enduml

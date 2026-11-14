@@ -19,31 +19,44 @@ skinparam ParticipantBorderColor #417364
 skinparam SequenceGroupBackgroundColor #EDF5FA
 skinparam SequenceGroupBorderColor #617C8D
 !pragma layout smetana
+left to right direction
 hide circle
 skinparam classAttributeIconSize 0
+skinparam nodesep 32
 class RecipeGenerationService {
-  +generate(owner): Recipe[]
+  +generate(owner: AccountId): Recipe[]
 }
 interface GenerationInputReader {
-  +snapshot(owner): GenerationInput
+  +snapshot(owner: AccountId): GenerationInput
 }
-class GenerationInput {
+class GenerationInput <<DTO>> {
   +ingredients: string[]
   +dietary: string[]
   +allergens: string[]
 }
 interface RecipeProvider {
-  +generate(input, signal): Candidate[]
+  +generate(input: GenerationInput, signal: AbortSignal): Candidate[]
 }
 class ExternalProviderAdapter {
-  +generate(input, signal): Candidate[]
+  +generate(input: GenerationInput, signal: AbortSignal): Candidate[]
+}
+class Candidate <<untrusted DTO>> {
+  +payload: JSONValue
 }
 class CandidateValidator {
-  +validateBatch(candidates, exclusions): ValidatedRecipe[]
+  +validateBatch(candidates: Candidate[], exclusions: string[]): ValidatedRecipe[]
+}
+class ValidatedRecipe <<DTO>> {
+  +title: string
+  +ingredients: string[]
+  +steps: string[]
+  +cookingMinutes: number
+  +caloriesPerServing: number
+  +servings: integer
 }
 interface RecipeRepository {
-  +insertBatch(owner, validated): Recipe[]
-  +findOwned(owner, recipeId): Recipe?
+  +insertBatch(owner: AccountId, validated: ValidatedRecipe[]): Recipe[]
+  +findOwned(owner: AccountId, recipeId: RecipeId): Recipe?
 }
 class Recipe {
   +id: RecipeId
@@ -62,14 +75,41 @@ class RecipeStep {
   +position: integer
   +instruction: string
 }
+interface UnitOfWork {
+  +begin(mode: TransactionMode): void
+  +commit(): void
+  +rollback(): void
+}
+enum TransactionMode {
+  READ_SNAPSHOT
+  WRITE
+  WRITE_SNAPSHOT
+}
+class SqlGenerationInputReader <<SQL adapter>>
+class SqlRecipeRepository <<SQL adapter>>
+class SqlUnitOfWork <<SQL adapter>>
+SqlGenerationInputReader ..|> GenerationInputReader
+SqlRecipeRepository ..|> RecipeRepository
+SqlUnitOfWork ..|> UnitOfWork
 RecipeGenerationService ..> GenerationInputReader
 RecipeGenerationService ..> RecipeProvider
 RecipeGenerationService ..> CandidateValidator
 RecipeGenerationService ..> RecipeRepository
+RecipeGenerationService ..> UnitOfWork
 GenerationInputReader ..> GenerationInput
-RecipeProvider ..> GenerationInput
+RecipeProvider ..> Candidate
+CandidateValidator ..> Candidate
+CandidateValidator ..> ValidatedRecipe
 ExternalProviderAdapter ..|> RecipeProvider
 RecipeRepository ..> Recipe
+RecipeRepository ..> ValidatedRecipe
+UnitOfWork ..> TransactionMode
 Recipe "1" *-- "1..*" RecipeIngredient : ordered
 Recipe "1" *-- "1..*" RecipeStep : ordered
+
+legend bottom
+  AccountId: defined in C1. RecipeId: opaque string identifier.
+  AbortSignal: platform cancellation signal. JSONValue: any JSON value.
+  A null findOwned result denotes no matching recipe for that account.
+endlegend
 @enduml
