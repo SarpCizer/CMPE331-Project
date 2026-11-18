@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fridgely · Frontend concept</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="preview-bar" aria-label="Prototype review controls">
+    <span><strong>FRIDGELY CONCEPT</strong> · Sample data, local interactions</span>
+    <div><label for="preview-state">Preview state</label><select id="preview-state"><option value="normal">Populated</option><option value="empty">Empty fridge</option><option value="loading">Generating</option><option value="error">Service error</option><option value="expired">Session expired</option></select><button id="reset-preview" class="text-button">Reset preview</button></div>
+  </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#fridge" aria-label="Fridgely home"><span class="brand-mark" aria-hidden="true">f.</span> fridgely</a>
+      <div class="sidebar-body"><p class="eyebrow">YOUR EVERYDAY KITCHEN</p><nav aria-label="Main navigation" id="navigation"></nav><div class="sidebar-note"><span aria-hidden="true">✳</span><p>A little less waste.<br>A little more possibility.</p></div></div>
+      <div class="profile"><span class="avatar" aria-hidden="true">SC</span><div><strong>Sarp's kitchen</strong><small>Home cook</small></div></div>
+    </aside>
+    <div class="content-shell"><header class="topbar"><span>Good things start with what you have.</span><div class="topbar-controls"><span class="date-label">YOUR KITCHEN, YOUR PACE <span aria-hidden="true">✦</span></span><button id="signout" class="text-button">Sign out</button></div></header><main id="main" tabindex="-1"></main><footer class="app-footer"><span>Made for everyday meals.</span><span>Fridgely · A little resourcefulness goes a long way.</span></footer></div>
+  </div>
+  <div id="announcement" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="recipe-dialog" aria-labelledby="recipe-title"></dialog>
+</body>
+</html>

@@ -1,0 +1,87 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "Context DFD: Fridgely and its external data interfaces",
+  "scope": "System context DFD",
+  "requirements": [
+    "US-01",
+    "US-02",
+    "US-03",
+    "US-04",
+    "US-05",
+    "US-06",
+    "US-07",
+    "US-08",
+    "US-09",
+    "US-10",
+    "US-11",
+    "US-12",
+    "US-13",
+    "US-14",
+    "US-15"
+  ],
+  "nodes": [
+    {
+      "id": "V",
+      "kind": "external",
+      "label": "Visitor"
+    },
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "AI",
+      "kind": "external",
+      "label": "Recipe AI service"
+    },
+    {
+      "id": "P0",
+      "kind": "process",
+      "label": "0\nFridgely"
+    }
+  ],
+  "flows": [
+    {
+      "from": "V",
+      "to": "P0",
+      "label": "Registration or sign-in credentials",
+      "interface": "AUTH_IN"
+    },
+    {
+      "from": "P0",
+      "to": "V",
+      "label": "Account or access result",
+      "interface": "AUTH_OUT"
+    },
+    {
+      "from": "U",
+      "to": "P0",
+      "label": "Personal request and access token",
+      "interface": "PERSONAL_IN"
+    },
+    {
+      "from": "P0",
+      "to": "U",
+      "label": "Personal data or sanitized error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P0",
+      "to": "AI",
+      "label": "Ingredient names and preference lists",
+      "interface": "AI_IN"
+    },
+    {
+      "from": "AI",
+      "to": "P0",
+      "label": "Recipe candidates or failure data",
+      "interface": "AI_OUT"
+    }
+  ],
+  "rules": [
+    "The single process represents the whole Fridgely system. Persistent stores are internal and appear in lower-level diagrams.",
+    "AUTH includes registration/sign-in data and their results. PERSONAL includes preferences, inventory, recipes, shopping, favorites, history and errors.",
+    "AI input contains ingredient names and current saved dietary/allergen lists. AI output is candidate data or failure information, never automatically accepted stored recipes."
+  ]
+}

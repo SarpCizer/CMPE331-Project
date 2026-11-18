@@ -1,0 +1,53 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-06 DFD: delete an ingredient",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-06"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "3.3\nValidate and remove entry"
+    },
+    {
+      "id": "D3",
+      "kind": "store",
+      "label": "D3 Fridge inventory"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Selected ingredient id and access token"
+    },
+    {
+      "from": "D3",
+      "to": "P",
+      "label": "Entry existence and ownership data"
+    },
+    {
+      "from": "P",
+      "to": "D3",
+      "label": "Owner-qualified selected-entry deletion data"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "204 result; missing 404; foreign 403/404 error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "A nonexistent id yields 404; a foreign id is denied with 403 or hidden with 404. No denied/missing request changes any entry.",
+    "A successful deletion changes only the selected inventory record.",
+    "The no-deduction criterion is also modeled by US-08 and US-12: opening or saving a recipe has no D3 write."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "fridgely-analysis-diagrams",
+  "private": true,
+  "description": "Local documentation rendering tools; not application dependencies.",
+  "dependencies": {
+    "mermaid": "11.17.2",
+    "playwright": "1.64.1"
+  }
+}

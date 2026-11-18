@@ -1,0 +1,64 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-09 DFD: return safe generation errors",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-09",
+    "US-07"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "AI",
+      "kind": "external",
+      "label": "Recipe AI service"
+    },
+    {
+      "id": "G",
+      "kind": "process",
+      "label": "4.1\nRecipe generation (reference)"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "4.2\nSanitize generation failure"
+    }
+  ],
+  "flows": [
+    {
+      "from": "AI",
+      "to": "G",
+      "label": "Provider failure or candidate data"
+    },
+    {
+      "from": "G",
+      "to": "P",
+      "label": "Request context and failure/validation classification"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "Sanitized 422/502/503 error and retry information"
+    },
+    {
+      "from": "U",
+      "to": "G",
+      "label": "New generation request and access token"
+    },
+    {
+      "from": "G",
+      "to": "AI",
+      "label": "Current ingredient names and preference lists"
+    }
+  ],
+  "rules": [
+    "This is the failure projection of US-07, not an independent public error endpoint. Each new generation request authenticates again under US-15.",
+    "Timeout/unavailability is 503 with retryable true; malformed output is 502; declared allergen conflict is 422. Raw provider diagnostics/credentials never enter public error data.",
+    "There are no data-store write flows: inventory, preferences, shopping, favorites and history remain unchanged and no partial recipe is accepted.",
+    "Retry is a new user request using current data, not an unbounded automatic retry. Success processing and current-store inputs are shown in US-07."
+  ]
+}

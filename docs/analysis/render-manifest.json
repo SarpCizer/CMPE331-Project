@@ -1,0 +1,137 @@
+{
+  "diagrams": [
+    {
+      "source": "docs/analysis/data/domain-model.mmd",
+      "svg": "docs/analysis/data/images/domain-model.svg",
+      "kind": "data-model",
+      "source_sha256": "89e12d3dbd93d384477671f5e7cb2970113f0be7d6cdd6f5c6b19ce4da7eb8e5",
+      "svg_sha256": "21fae83ce7430b9403ff5131353011cf785ccc5f71012b92889cbf776e80d80d"
+    },
+    {
+      "source": "docs/analysis/data/er-model.mmd",
+      "svg": "docs/analysis/data/images/er-model.svg",
+      "kind": "data-model",
+      "source_sha256": "e43e61737cacbda40b34c8b6c9a0a720d2ed50c7ddef56a3f687020f0c84c413",
+      "svg_sha256": "fea479f273eec2c39b86209632c49679c3bbd71f0ddc3a1aa63730a6b90227e9"
+    },
+    {
+      "source": "docs/analysis/behavior/US-01.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-01.svg",
+      "kind": "DFD",
+      "source_sha256": "6e1975b4e61526bd047f74bd55afc0fe1ed388612dc357f60e6c08e0b6cea63f",
+      "svg_sha256": "adb22e77e9869a7f67db572eb398bb714a1f17d0c33fd06c66e82e6f38da5dfb"
+    },
+    {
+      "source": "docs/analysis/behavior/US-02.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-02.svg",
+      "kind": "DFD",
+      "source_sha256": "2805bb2b45dec82cb18169656a192840a455a7d702714ddeb8395567dce20746",
+      "svg_sha256": "bb4262f6327538cd1b7e3018710c93c4e9b1624eea3eee19d9ec3db42231a66a"
+    },
+    {
+      "source": "docs/analysis/behavior/US-03.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-03.svg",
+      "kind": "DFD",
+      "source_sha256": "1ae36b1fb32069e0ccaf5f0e7dd0bb1bbe4f8562274a52bddef8e96d17019c9b",
+      "svg_sha256": "ba136ab7b6fc94a862ac24401c976ade398b6e1ab8bd13113d4881740b951f49"
+    },
+    {
+      "source": "docs/analysis/behavior/US-04.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-04.svg",
+      "kind": "DFD",
+      "source_sha256": "393b3df688418e7db8d5c0554920f8cda8dbca964f375042e60e1e0fbb2eab98",
+      "svg_sha256": "ccd9e29104b2c87cb5e147705efcf5a0b27842b8f2e8346bafaaee50ce374a3a"
+    },
+    {
+      "source": "docs/analysis/behavior/US-05.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-05.svg",
+      "kind": "DFD",
+      "source_sha256": "f7debf69d4250f340b77762077ebb4b433ba2fd4af333d886de07546d48fb882",
+      "svg_sha256": "16c2962085a0d535cc6b6c0a217c3ced6246e0d302f368916eb1829571776262"
+    },
+    {
+      "source": "docs/analysis/behavior/US-06.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-06.svg",
+      "kind": "DFD",
+      "source_sha256": "7001eece8024c89fc3db4f1647b7a8cdc25c50492606d159ed93c46bfc91c87f",
+      "svg_sha256": "3b01dc8f668ffae0a7507d742df29a981c85111e0e470fd76cdbc3b749fadb25"
+    },
+    {
+      "source": "docs/analysis/behavior/US-07.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-07.svg",
+      "kind": "DFD",
+      "source_sha256": "ebd8a288e262bd800dddec0538139bd2fc8d08d47210ebda950c973d9f2cd733",
+      "svg_sha256": "da1da30273b454344f45765ed31e3eb494ecb594496338e002443b4ce8d28c33"
+    },
+    {
+      "source": "docs/analysis/behavior/US-08.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-08.svg",
+      "kind": "DFD",
+      "source_sha256": "d77a5c73406f0f543fb2fc1c078f512eb7d7db921e97ad025dc22971e89e15a6",
+      "svg_sha256": "a98a038ecc809808fae61514f61732d525fcf2cba171856fe7cdb1dd4aee535a"
+    },
+    {
+      "source": "docs/analysis/behavior/US-09.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-09.svg",
+      "kind": "DFD",
+      "source_sha256": "f85fc1071a533d7cfbc14eb03065a91d9e80c2c3c4c65fa14a3230b2d2667df7",
+      "svg_sha256": "922f71035147eb61259ed08d522d03d48b8dbb0c648f1e2d1d75430a634b733d"
+    },
+    {
+      "source": "docs/analysis/behavior/US-10.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-10.svg",
+      "kind": "DFD",
+      "source_sha256": "79f1140770f0d8e32509d21e0f0a5dc5061c3a8fa94126b6de75b7e442ab495f",
+      "svg_sha256": "c566a9ce136dbaf484470c33284d459f2ad122b321db3ed47c309e2e41369ece"
+    },
+    {
+      "source": "docs/analysis/behavior/US-11.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-11.svg",
+      "kind": "DFD",
+      "source_sha256": "ef310effc8c9509763839c278e73e8523908f7f5b10b9c288413e5b95356a730",
+      "svg_sha256": "7669409afe3bf7c640c124c401b920f2bcf1b424c8e068eaa0ba70fea3f156da"
+    },
+    {
+      "source": "docs/analysis/behavior/US-12.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-12.svg",
+      "kind": "DFD",
+      "source_sha256": "010af242fef8f6be7d725b2cd2c524a02553a5df124c418108bde95829fc7021",
+      "svg_sha256": "b4639ea97323a8311c76aae2bb9ca271c6d76fe79bebe56eb6cbe0863edac3b3"
+    },
+    {
+      "source": "docs/analysis/behavior/US-13.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-13.svg",
+      "kind": "DFD",
+      "source_sha256": "8917bf7476ed075cd166a2d1a79425410cf5e2a869700d3f5ba342b65f6e4232",
+      "svg_sha256": "a83d15d4be9a37ffda7cd9ec1f9c8af3a2303fb75f430555c6f55cbc0f861f8f"
+    },
+    {
+      "source": "docs/analysis/behavior/US-14.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-14.svg",
+      "kind": "DFD",
+      "source_sha256": "3371752bf081d5c9f36a32c4add688aa1a48e4639ff1d9c72d5f54c30c786cf5",
+      "svg_sha256": "49e27225cf59a018e5cdd6b5853baff9da6ad765f8b3c437b0218624a65127f1"
+    },
+    {
+      "source": "docs/analysis/behavior/US-15.dfd.json",
+      "svg": "docs/analysis/behavior/images/US-15.svg",
+      "kind": "DFD",
+      "source_sha256": "38dbb7610f0f9d87d9be5655448c1a1f3dc02b2584594e44fb4b7faecd6a81ab",
+      "svg_sha256": "1faa7a85839c0bbc99c6233dbe98d7b3f9cd8139a323c3a3c45f3235e7b3d545"
+    },
+    {
+      "source": "docs/analysis/behavior/context-dfd.dfd.json",
+      "svg": "docs/analysis/behavior/images/context-dfd.svg",
+      "kind": "DFD",
+      "source_sha256": "3e95306393e36321570b2d586cec9c8bd5bed902f8ff850c09b02ac6bf7deec4",
+      "svg_sha256": "ac0b0920250aec2ae0f9f9b8cb7996ca22d3c6501c2dfe340b8f53eca7bfdb06"
+    },
+    {
+      "source": "docs/analysis/behavior/level-1-dfd.dfd.json",
+      "svg": "docs/analysis/behavior/images/level-1-dfd.svg",
+      "kind": "DFD",
+      "source_sha256": "c961c8e211edec1614d2f6bbb56edfe690db657e9675f409b0dc071f3a93558e",
+      "svg_sha256": "b976e020fb207d7f12c87173c3296df745fe1e8932fade44c1d8543ec95060a2"
+    }
+  ]
+}

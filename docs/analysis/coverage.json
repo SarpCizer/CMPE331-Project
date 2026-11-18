@@ -1,0 +1,790 @@
+{
+  "baseline": "4839cdfdf7f53f226373380f41c307886d08906a",
+  "stories": [
+    {
+      "story": "US-01",
+      "criteria": [
+        {
+          "id": "US-01-AC-1",
+          "text": "Given an unused valid email and an acceptable password, When I register, Then an account is created without an email verification step.",
+          "behavior": "behavior/US-01.md",
+          "data": [
+            "ACCOUNT"
+          ],
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-01-AC-2",
+          "text": "Given an existing email, When I attempt another registration, Then the system rejects it and does not create a duplicate account.",
+          "behavior": "behavior/US-01.md",
+          "data": [
+            "ACCOUNT"
+          ],
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-01-AC-3",
+          "text": "Given a malformed email or a password below the proposed eight-character minimum, When I register, Then validation fails without saving an account.",
+          "behavior": "behavior/US-01.md",
+          "data": [
+            "ACCOUNT"
+          ],
+          "frontend": "Register",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-02",
+      "criteria": [
+        {
+          "id": "US-02-AC-1",
+          "text": "Given a registered account, When I submit correct credentials, Then the system issues a JWT and grants access to protected features.",
+          "behavior": "behavior/US-02.md",
+          "data": [
+            "ACCOUNT"
+          ],
+          "frontend": "Sign in",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-02-AC-2",
+          "text": "Given incorrect credentials, When I sign in, Then access is denied and no access token is returned.",
+          "behavior": "behavior/US-02.md",
+          "data": [
+            "ACCOUNT"
+          ],
+          "frontend": "Sign in",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-03",
+      "criteria": [
+        {
+          "id": "US-03-AC-1",
+          "text": "Given an authenticated account, When I save dietary and allergen lists, Then reading my profile returns those lists.",
+          "behavior": "behavior/US-03.md",
+          "data": [
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION"
+          ],
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-03-AC-2",
+          "text": "Given saved preferences, When I replace them with empty lists, Then the old preferences are cleared.",
+          "behavior": "behavior/US-03.md",
+          "data": [
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION"
+          ],
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-03-AC-3",
+          "text": "Given saved dietary and allergen preferences, When I request recipes, Then the latest saved preferences are supplied to the recipe provider.",
+          "behavior": "behavior/US-03.md",
+          "data": [
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION"
+          ],
+          "frontend": "Preferences",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-04",
+      "criteria": [
+        {
+          "id": "US-04-AC-1",
+          "text": "Given an authenticated account, When I add a nonblank ingredient name, Then the system stores a new ingredient with an ID and server-generated added-at timestamp.",
+          "behavior": "behavior/US-04.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-04-AC-2",
+          "text": "Given a blank ingredient name, When I submit it, Then validation fails and the inventory is unchanged.",
+          "behavior": "behavior/US-04.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-04-AC-3",
+          "text": "Given an ingredient is being added, When the server records its added-at timestamp, Then that value represents the addition time and is not treated as an expiry date.",
+          "behavior": "behavior/US-04.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / add",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-05",
+      "criteria": [
+        {
+          "id": "US-05-AC-1",
+          "text": "Given stored ingredients, When I open my fridge, Then every stored ingredient appears with its name and addition date.",
+          "behavior": "behavior/US-05.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-05-AC-2",
+          "text": "Given an empty fridge, When I open it, Then an empty list and a clear empty state are shown.",
+          "behavior": "behavior/US-05.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-05-AC-3",
+          "text": "Given a stored ingredient and its original addition timestamp, When I list my fridge repeatedly, Then the original timestamp remains unchanged.",
+          "behavior": "behavior/US-05.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / empty and populated",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-06",
+      "criteria": [
+        {
+          "id": "US-06-AC-1",
+          "text": "Given an ingredient belonging to me, When I delete it, Then it no longer appears in my fridge.",
+          "behavior": "behavior/US-06.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-06-AC-2",
+          "text": "Given a nonexistent ingredient, When I attempt deletion, Then a not-found response is returned and other ingredients remain unchanged.",
+          "behavior": "behavior/US-06.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-06-AC-3",
+          "text": "Given ingredients in my fridge, When I open a recipe or save it as a favorite, Then no ingredient is deducted from my inventory.",
+          "behavior": "behavior/US-06.md",
+          "data": [
+            "INVENTORY_ENTRY"
+          ],
+          "frontend": "Fridge / remove",
+          "supporting_behavior": [
+            "behavior/US-08.md",
+            "behavior/US-12.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-07",
+      "criteria": [
+        {
+          "id": "US-07-AC-1",
+          "text": "Given a nonempty fridge and saved preferences, When I request recipes, Then the provider receives my ingredient names, dietary choices, and allergen exclusions.",
+          "behavior": "behavior/US-07.md",
+          "data": [
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP"
+          ],
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-07-AC-2",
+          "text": "Given a provider response containing a declared excluded allergen, When results are processed, Then that recipe is withheld.",
+          "behavior": "behavior/US-07.md",
+          "data": [
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP"
+          ],
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-07-AC-3",
+          "text": "Given an empty fridge, When I request recipes, Then the system prompts me to add ingredients and does not call the provider.",
+          "behavior": "behavior/US-07.md",
+          "data": [
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP"
+          ],
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-07-AC-4",
+          "text": "Given ingredients in my fridge, When I generate recipes, Then the inventory remains unchanged.",
+          "behavior": "behavior/US-07.md",
+          "data": [
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP"
+          ],
+          "frontend": "Recipes / loading and results",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-08",
+      "criteria": [
+        {
+          "id": "US-08-AC-1",
+          "text": "Given an accepted recipe, When I open its details, Then I see its title, ingredients, ordered steps, cooking time in minutes, and estimated calories per serving with the serving count.",
+          "behavior": "behavior/US-08.md",
+          "data": [
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-14.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-08-AC-2",
+          "text": "Given malformed provider output with missing steps, invalid time, or missing calories, When results are processed, Then it is rejected rather than shown as a complete recipe.",
+          "behavior": "behavior/US-08.md",
+          "data": [
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-09.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-08-AC-3",
+          "text": "Given a recipe with AI-generated cooking times and calories, When I view its details, Then those values are labeled as estimates and the supplied ingredient list is displayed for review.",
+          "behavior": "behavior/US-08.md",
+          "data": [
+            "RECIPE",
+            "RECIPE_INGREDIENT",
+            "RECIPE_STEP",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipe details",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-09",
+      "criteria": [
+        {
+          "id": "US-09-AC-1",
+          "text": "Given a provider timeout or service error, When I request recipes, Then the system displays a retryable error and does not store partial results.",
+          "behavior": "behavior/US-09.md",
+          "data": [
+            "RECIPE",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-09-AC-2",
+          "text": "Given existing inventory, preferences, shopping items, favorites and history, When recipe generation fails, Then all five collections remain unchanged.",
+          "behavior": "behavior/US-09.md",
+          "data": [
+            "RECIPE",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-09-AC-3",
+          "text": "Given invalid provider output, When the system processes the result, Then it reports a generation error without exposing provider credentials or raw diagnostics.",
+          "behavior": "behavior/US-09.md",
+          "data": [
+            "RECIPE",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Recipes / error and retry",
+          "supporting_behavior": [
+            "behavior/US-07.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-10",
+      "criteria": [
+        {
+          "id": "US-10-AC-1",
+          "text": "Given a recipe and my fridge, When I select Add missing ingredients, Then ingredients absent from my fridge are added to my shopping list.",
+          "behavior": "behavior/US-10.md",
+          "data": [
+            "RECIPE_INGREDIENT",
+            "INVENTORY_ENTRY",
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-10-AC-2",
+          "text": "Given fridge or shopping-item names that differ only by case or surrounding whitespace, When I add missing recipe ingredients, Then names are matched after trimming and case normalization and existing shopping items are not duplicated.",
+          "behavior": "behavior/US-10.md",
+          "data": [
+            "RECIPE_INGREDIENT",
+            "INVENTORY_ENTRY",
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-11.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-10-AC-3",
+          "text": "Given missing ingredients from a recipe have already been added, When I repeat the action for that recipe, Then the shopping list contains the same entries without duplicates.",
+          "behavior": "behavior/US-10.md",
+          "data": [
+            "RECIPE_INGREDIENT",
+            "INVENTORY_ENTRY",
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-10-AC-4",
+          "text": "Given a recipe and ingredients in my fridge, When I add its missing ingredients to shopping, Then my fridge remains unchanged.",
+          "behavior": "behavior/US-10.md",
+          "data": [
+            "RECIPE_INGREDIENT",
+            "INVENTORY_ENTRY",
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Recipe details / add missing",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-11",
+      "criteria": [
+        {
+          "id": "US-11-AC-1",
+          "text": "Given an authenticated account, When I add a nonblank item and list shopping items, Then it appears in my list.",
+          "behavior": "behavior/US-11.md",
+          "data": [
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-11-AC-2",
+          "text": "Given an existing shopping item, When I remove it, Then it no longer appears.",
+          "behavior": "behavior/US-11.md",
+          "data": [
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-11-AC-3",
+          "text": "Given a blank item name, When I submit it, Then validation fails without changing the list.",
+          "behavior": "behavior/US-11.md",
+          "data": [
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-11-AC-4",
+          "text": "Given an item in my shopping list, When I remove it, Then it is not automatically added to my fridge.",
+          "behavior": "behavior/US-11.md",
+          "data": [
+            "SHOPPING_ENTRY"
+          ],
+          "frontend": "Shopping / add, remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-12",
+      "criteria": [
+        {
+          "id": "US-12-AC-1",
+          "text": "Given an existing recipe, When I save it as a favorite, Then it appears in my favorites with its details available.",
+          "behavior": "behavior/US-12.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE"
+          ],
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-12-AC-2",
+          "text": "Given a recipe is already in my favorites, When I save it again, Then there is only one favorite for that recipe.",
+          "behavior": "behavior/US-12.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE"
+          ],
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-12-AC-3",
+          "text": "Given ingredients in my fridge, When I save a recipe as a favorite, Then the fridge inventory remains unchanged.",
+          "behavior": "behavior/US-12.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE"
+          ],
+          "frontend": "Recipe details / save",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-13",
+      "criteria": [
+        {
+          "id": "US-13-AC-1",
+          "text": "Given saved favorites, When I open favorites, Then the system returns those recipes.",
+          "behavior": "behavior/US-13.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-13-AC-2",
+          "text": "Given a favorite, When I remove it, Then it no longer appears in favorites but remains available in my viewed history if previously viewed.",
+          "behavior": "behavior/US-13.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-14.md",
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-13-AC-3",
+          "text": "Given no favorites, When I open favorites, Then an empty collection is returned.",
+          "behavior": "behavior/US-13.md",
+          "data": [
+            "FAVORITE",
+            "RECIPE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Favorites / remove and empty",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-14",
+      "criteria": [
+        {
+          "id": "US-14-AC-1",
+          "text": "Given a generated recipe, When I open its details, Then it is recorded in my history with a last-viewed timestamp.",
+          "behavior": "behavior/US-14.md",
+          "data": [
+            "RECIPE_VIEW",
+            "RECIPE"
+          ],
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-14-AC-2",
+          "text": "Given a generated recipe has not been opened, When I list my history, Then that recipe does not appear in history.",
+          "behavior": "behavior/US-14.md",
+          "data": [
+            "RECIPE_VIEW",
+            "RECIPE"
+          ],
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-14-AC-3",
+          "text": "Given a recipe already has a history entry, When I reopen it, Then its last-viewed timestamp is updated without creating a duplicate and history is ordered by most recent view.",
+          "behavior": "behavior/US-14.md",
+          "data": [
+            "RECIPE_VIEW",
+            "RECIPE"
+          ],
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-14-AC-4",
+          "text": "Given ingredients in my fridge, When I view a recipe, Then the inventory remains unchanged.",
+          "behavior": "behavior/US-14.md",
+          "data": [
+            "RECIPE_VIEW",
+            "RECIPE"
+          ],
+          "frontend": "History / newest first",
+          "supporting_behavior": [
+            "behavior/US-15.md"
+          ],
+          "model_type": "DFD"
+        }
+      ]
+    },
+    {
+      "story": "US-15",
+      "criteria": [
+        {
+          "id": "US-15-AC-1",
+          "text": "Given no token or an invalid/expired token, When a protected endpoint is requested, Then access is denied.",
+          "behavior": "behavior/US-15.md",
+          "data": [
+            "ACCOUNT",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "RECIPE",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-15-AC-2",
+          "text": "Given two accounts, When one account attempts to read or change an object owned by the other, Then access is denied or the object is reported not found.",
+          "behavior": "behavior/US-15.md",
+          "data": [
+            "ACCOUNT",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "RECIPE",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        },
+        {
+          "id": "US-15-AC-3",
+          "text": "Given an authenticated account, When it requests a personal list or recipe generation and supplies another user ID, Then only the authenticated account’s data is used and the supplied owner ID is ignored or rejected.",
+          "behavior": "behavior/US-15.md",
+          "data": [
+            "ACCOUNT",
+            "INVENTORY_ENTRY",
+            "DIETARY_PREFERENCE",
+            "ALLERGEN_EXCLUSION",
+            "SHOPPING_ENTRY",
+            "RECIPE",
+            "FAVORITE",
+            "RECIPE_VIEW"
+          ],
+          "frontend": "Sign in / expired session; access checks require backend",
+          "supporting_behavior": [],
+          "model_type": "DFD"
+        }
+      ]
+    }
+  ]
+}
