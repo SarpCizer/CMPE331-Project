@@ -240,7 +240,7 @@ function Auth({ onSession, notice }) {
                 {error}
               </p>
             )}
-            <button className="primary auth-submit" disabled={busy}>
+            <button type="submit" className="primary auth-submit" disabled={busy}>
               {busy ? "Please wait…" : register ? "Create account" : "Sign in"}
             </button>
           </form>
@@ -336,7 +336,7 @@ function Fridge({ items, run, api }) {
               placeholder="Tomatoes, rice, a little inspiration…"
             />
           </div>
-          <button className="primary" disabled={!name.trim()}>
+          <button type="submit" className="primary" disabled={!name.trim()}>
             <Icon name="plus" />
             Add ingredient
           </button>
@@ -560,7 +560,7 @@ function Preferences({ value, run, api }) {
           Use ingredient names, separated by commas. Review recipe ingredients
           before cooking.
         </small>
-        <button className="primary">Save preferences</button>
+        <button type="submit" className="primary">Save preferences</button>
         <p className="muted">
           Clear either field and save to remove its saved entries.
         </p>
@@ -606,7 +606,7 @@ function Shopping({ items, run, api }) {
             placeholder="What do you need?"
           />
         </div>
-        <button className="primary" disabled={!name.trim()}>
+        <button type="submit" className="primary" disabled={!name.trim()}>
           <Icon name="plus" />
           Add item
         </button>

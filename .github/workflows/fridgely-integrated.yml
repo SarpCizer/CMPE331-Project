@@ -1,10 +1,9 @@
 name: Fridgely integrated verification
 
 on:
+  push:
+    branches: [main]
   pull_request:
-    branches:
-      - feature/berfin-web-integration
-      - ci/berfin-integrated-checks
   workflow_dispatch:
 
 permissions:

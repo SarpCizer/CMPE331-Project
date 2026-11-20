@@ -52,6 +52,8 @@ def test_us01_registration_normalization_salted_hash_and_duplicate(core):
 
 @pytest.mark.parametrize('body',[
     {'email':'bad','password':PASSWORD}, {'email':'valid@example.test','password':'short'},
+    {'email':'two..dots@example.test','password':PASSWORD},
+    {'email':'valid@-bad.example.test','password':PASSWORD},
     {'email':'valid@example.test','password':12345678}, {'email':'','password':PASSWORD},
     {'email':'valid@example.test','password':PASSWORD,'owner_id':'other'},
 ])

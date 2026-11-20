@@ -1,4 +1,3 @@
-import re
 from datetime import timezone
 from typing import Annotated
 from uuid import uuid4
@@ -7,6 +6,7 @@ from fastapi import APIRouter, Depends, FastAPI, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from email_validator import validate_email
 from sqlalchemy import delete, select, text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette.exceptions import HTTPException
@@ -31,9 +31,7 @@ class Credentials(Command):
     @classmethod
     def email_address(cls, value):
         value = value.strip().casefold()
-        if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', value):
-            raise ValueError('Invalid email')
-        return value
+        return validate_email(value, check_deliverability=False, test_environment=True).normalized
 
 
 class PreferenceCommand(Command):
