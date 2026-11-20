@@ -56,7 +56,7 @@ The new workflow validated the two Python feature branches together in a tempora
 1. Review PR #8 and merge the CI/report changes into the recipe branch if the team accepts the workflow. It tests a temporary integration of `backend_work` and the recipe branch; it does not merge feature code into `main`.
 2. Connect the real account/JWT and inventory services to the recipe and collections modules. The current CI proves module-level integration only, not the full main-branch application.
 3. Keep the 27-case Node suite visibly blocked until its adapter calls the real application; then run it against that host and preserve the output as CI evidence.
-4. Connect the real account/JWT and inventory services, then run cross-user, persistence, and PostgreSQL migration checks against the integrated host.
+4. Run cross-user isolation, PostgreSQL migration, and restart-persistence checks against the integrated host.
 5. Deploy a reviewed revision to staging. Capture HTTPS smoke checks, secret handling, the 30-second AI timeout, five-minute load results, responsive screenshots, and keyboard/accessibility findings.
 6. Update this report with verified results and the deployment identifier before submission. Do not mark unexecuted checks as passes.
 
