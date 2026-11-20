@@ -61,7 +61,6 @@ def export():
         'quality-gate.json':('/api/qualitygates/project_status',{'analysisId':task['analysisId']}),
         'metrics.json':('/api/measures/component',{'component':'fridgely','metricKeys':
             'bugs,vulnerabilities,code_smells,security_hotspots,coverage,line_coverage,branch_coverage,duplicated_lines_density,ncloc'}),
-        'security-hotspots.json':('/api/hotspots/search',{'projectKey':'fridgely','ps':500}),
     }
     for name,(endpoint,params) in endpoints.items():
         response=session.get(BASE+endpoint,params=params,timeout=15);response.raise_for_status()
@@ -75,6 +74,15 @@ def export():
             break
         page+=1
     save('issues.json',{'issues':issues,'total':len(issues),'revision':os.getenv('TESTED_REVISION','')})
+    # Hotspot pagination limits differ between server editions/versions. Export
+    # mandatory issues/metrics first; retain an explicit unsupported-API result
+    # instead of losing completed analysis evidence.
+    response=session.get(BASE+'/api/hotspots/search',params={'projectKey':'fridgely','ps':100},timeout=15)
+    if response.ok:
+        save('security-hotspots.json',response.json())
+    else:
+        save('security-hotspots.json',{'status':'API_UNAVAILABLE','http_status':response.status_code,
+            'meaning':'Use security_hotspots in metrics.json; detailed hotspot review is not inferred.'})
     gate=json.loads((Path('test-results/sonarqube/quality-gate.json')).read_text())['projectStatus']['status']
     print(json.dumps({'analysis':'SUCCESS','quality_gate':gate,'issues':len(issues)}))
     # Analysis completion and gate result are distinct evidence. The report records
