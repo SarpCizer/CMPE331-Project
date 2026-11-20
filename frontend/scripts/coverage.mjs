@@ -33,4 +33,9 @@ if (!merged.files().length)
 const context = libReport.createContext({ dir: output, coverageMap: merged });
 for (const format of ["lcovonly", "json-summary", "text-summary"])
   reports.create(format).execute(context);
+// Keep the artifact portable between the runner and the scanner container.
+const lcovPath=path.join(output,'lcov.info');
+const lcov=await fs.readFile(lcovPath,'utf8');
+await fs.writeFile(lcovPath,lcov.replace(/^SF:(.+)$/gm,(_line,file)=>
+  `SF:${path.relative(path.resolve(root,'..'),file).split(path.sep).join('/')}`));
 console.log(`Frontend coverage reports: ${output}`);
