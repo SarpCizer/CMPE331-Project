@@ -30,6 +30,37 @@ async function add(page, name) {
   ).toBeVisible();
 }
 
+test("public API documentation loads the actual schema and bearer authorization", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("link", { name: "API documentation", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: /Fridgely API/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Authorize", exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator(".opblock-summary-path")
+      .filter({ hasText: "/inventory" })
+      .first(),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator(".opblock-summary-path")
+      .filter({ hasText: "/recipes/generate" }),
+  ).toBeVisible();
+  const schema = await page.request.get("/api/openapi.json");
+  expect(schema.status()).toBe(200);
+  expect(
+    (await schema.json()).components.securitySchemes.BearerAuth.bearerFormat,
+  ).toBe("JWT");
+});
+
 test("real account, saved preferences, recipe details and collections survive reload and user switching", async ({
   page,
 }) => {
@@ -230,11 +261,9 @@ test("core kitchen actions work with keyboard-only input", async ({ page }) => {
   await activate(
     page.getByRole("button", { name: "Generate recipes", exact: true }),
   );
-  const card = page
-    .getByRole("article")
-    .filter({
-      has: page.getByRole("heading", { name: "Tomato rice", exact: true }),
-    });
+  const card = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Tomato rice", exact: true }),
+  });
   await expect(card).toBeVisible();
   await activate(card.getByRole("button", { name: "View recipe" }));
   const dialog = page.getByRole("dialog");

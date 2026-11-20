@@ -37,7 +37,8 @@ python -m pytest backend/tests
 FRIDGELY_PYTHON=python node --test tests/functional/requirements.test.mjs
 ```
 
-See [backend setup](backend/README-host.md), [database/account design](backend/README-accounts.md)
+See the [interactive API contract](docs/api.md), [cloud deployment](docs/cloud-deployment.md),
+[backend setup](backend/README-host.md), [database/account design](backend/README-accounts.md)
 and [web/browser tests](frontend/README.md). Tests use the real application and
 SQL persistence with a controlled external recipe provider. The production host
 contains no demo-account or mock-provider mode.
@@ -53,5 +54,6 @@ of a workflow file.
 Work is proposed through separate dependent branches: accounts/database, feature
 composition, web integration, CI verification and the test report. Existing
 backend module history is preserved. No automatic main-branch merge or production
-deployment is configured by these changes.
+deployment from main is configured. The separate cloud feature branch configures
+the Render teaching deployment; see its reviewable Blueprint and deployment record.
 

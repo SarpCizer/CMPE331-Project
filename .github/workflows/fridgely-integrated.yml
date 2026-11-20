@@ -19,6 +19,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  container:
+    name: Cloud image and PostgreSQL smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: fridgely_container
+          POSTGRES_USER: fridgely_test
+          POSTGRES_PASSWORD: isolated-container-ci-only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U fridgely_test -d fridgely_container"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Build production image
+        run: docker build --tag fridgely:ci .
+      - name: Start production host against PostgreSQL
+        run: |
+          signing_key="$(python -c 'import secrets; print(secrets.token_hex(32))')"
+          echo "::add-mask::$signing_key"
+          docker run --detach --network host --name fridgely-cloud-test \
+            -e DATABASE_URL=postgresql://fridgely_test:isolated-container-ci-only@127.0.0.1:5432/fridgely_container \
+            -e JWT_SECRET="$signing_key" -e PORT=8000 fridgely:ci
+      - name: Verify API, Swagger, ownership and persistence after container restart
+        run: python tests/cloud/smoke.py --base-url http://127.0.0.1:8000 --restart-container fridgely-cloud-test --output test-results/container-smoke.json
+      - name: Export container result
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: container-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results/container-smoke.json
+          if-no-files-found: warn
+
   source-scope:
     name: Verify tested source identity
     runs-on: ubuntu-latest

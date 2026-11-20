@@ -12,6 +12,7 @@ from fridgely_collections import CoreCallbacks, build_collections
 from fridgely_recipes.api import build_recipes
 from fridgely_recipes.provider import OpenAIRecipeProvider
 from .core import create_core_app, inventory_names, preference_lists
+from .documentation import install_documentation
 from .security import utc_now
 
 
@@ -48,7 +49,7 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
             await wire.aclose()
             api.state.engine.dispose()
 
-    app = FastAPI(title='Fridgely', lifespan=lifespan, docs_url=None, redoc_url=None)
+    app = FastAPI(title='Fridgely', lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
     app.state.engine, app.state.sessions = api.state.engine, api.state.sessions
     app.state.authentication = api.state.authentication
 
@@ -61,10 +62,15 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
             "connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'")
+        if request.url.path.rstrip('/') in {'/docs','/api/docs'}:
+            # Swagger UI sets element styles; scripts remain limited to our origin.
+            response.headers['Content-Security-Policy'] = response.headers['Content-Security-Policy'].replace(
+                "style-src 'self'", "style-src 'self' 'unsafe-inline'")
         return response
 
     built = Path(frontend_dir or os.getenv('FRONTEND_DIST',
         str(Path(__file__).resolve().parents[3] / 'frontend' / 'dist')))
+    install_documentation(api, built)
     if (built / 'index.html').is_file():
         if (built / 'assets').is_dir():
             api.mount('/assets', StaticFiles(directory=built / 'assets'), name='assets')

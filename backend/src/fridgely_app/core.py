@@ -16,7 +16,7 @@ from fridgely_collections.ports import AccountPrincipal
 from fridgely_collections.schemas import ingredient_name
 from .database import make_engine, session_factory
 from .models import Account, InventoryEntry, Preferences
-from .security import Authentication, PASSWORDS, utc_now
+from .security import Authentication, PASSWORDS, hash_password, utc_now
 
 
 class Command(BaseModel):
@@ -50,6 +50,21 @@ class InventoryCommand(Command):
     name: StrictStr
 
 
+class AccountDTO(BaseModel):
+    id: str
+    email: str
+
+
+class SessionDTO(BaseModel):
+    token: str
+
+
+class InventoryDTO(BaseModel):
+    id: str
+    name: str
+    addedAt: str
+
+
 def iso_time(value):
     value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
     return value.isoformat(timespec='milliseconds').replace('+00:00', 'Z')
@@ -69,7 +84,10 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
     engine = make_engine(database_url)
     sessions = session_factory(engine)
     authentication = Authentication(sessions, jwt_secret, clock, token_lifetime)
-    app = FastAPI(title='Fridgely', docs_url=None, redoc_url=None)
+    app = FastAPI(title='Fridgely API', version='0.1.0', docs_url=None, redoc_url=None,
+        description='Accounts, owned fridge inventory, preferences, recipes and personal collections. '
+            'Register and sign in, then authorize requests using the returned bearer token.',
+        servers=[{'url':'/api'}], root_path_in_servers=False)
     app.state.engine, app.state.sessions, app.state.authentication = engine, sessions, authentication
     router = APIRouter(route_class=CollectionsRoute)
     principal = authentication.require_account
@@ -83,12 +101,12 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
         return JSONResponse({'error':'Authentication required' if error.status_code == 401 else 'Request denied'},
             status_code=error.status_code, headers=error.headers)
 
-    @router.post('/accounts', status_code=201)
+    @router.post('/accounts', status_code=201, response_model=AccountDTO, tags=['Accounts'])
     def register(command: Credentials):
         if len(command.password) < 8:
             raise HTTPException(400)
         row = Account(id=uuid4().hex, email=command.email,
-            password_hash=PASSWORDS.hash(command.password), created_at=clock())
+            password_hash=hash_password(command.password), created_at=clock())
         try:
             with sessions.begin() as session:
                 session.add(row)
@@ -98,7 +116,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             raise HTTPException(409) from None
         return {'id':row.id, 'email':row.email}
 
-    @router.post('/sessions')
+    @router.post('/sessions', response_model=SessionDTO, tags=['Accounts'])
     def sign_in(command: Credentials):
         with sessions() as session:
             row = session.scalar(select(Account).where(Account.email == command.email))
@@ -106,31 +124,31 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             if not valid or row is None:
                 raise HTTPException(401, headers={'WWW-Authenticate':'Bearer'})
             if PASSWORDS.check_needs_rehash(row.password_hash):
-                row.password_hash = PASSWORDS.hash(command.password)
+                row.password_hash = hash_password(command.password)
                 session.commit()
             return {'token':authentication.issue(row.id)}
 
-    @router.get('/profile/preferences')
+    @router.get('/profile/preferences', response_model=PreferenceCommand, tags=['Preferences'])
     def get_preferences(user: AccountPrincipal = Depends(principal)):
         with sessions() as session:
             dietary, allergens = preference_lists(session, user.account_id)
             return {'dietary':dietary, 'allergens':allergens}
 
-    @router.put('/profile/preferences')
+    @router.put('/profile/preferences', response_model=PreferenceCommand, tags=['Preferences'])
     def put_preferences(command: PreferenceCommand, user: AccountPrincipal = Depends(principal)):
         with sessions.begin() as session:
             row = session.get(Preferences, user.account_id)
             row.dietary, row.allergens = list(command.dietary), list(command.allergens)
         return command.model_dump()
 
-    @router.get('/inventory')
+    @router.get('/inventory', response_model=list[InventoryDTO], tags=['Inventory'])
     def list_inventory(user: AccountPrincipal = Depends(principal)):
         with sessions() as session:
             rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == user.account_id)
                 .order_by(InventoryEntry.added_at, InventoryEntry.id))
             return [{'id':row.id,'name':row.name,'addedAt':iso_time(row.added_at)} for row in rows]
 
-    @router.post('/inventory', status_code=201)
+    @router.post('/inventory', status_code=201, response_model=InventoryDTO, tags=['Inventory'])
     def add_inventory(command: InventoryCommand, user: AccountPrincipal = Depends(principal)):
         name, _key = ingredient_name(command.name)
         row = InventoryEntry(id=uuid4().hex, owner_id=user.account_id, name=name, added_at=clock())
@@ -138,7 +156,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             session.add(row)
         return {'id':row.id,'name':row.name,'addedAt':iso_time(row.added_at)}
 
-    @router.delete('/inventory/{item_id}', status_code=204)
+    @router.delete('/inventory/{item_id}', status_code=204, tags=['Inventory'])
     def remove_inventory(item_id: str, user: AccountPrincipal = Depends(principal)):
         with sessions.begin() as session:
             removed = session.execute(delete(InventoryEntry).where(
@@ -147,7 +165,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
                 raise HTTPException(404)
         return Response(status_code=204)
 
-    @router.get('/health')
+    @router.get('/health', tags=['Operations'])
     def health():
         try:
             with engine.connect() as connection:

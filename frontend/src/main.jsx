@@ -240,7 +240,11 @@ function Auth({ onSession, notice }) {
                 {error}
               </p>
             )}
-            <button type="submit" className="primary auth-submit" disabled={busy}>
+            <button
+              type="submit"
+              className="primary auth-submit"
+              disabled={busy}
+            >
               {busy ? "Please wait…" : register ? "Create account" : "Sign in"}
             </button>
           </form>
@@ -255,6 +259,9 @@ function Auth({ onSession, notice }) {
             >
               {register ? "Sign in" : "Create an account"}
             </button>
+          </p>
+          <p>
+            <a href="/api/docs">API documentation</a>
           </p>
         </div>
       </main>
@@ -560,7 +567,9 @@ function Preferences({ value, run, api }) {
           Use ingredient names, separated by commas. Review recipe ingredients
           before cooking.
         </small>
-        <button type="submit" className="primary">Save preferences</button>
+        <button type="submit" className="primary">
+          Save preferences
+        </button>
         <p className="muted">
           Clear either field and save to remove its saved entries.
         </p>
@@ -938,6 +947,7 @@ function App() {
         <footer className="page-footer">
           <Brand />
           <span>A little less waste. A lot more possibility.</span>
+          <a href="/api/docs">API documentation</a>
         </footer>
       </main>
       {selected && (

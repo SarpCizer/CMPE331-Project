@@ -1,9 +1,12 @@
 from datetime import datetime, timezone
+from secrets import token_urlsafe
+from threading import BoundedSemaphore
 
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerificationError
-from fastapi import Header, HTTPException
+from fastapi import HTTPException, Security
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 
 from fridgely_collections.ports import AccountPrincipal
@@ -12,6 +15,14 @@ from .models import Account
 PASSWORDS = PasswordHasher()
 ISSUER = 'fridgely'
 AUDIENCE = 'fridgely-web'
+BEARER = HTTPBearer(auto_error=False, scheme_name='BearerAuth', bearerFormat='JWT')
+PASSWORD_WORK = BoundedSemaphore(2)
+
+
+def hash_password(password):
+    # Bound concurrent Argon2 memory use on the 512 MiB teaching instance.
+    with PASSWORD_WORK:
+        return PASSWORDS.hash(password)
 
 
 def utc_now():
@@ -26,7 +37,7 @@ class Authentication:
             raise ValueError('JWT lifetime must be between 60 and 86400 seconds')
         self.sessions, self.secret, self.clock, self.lifetime = sessions, secret, clock, lifetime
         # A missing account follows the same expensive verification path as a bad password.
-        self.dummy_hash = PASSWORDS.hash('unusable-account-password')
+        self.dummy_hash = hash_password(token_urlsafe(32))
 
     def issue(self, account_id):
         now = int(self.clock().timestamp())
@@ -35,15 +46,16 @@ class Authentication:
 
     def verify_password(self, encoded, password):
         try:
-            return PASSWORDS.verify(encoded or self.dummy_hash, password)
+            with PASSWORD_WORK:
+                return PASSWORDS.verify(encoded or self.dummy_hash, password)
         except (VerificationError, InvalidHashError):
             return False
 
-    def require_account(self, authorization: str | None = Header(default=None)):
+    def require_account(self, credentials: HTTPAuthorizationCredentials | None = Security(BEARER)):
         denied = HTTPException(401, 'Authentication required', headers={'WWW-Authenticate':'Bearer'})
-        if not authorization or len(authorization) > 8192:
+        if credentials is None or len(credentials.credentials) > 8192:
             raise denied
-        scheme, _, token = authorization.partition(' ')
+        scheme, token = credentials.scheme, credentials.credentials
         if scheme.casefold() != 'bearer' or not token:
             raise denied
         try:

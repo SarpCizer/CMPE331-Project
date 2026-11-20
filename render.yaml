@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: fridgely-web
+    runtime: docker
+    repo: https://github.com/SarpCizer/CMPE331-Project
+    branch: feature/berfin-api-cloud
+    region: frankfurt
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fridgely-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+databases:
+  - name: fridgely-postgres
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: '17'
+    ipAllowList: []
