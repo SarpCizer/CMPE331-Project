@@ -25,6 +25,11 @@ export async function context(t, output = recipes) {
   };
   const read = (path, token) => expect('GET', path, undefined, token);
   return { calls, request, expect, read, setFailure: e => { failure = e; }, setNow: v => { now = v; },
+    async signIn(email = 'alice@example.test') {
+      const login = await expect('POST', '/sessions', {email, password:'LongPass123!'});
+      assert.ok(login.token, 'Sign-in must return a token');
+      return login.token;
+    },
     async user(email = 'alice@example.test') {
       const reg = await request('POST', '/accounts', { email, password: 'LongPass123!' });
       assert.equal(reg.status, 201, 'Registration must create an account');
@@ -43,3 +48,4 @@ export async function context(t, output = recipes) {
     },
   };
 }
+

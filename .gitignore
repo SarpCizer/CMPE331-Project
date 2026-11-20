@@ -5,3 +5,13 @@ node_modules/
 coverage/
 __pycache__/
 *.pyc
+.venv/
+*.db
+*.db-shm
+*.db-wal
+frontend/dist/
+test-results/
+playwright-report/
+.coverage
+*.egg-info/
+

@@ -55,7 +55,8 @@ test('US-05-T01 list own ingredients and preserve original dates', async t => {
   const c = await context(t), token = await c.user();
   assert.deepEqual(await c.read('/inventory', token), []);
   const item = await c.add(token, 'tomato'); c.setNow('2026-10-08T12:00:00.000Z');
-  const items = await c.read('/inventory', token);
+  // A day has passed: use a fresh real session when checking addition-date stability.
+  const items = await c.read('/inventory', await c.signIn());
   assert.deepEqual(items, [item]); assert.equal(items[0].addedAt, fixedNow);
 });
 
@@ -183,12 +184,12 @@ test('US-13-T01 remove a favorite while retaining viewed history', async t => {
 });
 
 test('US-14-T01 record views and update history in newest-first order', async t => {
-  const c = await context(t), token = await c.user(); const item = await c.add(token, 'rice');
+  const c = await context(t); let token = await c.user(); const item = await c.add(token, 'rice');
   const [first, second] = await c.generate(token);
   assert.deepEqual(await c.read('/history', token), []);
   await c.read(`/recipes/${first.id}`, token);
-  c.setNow('2026-10-07T13:00:00.000Z'); await c.read(`/recipes/${second.id}`, token);
-  c.setNow('2026-10-07T14:00:00.000Z'); await c.read(`/recipes/${first.id}`, token);
+  c.setNow('2026-10-07T13:00:00.000Z'); token = await c.signIn(); await c.read(`/recipes/${second.id}`, token);
+  c.setNow('2026-10-07T14:00:00.000Z'); token = await c.signIn(); await c.read(`/recipes/${first.id}`, token);
   const history = await c.read('/history', token);
   assert.deepEqual(history.map(x => x.recipe.id), [first.id, second.id]);
   assert.equal(history[0].lastViewedAt, '2026-10-07T14:00:00.000Z');
@@ -236,3 +237,4 @@ test('US-15-T03 reject an authentic token after its expiry', async t => {
     await c.expect('GET', path, undefined, token, 401);
   }
 });
+
