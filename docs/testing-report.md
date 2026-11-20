@@ -33,7 +33,7 @@ This report covers the acceptance tests and nine non-functional requirements (NF
 | Recipe integration on PR #7 | 16 tests reported passing | PR reports local SQLite/fixture tests. Test source covers malformed output, declared allergens, provider failures, timeout cancellation, and collection integration. Not independently rerun locally. |
 | Combined backend tests in GitHub Actions | 75 passed; 0 failed | Verified on `kerem/qa-ci` after merging `backend_work` into the recipe branch. Two successful runs (push and PR) used Python 3.12.16; 1 Starlette deprecation warning. [Run](https://github.com/SarpCizer/CMPE331-Project/actions/runs/44778935856). JUnit artifact uploaded. |
 
-The Python results must be rerun together after integration. Feature code is not merged into `main`; the Node acceptance tests still target the 501 adapter and do not validate the Python modules.
+The new workflow validated the two Python feature branches together in a temporary CI merge. This confirms the backend module suite, but it does not verify the full application on `main`; the Node acceptance tests still target the 501 adapter.
 
 ## 3. Non-functional requirement evidence
 
@@ -53,9 +53,9 @@ The Python results must be rerun together after integration. Feature code is not
 
 ## 4. Required next steps
 
-1. Review and merge the QA/CI PR into the recipe branch after confirming the successful Actions result. The workflow merges `backend_work` for testing; it does not merge either feature into `main`.
-2. CI is implemented on `kerem/qa-ci` and passed the combined backend suite (75 passed). After review and merge, keep the 27-case Node suite visibly blocked until its adapter calls the real application.
-3. Rerun the combined collections and recipe tests; preserve the command, commit SHA, environment, and output as CI evidence.
+1. Review PR #8 and merge the CI/report changes into the recipe branch if the team accepts the workflow. It tests a temporary integration of `backend_work` and the recipe branch; it does not merge feature code into `main`.
+2. Connect the real account/JWT and inventory services to the recipe and collections modules. The current CI proves module-level integration only, not the full main-branch application.
+3. Keep the 27-case Node suite visibly blocked until its adapter calls the real application; then run it against that host and preserve the output as CI evidence.
 4. Connect the real account/JWT and inventory services, then run cross-user, persistence, and PostgreSQL migration checks against the integrated host.
 5. Deploy a reviewed revision to staging. Capture HTTPS smoke checks, secret handling, the 30-second AI timeout, five-minute load results, responsive screenshots, and keyboard/accessibility findings.
 6. Update this report with verified results and the deployment identifier before submission. Do not mark unexecuted checks as passes.
