@@ -55,6 +55,10 @@ def test_real_accounts_supply_owned_inventory_and_latest_preferences(host):
     assert client.post('/favorites',headers=alice,json={'recipeId':recipe['id']}).status_code == 200
     assert client.post(f'/recipes/{recipe["id"]}/shopping-items',headers=alice,json={}).status_code == 200
     assert [item['name'] for item in client.get('/shopping-items',headers=alice).json()] == ['tomato']
+    latest={'dietary':['vegetarian'],'allergens':['walnut']}
+    assert client.put('/profile/preferences',headers=alice,json=latest).status_code == 200
+    assert client.post('/recipes/generate',headers=alice,json={}).status_code == 200
+    assert host.state.calls[-1] == {'ingredients':('rice',),'dietary':('vegetarian',),'allergens':('walnut',)}
     paths=['/inventory','/profile/preferences','/shopping-items','/favorites','/history']
     before=[client.get(path,headers=alice).json() for path in paths]
     host.state.fail=True

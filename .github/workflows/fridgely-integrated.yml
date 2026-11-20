@@ -125,7 +125,8 @@ jobs:
           python scripts/quality/sonarqube.py init
       - name: Scan exact reviewed sources and measured coverage
         run: |
-          docker run --rm --network host --user "$(id -u):$(id -g)" -e SONAR_TOKEN -e SONAR_HOST_URL -e SONAR_USER_HOME=/tmp/sonar-cache -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli:latest -Dsonar.projectVersion="$TESTED_REVISION" -Dsonar.scm.disabled=true
+          mkdir -p .scannerwork
+          docker run --rm --network host --workdir /usr/src --user "$(id -u):$(id -g)" -e SONAR_TOKEN -e SONAR_HOST_URL -e SONAR_USER_HOME=/tmp/sonar-cache -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli:latest -Dsonar.projectBaseDir=/usr/src -Dsonar.working.directory=/usr/src/.scannerwork -Dsonar.projectVersion="$TESTED_REVISION" -Dsonar.scm.disabled=true
           python scripts/quality/sonarqube.py export
       - name: Upload real SonarQube results
         if: always()

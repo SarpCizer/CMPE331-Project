@@ -182,3 +182,102 @@ test("keyboard skip link focuses the active main region", async ({ page }) => {
     page.getByRole("heading", { name: "Preferences", exact: true }),
   ).toBeVisible();
 });
+
+test("core kitchen actions work with keyboard-only input", async ({ page }) => {
+  async function tabTo(locator) {
+    for (let attempt = 0; attempt < 45; attempt++) {
+      if (
+        await locator.evaluate((element) => element === document.activeElement)
+      )
+        return;
+      await page.keyboard.press("Tab");
+    }
+    throw new Error("Core control could not be reached with Tab");
+  }
+  async function activate(locator) {
+    await tabTo(locator);
+    await page.keyboard.press("Enter");
+  }
+  async function enter(locator, value) {
+    await tabTo(locator);
+    await page.keyboard.type(value);
+  }
+  await page.goto("/");
+  await activate(
+    page.getByRole("button", { name: "Create an account", exact: true }),
+  );
+  await enter(page.getByLabel("Email address"), email());
+  await enter(page.getByLabel("Password", { exact: true }), password);
+  await activate(
+    page.getByRole("button", { name: "Create account", exact: true }),
+  );
+  await expect(
+    page.getByRole("heading", { name: "My fridge", exact: true }),
+  ).toBeVisible();
+  await enter(page.getByLabel("Add an ingredient", { exact: true }), "rice");
+  await activate(
+    page.getByRole("button", { name: "Add ingredient", exact: true }),
+  );
+  await expect(
+    page.getByRole("button", { name: "Remove rice", exact: true }),
+  ).toBeVisible();
+  await activate(page.getByRole("link", { name: "Preferences", exact: true }));
+  await enter(page.getByLabel("Dietary preferences"), "vegan");
+  await enter(page.getByLabel("Ingredients to exclude"), "peanut");
+  await activate(page.getByRole("button", { name: "Save preferences" }));
+  await expect(page.getByRole("status")).toContainText("Preferences saved");
+  await activate(page.getByRole("link", { name: "Find recipes", exact: true }));
+  await activate(
+    page.getByRole("button", { name: "Generate recipes", exact: true }),
+  );
+  const card = page
+    .getByRole("article")
+    .filter({
+      has: page.getByRole("heading", { name: "Tomato rice", exact: true }),
+    });
+  await expect(card).toBeVisible();
+  await activate(card.getByRole("button", { name: "View recipe" }));
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await activate(
+    dialog.getByRole("button", { name: "Save favorite", exact: true }),
+  );
+  await expect(
+    dialog.getByRole("button", { name: "Remove favorite", exact: true }),
+  ).toBeVisible();
+  await activate(
+    dialog.getByRole("button", { name: "Add missing ingredients" }),
+  );
+  await activate(dialog.getByRole("button", { name: "Close recipe" }));
+  await activate(
+    page.getByRole("link", { name: "Shopping list", exact: true }),
+  );
+  await expect(
+    page.getByRole("button", { name: "Remove onion", exact: true }),
+  ).toBeVisible();
+  await activate(
+    page.getByRole("button", { name: "Remove onion", exact: true }),
+  );
+  await expect(
+    page.getByRole("button", { name: "Remove onion", exact: true }),
+  ).toHaveCount(0);
+  await activate(page.getByRole("link", { name: "Favorites", exact: true }));
+  await expect(
+    page.getByRole("heading", { name: "Tomato rice", exact: true }),
+  ).toBeVisible();
+  await activate(
+    page.getByRole("link", { name: "Recently viewed", exact: true }),
+  );
+  await expect(
+    page.getByRole("heading", { name: "Tomato rice", exact: true }),
+  ).toBeVisible();
+  await activate(page.getByRole("link", { name: "My fridge", exact: true }));
+  await activate(
+    page.getByRole("button", { name: "Remove rice", exact: true }),
+  );
+  await expect(page.getByText("A fresh canvas", { exact: true })).toBeVisible();
+  await activate(page.getByRole("button", { name: "Sign out", exact: true }));
+  await expect(
+    page.getByRole("heading", { name: "Welcome back.", exact: true }),
+  ).toBeVisible();
+});
