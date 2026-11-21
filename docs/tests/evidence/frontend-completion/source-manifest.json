@@ -1,0 +1,18 @@
+[
+  {
+    "path": "frontend/src/main.jsx",
+    "sha256": "3e2e078d90945c9a39a1be2cbdcb2101169cb1cb95d13e58cfa093025d60b1de"
+  },
+  {
+    "path": "frontend/src/api.js",
+    "sha256": "08f86b6d43fad60a7ba7ddcf071fb5e8f4a3d039ef413d0791b1e7795bcfb464"
+  },
+  {
+    "path": "frontend/src/styles.css",
+    "sha256": "84d1411a3ebb357dd22cfb4bfc017233fe2144dc0ab65f217077430db690d066"
+  },
+  {
+    "path": "frontend/tests/completion.spec.js",
+    "sha256": "879ca3c4be96c2fd20c0f8965fd808e03d6c78c6baa7bcbf87c1ee121e000cc6"
+  }
+]

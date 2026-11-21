@@ -25,6 +25,61 @@ const paths = {
   favorites: "/favorites",
   history: "/history",
 };
+const resourceLabels = {
+  inventory: "Ingredients",
+  preferences: "Preferences",
+  shopping: "Shopping list",
+  favorites: "Favorites",
+  history: "Recently viewed",
+};
+const pageResources = {
+  fridge: "inventory",
+  recipes: "inventory",
+  shopping: "shopping",
+  preferences: "preferences",
+  favorites: "favorites",
+  history: "history",
+};
+const initialResources = (pending = false) =>
+  Object.fromEntries(
+    Object.keys(paths).map((key) => [key, { pending, error: "" }]),
+  );
+function FieldError({ id, children }) {
+  return children ? (
+    <p id={id} className="field-error" role="alert">
+      {children}
+    </p>
+  ) : null;
+}
+function focusInvalid(form, errors) {
+  form.querySelector(`#${Object.keys(errors)[0]}`)?.focus();
+}
+function nameError(value, label) {
+  return value.trim() ? "" : `Enter ${label} before adding it.`;
+}
+function splitPreferences(value) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+function preferenceError(values) {
+  if (values.length > 100) return "Use at most 100 entries in this field.";
+  if (values.some((value) => [...value].length > 128))
+    return "Use at most 128 characters per entry.";
+  return "";
+}
+function ResourceError({ label, error, retry, busy }) {
+  return (
+    <section className="panel resource-error" role="alert">
+      <h2>{label} could not be loaded</h2>
+      <p>{error} Your saved data has not been replaced.</p>
+      <button className="secondary" disabled={busy} onClick={retry}>
+        Retry {label.toLowerCase()}
+      </button>
+    </section>
+  );
+}
 function savedSession() {
   try {
     const value = JSON.parse(sessionStorage.getItem("fridgely.session"));
@@ -133,13 +188,14 @@ function ProduceArt() {
     </svg>
   );
 }
-function Empty({ icon = "leaf", title, children }) {
+function Empty({ icon = "leaf", title, children, headingLevel = 3 }) {
+  const Heading = `h${headingLevel}`;
   return (
     <div className="empty">
       <span className="empty-icon">
         <Icon name={icon} width="30" height="30" />
       </span>
-      <h3>{title}</h3>
+      <Heading>{title}</Heading>
       <p>{children}</p>
     </div>
   );
@@ -148,14 +204,29 @@ function Empty({ icon = "leaf", title, children }) {
 function Auth({ onSession, notice }) {
   const [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState(notice || "");
+    [error, setError] = useState(notice || ""),
+    [errors, setErrors] = useState({});
   async function submit(event) {
     event.preventDefault();
+    if (busy) return;
     setError("");
-    setBusy(true);
-    const fields = new FormData(event.currentTarget),
+    const form = event.currentTarget,
+      fields = new FormData(form),
       email = fields.get("email").trim(),
       password = fields.get("password");
+    const invalid = {};
+    if (!email || form.elements.email.validity.typeMismatch)
+      invalid.email = "Enter a valid email address.";
+    if (!password || (register && [...password].length < 8))
+      invalid.password = register
+        ? "Use at least 8 characters for your password."
+        : "Enter your password.";
+    setErrors(invalid);
+    if (Object.keys(invalid).length) {
+      focusInvalid(form, invalid);
+      return;
+    }
+    setBusy(true);
     try {
       const api = createApi();
       if (register)
@@ -166,22 +237,26 @@ function Auth({ onSession, notice }) {
       });
       onSession({ email: email.toLowerCase(), token: result.token });
     } catch (error) {
-      setError(
-        error.status === 401
-          ? "Email or password is incorrect. Please try again."
-          : error.message,
-      );
+      if (error.status === 409) {
+        setErrors({ email: error.message });
+        form.elements.email.focus();
+      } else
+        setError(
+          error.status === 401
+            ? "Email or password is incorrect. Please try again."
+            : error.message,
+        );
     } finally {
       setBusy(false);
     }
   }
   return (
     <div className="auth-layout">
-      <section className="auth-story">
+      <section className="auth-story" aria-labelledby="auth-story-title">
         <Brand />
         <div className="auth-copy">
           <span className="eyebrow">A LITTLE LESS WASTE</span>
-          <h1>
+          <h1 id="auth-story-title">
             Good things
             <br />
             start in
@@ -208,6 +283,7 @@ function Auth({ onSession, notice }) {
               : "Sign in to your own little corner of the kitchen."}
           </p>
           <form
+            noValidate
             onSubmit={submit}
             aria-describedby={error ? "auth-error" : undefined}
           >
@@ -220,7 +296,12 @@ function Auth({ onSession, notice }) {
               required
               maxLength="254"
               placeholder="you@example.com"
+              disabled={busy}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              onChange={() => setErrors((value) => ({ ...value, email: "" }))}
             />
+            <FieldError id="email-error">{errors.email}</FieldError>
             <label htmlFor="password">Password</label>
             <input
               id="password"
@@ -230,11 +311,24 @@ function Auth({ onSession, notice }) {
               required
               minLength={register ? 8 : 1}
               maxLength="1024"
-              aria-describedby={register ? "password-help" : undefined}
+              disabled={busy}
+              aria-invalid={!!errors.password}
+              aria-describedby={
+                [
+                  register && "password-help",
+                  errors.password && "password-error",
+                ]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
+              onChange={() =>
+                setErrors((value) => ({ ...value, password: "" }))
+              }
             />
             {register && (
               <small id="password-help">Use at least 8 characters.</small>
             )}
+            <FieldError id="password-error">{errors.password}</FieldError>
             {error && (
               <p id="auth-error" className="error" role="alert">
                 {error}
@@ -252,9 +346,11 @@ function Auth({ onSession, notice }) {
             {register ? "Already have an account?" : "New to Fridgely?"}{" "}
             <button
               className="text-button"
+              disabled={busy}
               onClick={() => {
                 setRegister(!register);
                 setError("");
+                setErrors({});
               }}
             >
               {register ? "Sign in" : "Create an account"}
@@ -271,13 +367,21 @@ function Auth({ onSession, notice }) {
 
 function Fridge({ items, run, api }) {
   const [name, setName] = useState(""),
-    [search, setSearch] = useState("");
+    [search, setSearch] = useState(""),
+    [error, setError] = useState("");
   async function add(event) {
     event.preventDefault();
+    const invalid = nameError(name, "an ingredient");
+    setError(invalid);
+    if (invalid) {
+      event.currentTarget.querySelector("input").focus();
+      return;
+    }
     if (
       await run(
         () => api("/inventory", { method: "POST", body: { name } }),
         "Ingredient added.",
+        ["inventory"],
       )
     )
       setName("");
@@ -331,19 +435,25 @@ function Fridge({ items, run, api }) {
             {items.length} {items.length === 1 ? "item" : "items"}
           </span>
         </div>
-        <form className="inline-form" onSubmit={add}>
+        <form className="inline-form" noValidate onSubmit={add}>
           <div className="grow">
             <label htmlFor="ingredient">Add an ingredient</label>
             <input
               id="ingredient"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError("");
+              }}
               required
               maxLength="256"
               placeholder="Tomatoes, rice, a little inspiration…"
+              aria-invalid={!!error}
+              aria-describedby={error ? "ingredient-error" : undefined}
             />
+            <FieldError id="ingredient-error">{error}</FieldError>
           </div>
-          <button type="submit" className="primary" disabled={!name.trim()}>
+          <button type="submit" className="primary">
             <Icon name="plus" />
             Add ingredient
           </button>
@@ -392,6 +502,7 @@ function Fridge({ items, run, api }) {
                     run(
                       () => api(`/inventory/${item.id}`, { method: "DELETE" }),
                       "Ingredient removed.",
+                      ["inventory"],
                     )
                   }
                 >
@@ -414,7 +525,7 @@ function RecipeCard({ recipe, onOpen }) {
         <span>MADE FOR YOUR KITCHEN</span>
       </div>
       <div className="recipe-content">
-        <h3>{recipe.title}</h3>
+        <h2>{recipe.title}</h2>
         <div className="recipe-meta">
           <span>
             <Icon name="clock" width="16" height="16" />
@@ -434,8 +545,20 @@ function RecipeCard({ recipe, onOpen }) {
     </article>
   );
 }
-function RecipeDialog({ recipe, onClose, run, api, favorites }) {
+function RecipeDialog({
+  recipe,
+  onClose,
+  run,
+  api,
+  favorites,
+  busy,
+  error,
+  notice,
+  favoriteState,
+  retryFavorites,
+}) {
   const dialog = useRef(null);
+  const [shoppingAdded, setShoppingAdded] = useState(false);
   useEffect(() => {
     const element = dialog.current;
     element.showModal();
@@ -468,6 +591,17 @@ function RecipeDialog({ recipe, onClose, run, api, favorites }) {
         AI-generated recipe. Review the ingredients against your dietary needs
         before cooking.
       </p>
+      {error && (
+        <div className="message error" role="alert">
+          {error}
+        </div>
+      )}
+      {notice && (
+        <div className="message success" role="status">
+          {notice}
+        </div>
+      )}
+      {busy && <p role="status">Saving your changes…</p>}
       <h3>Ingredients</h3>
       <ul className="recipe-ingredients">
         {recipe.ingredients.map((name, index) => (
@@ -483,21 +617,25 @@ function RecipeDialog({ recipe, onClose, run, api, favorites }) {
       <div className="dialog-actions">
         <button
           className="primary"
-          onClick={() =>
-            run(
+          disabled={busy}
+          onClick={async () => {
+            const result = await run(
               () =>
                 api(`/recipes/${recipe.id}/shopping-items`, {
                   method: "POST",
                   body: {},
                 }),
               "Missing ingredients added to shopping.",
-            )
-          }
+              ["shopping"],
+            );
+            if (result) setShoppingAdded(true);
+          }}
         >
           Add missing ingredients
         </button>
         <button
           className="secondary"
+          disabled={busy || favoriteState.pending || !!favoriteState.error}
           onClick={() =>
             run(
               () =>
@@ -506,67 +644,98 @@ function RecipeDialog({ recipe, onClose, run, api, favorites }) {
                   ...(saved ? {} : { body: { recipeId: recipe.id } }),
                 }),
               saved ? "Favorite removed." : "Recipe saved to favorites.",
+              ["favorites"],
             )
           }
         >
           {saved ? "Remove favorite" : "Save favorite"}
         </button>
+        {shoppingAdded && (
+          <a className="text-link" href="#/shopping" onClick={onClose}>
+            View shopping list
+          </a>
+        )}
       </div>
+      {favoriteState.pending && <p role="status">Loading favorites…</p>}
+      {favoriteState.error && (
+        <ResourceError
+          label="Favorites"
+          error={favoriteState.error}
+          retry={retryFavorites}
+          busy={busy}
+        />
+      )}
     </dialog>
   );
 }
 
 function Preferences({ value, run, api }) {
   const [dietary, setDietary] = useState(value.dietary.join(", ")),
-    [allergens, setAllergens] = useState(value.allergens.join(", "));
+    [allergens, setAllergens] = useState(value.allergens.join(", ")),
+    [errors, setErrors] = useState({});
   useEffect(() => {
     setDietary(value.dietary.join(", "));
     setAllergens(value.allergens.join(", "));
   }, [value]);
-  const split = (value) =>
-    value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
+  function submit(event) {
+    event.preventDefault();
+    const body = {
+      dietary: splitPreferences(dietary),
+      allergens: splitPreferences(allergens),
+    };
+    const invalid = Object.fromEntries(
+      Object.entries(body)
+        .map(([key, values]) => [key, preferenceError(values)])
+        .filter(([, message]) => message),
+    );
+    setErrors(invalid);
+    if (Object.keys(invalid).length) {
+      focusInvalid(event.currentTarget, invalid);
+      return;
+    }
+    run(
+      () => api("/profile/preferences", { method: "PUT", body }),
+      "Preferences saved.",
+      ["preferences"],
+    );
+  }
   return (
     <section className="panel preferences">
       <span className="eyebrow">MAKE IT YOURS</span>
       <h2>A kitchen that knows you.</h2>
       <p>Your saved preferences are included whenever you ask for recipes.</p>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          run(
-            () =>
-              api("/profile/preferences", {
-                method: "PUT",
-                body: { dietary: split(dietary), allergens: split(allergens) },
-              }),
-            "Preferences saved.",
-          );
-        }}
-      >
+      <form noValidate onSubmit={submit}>
         <label htmlFor="dietary">Dietary preferences</label>
         <input
           id="dietary"
           value={dietary}
-          onChange={(e) => setDietary(e.target.value)}
+          onChange={(e) => {
+            setDietary(e.target.value);
+            setErrors((value) => ({ ...value, dietary: "" }));
+          }}
           placeholder="Vegetarian, vegan…"
-          aria-describedby="dietary-help"
+          aria-invalid={!!errors.dietary}
+          aria-describedby={`dietary-help${errors.dietary ? " dietary-error" : ""}`}
         />
         <small id="dietary-help">Separate preferences with commas.</small>
+        <FieldError id="dietary-error">{errors.dietary}</FieldError>
         <label htmlFor="allergens">Ingredients to exclude</label>
         <input
           id="allergens"
           value={allergens}
-          onChange={(e) => setAllergens(e.target.value)}
+          onChange={(e) => {
+            setAllergens(e.target.value);
+            setErrors((value) => ({ ...value, allergens: "" }));
+          }}
           placeholder="Peanut, sesame…"
-          aria-describedby="allergens-help"
+          aria-invalid={!!errors.allergens}
+          aria-describedby={`allergens-help${errors.allergens ? " allergens-error" : ""}`}
         />
         <small id="allergens-help">
           Use ingredient names, separated by commas. Review recipe ingredients
           before cooking.
         </small>
+        <FieldError id="allergens-error">{errors.allergens}</FieldError>
         <button type="submit" className="primary">
           Save preferences
         </button>
@@ -579,7 +748,8 @@ function Preferences({ value, run, api }) {
 }
 
 function Shopping({ items, run, api }) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""),
+    [error, setError] = useState("");
   return (
     <section className="panel">
       <div className="section-heading">
@@ -593,12 +763,20 @@ function Shopping({ items, run, api }) {
       </div>
       <form
         className="inline-form"
+        noValidate
         onSubmit={async (event) => {
           event.preventDefault();
+          const invalid = nameError(name, "a shopping item");
+          setError(invalid);
+          if (invalid) {
+            event.currentTarget.querySelector("input").focus();
+            return;
+          }
           if (
             await run(
               () => api("/shopping-items", { method: "POST", body: { name } }),
               "Shopping item added.",
+              ["shopping"],
             )
           )
             setName("");
@@ -609,13 +787,19 @@ function Shopping({ items, run, api }) {
           <input
             id="shopping-name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setError("");
+            }}
             required
             maxLength="256"
             placeholder="What do you need?"
+            aria-invalid={!!error}
+            aria-describedby={error ? "shopping-name-error" : undefined}
           />
+          <FieldError id="shopping-name-error">{error}</FieldError>
         </div>
-        <button type="submit" className="primary" disabled={!name.trim()}>
+        <button type="submit" className="primary">
           <Icon name="plus" />
           Add item
         </button>
@@ -640,6 +824,7 @@ function Shopping({ items, run, api }) {
                     () =>
                       api(`/shopping-items/${item.id}`, { method: "DELETE" }),
                     "Shopping item removed.",
+                    ["shopping"],
                   )
                 }
               >
@@ -663,7 +848,7 @@ function App() {
     [generated, setGenerated] = useState([]),
     [selected, setSelected] = useState(null),
     [busy, setBusy] = useState(false),
-    [loading, setLoading] = useState(!!session),
+    [resources, setResources] = useState(() => initialResources(!!session)),
     [error, setError] = useState(""),
     [notice, setNotice] = useState("");
   const generation = useRef(0),
@@ -674,6 +859,7 @@ function App() {
     const change = () => {
       setPage(currentPage());
       setNotice("");
+      setError("");
     };
     window.addEventListener("hashchange", change);
     return () => window.removeEventListener("hashchange", change);
@@ -689,7 +875,7 @@ function App() {
     setGenerated([]);
     setSelected(null);
     setBusy(false);
-    setLoading(false);
+    setResources(initialResources());
     setError("");
     setNotice(message);
   }
@@ -697,42 +883,50 @@ function App() {
     clearSession();
     sessionStorage.setItem("fridgely.session", JSON.stringify(value));
     setSession(value);
-    setLoading(true);
+    setResources(initialResources(true));
     setNotice("");
   }
-  async function readState(request) {
-    const entries = await Promise.all(
-      Object.entries(paths).map(async ([key, path]) => [
-        key,
-        await request(path),
-      ]),
+  async function loadResources(request, keys, version = generation.current) {
+    setResources((value) => ({
+      ...value,
+      ...Object.fromEntries(
+        keys.map((key) => [key, { pending: true, error: "" }]),
+      ),
+    }));
+    const results = await Promise.all(
+      keys.map(async (key) => {
+        try {
+          const result = await request(paths[key]);
+          if (version !== generation.current) return false;
+          setData((value) => ({ ...value, [key]: result }));
+          setResources((value) => ({
+            ...value,
+            [key]: { pending: false, error: "" },
+          }));
+          return true;
+        } catch (error) {
+          if (version !== generation.current || error.name === "AbortError")
+            return false;
+          if (error.status === 401)
+            clearSession("Your session ended. Please sign in again.");
+          else
+            setResources((value) => ({
+              ...value,
+              [key]: { pending: false, error: error.message },
+            }));
+          return false;
+        }
+      }),
     );
-    return Object.fromEntries(entries);
+    return results.every(Boolean);
   }
   useEffect(() => {
     if (!session) return;
     const version = generation.current,
       request = createApi(session.token, controller.current.signal);
-    setLoading(true);
-    readState(request)
-      .then((value) => {
-        if (version === generation.current) {
-          setData(value);
-          setError("");
-        }
-      })
-      .catch((error) => {
-        if (version !== generation.current || error.name === "AbortError")
-          return;
-        if (error.status === 401)
-          clearSession("Your session ended. Please sign in again.");
-        else setError(error.message);
-      })
-      .finally(() => {
-        if (version === generation.current) setLoading(false);
-      });
+    loadResources(request, Object.keys(paths), version);
   }, [session]);
-  async function run(operation, message) {
+  async function run(operation, message, refresh = []) {
     if (busyRef.current) return false;
     const version = generation.current;
     busyRef.current = true;
@@ -741,10 +935,15 @@ function App() {
     setNotice("");
     try {
       const result = await operation();
-      const fresh = await readState(api);
       if (version !== generation.current) return false;
-      setData(fresh);
-      if (message) setNotice(message);
+      const refreshed = await loadResources(api, refresh, version);
+      if (version !== generation.current) return false;
+      if (message)
+        setNotice(
+          refreshed
+            ? message
+            : `${message} Some saved data could not be refreshed. Use Retry to load it again.`,
+        );
       return result ?? true;
     } catch (error) {
       if (version !== generation.current || error.name === "AbortError")
@@ -761,11 +960,14 @@ function App() {
     }
   }
   async function openRecipe(id) {
-    const recipe = await run(() => api(`/recipes/${id}`));
+    const recipe = await run(() => api(`/recipes/${id}`), "", ["history"]);
     if (recipe && typeof recipe === "object") setSelected(recipe);
   }
   if (!session) return <Auth key={notice} onSession={signIn} notice={notice} />;
   const section = sections.find((s) => s[0] === page);
+  const resource = pageResources[page],
+    state = resources[resource],
+    loading = state.pending;
   return (
     <div className="app-layout">
       <a
@@ -822,26 +1024,36 @@ function App() {
             <Icon />A little better, every day.
           </span>
         </header>
-        {error && (
+        {error && !selected && (
           <div className="message error" role="alert">
             {error}
             <button
               className="text-button"
-              onClick={() => run(async () => true, "Data refreshed.")}
+              disabled={busy}
+              onClick={() =>
+                run(async () => true, "Data refreshed.", Object.keys(paths))
+              }
             >
               Refresh data
             </button>
           </div>
         )}
-        {notice && (
+        {notice && !selected && (
           <div className="message success" role="status">
             {notice}
           </div>
         )}
         {loading ? (
           <div className="loading" role="status">
-            Opening your kitchen…
+            Loading {resourceLabels[resource].toLowerCase()}…
           </div>
+        ) : state.error ? (
+          <ResourceError
+            label={resourceLabels[resource]}
+            error={state.error}
+            retry={() => loadResources(api, [resource])}
+            busy={busy}
+          />
         ) : (
           <fieldset
             className="content-fieldset"
@@ -911,7 +1123,11 @@ function App() {
             )}
             {page === "favorites" &&
               (!data.favorites.length ? (
-                <Empty icon="heart" title="Keep the good ones close">
+                <Empty
+                  icon="heart"
+                  title="Keep the good ones close"
+                  headingLevel={2}
+                >
                   Save a recipe you love and find it here next time.
                 </Empty>
               ) : (
@@ -927,7 +1143,11 @@ function App() {
               ))}
             {page === "history" &&
               (!data.history.length ? (
-                <Empty icon="clock" title="A little trip down memory lane">
+                <Empty
+                  icon="clock"
+                  title="A little trip down memory lane"
+                  headingLevel={2}
+                >
                   Recipes appear here after you open their details.
                 </Empty>
               ) : (
@@ -954,6 +1174,11 @@ function App() {
         <RecipeDialog
           recipe={selected}
           favorites={data.favorites}
+          favoriteState={resources.favorites}
+          retryFavorites={() => loadResources(api, ["favorites"])}
+          busy={busy}
+          error={error}
+          notice={notice}
           onClose={() => setSelected(null)}
           run={run}
           api={api}

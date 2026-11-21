@@ -45,9 +45,11 @@ export function createApi(token, signal) {
             ? "An account already uses this email. Try signing in."
             : response.status === 503
               ? "The service is temporarily unavailable. Please try again."
-              : typeof data.error === "string"
-                ? data.error
-                : "This request could not be completed. Please try again.";
+              : response.status >= 500 || response.status === 422
+                ? "The service could not complete this request. Please try again."
+                : typeof data.error === "string"
+                  ? data.error
+                  : "This request could not be completed. Please try again.";
       throw new ApiError(message, response.status);
     }
     return data;

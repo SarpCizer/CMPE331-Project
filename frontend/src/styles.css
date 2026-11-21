@@ -188,6 +188,19 @@ button {
   padding: 12px;
   font-size: 0.95rem;
 }
+.field-error {
+  color: #923d2a;
+  font-size: 0.875rem;
+  margin: 8px 0 16px;
+  overflow-wrap: anywhere;
+}
+input[aria-invalid="true"] {
+  border-color: #923d2a;
+}
+.resource-error p,
+.message {
+  overflow-wrap: anywhere;
+}
 .success {
   background: #e6f1e8;
   color: #285537;
@@ -677,7 +690,7 @@ button {
   display: flex;
   flex-direction: column;
 }
-.recipe-content h3 {
+.recipe-content h2 {
   font-size: 1.35rem;
   overflow-wrap: anywhere;
 }

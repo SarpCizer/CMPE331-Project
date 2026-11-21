@@ -174,6 +174,43 @@ test("a slow collection does not block unrelated screens", async ({ page }) => {
   await expect(page.getByText("Keep the good ones close")).toBeVisible();
 });
 
+test("a committed write is acknowledged even when its subsequent list refresh fails", async ({
+  page,
+}) => {
+  await register(page);
+  let failRefresh = false;
+  let writes = 0;
+  await page.route("**/api/shopping-items", (route) => {
+    if (route.request().method() === "POST") {
+      failRefresh = true;
+      writes++;
+      return route.continue();
+    }
+    return failRefresh
+      ? route.fulfill({ status: 503, json: { error: "refresh outage" } })
+      : route.continue();
+  });
+  await page.getByRole("link", { name: "Shopping list", exact: true }).click();
+  await page.getByLabel("Add a shopping item").fill("tomato");
+  await page.getByRole("button", { name: "Add item", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText(
+    "Shopping item added. Some saved data could not be refreshed",
+  );
+  await expect(page.getByRole("alert")).toContainText(
+    "Shopping list could not be loaded",
+  );
+  expect(writes).toBe(1);
+  failRefresh = false;
+  await page
+    .getByRole("button", { name: "Retry shopping list", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Remove tomato", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Add a shopping item")).toHaveValue("");
+  expect(writes).toBe(1);
+});
+
 test("an expired session wins over a simultaneous collection outage", async ({
   page,
 }) => {
