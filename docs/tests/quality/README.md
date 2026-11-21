@@ -19,6 +19,9 @@ policy run 44933945505 passes coverage floors and the full-history Gitleaks scan
 Its exports include successful negative coverage and synthetic-secret canaries.
 Initial and triage scan matches are retained as redacted JSON; only four exact
 historical fingerprints for two verified false-positive patterns/copies are
-scoped in .gitleaksignore. No broad source/test directory is excluded.
+scoped in .gitleaksignore. The report commit's scanner additionally matched 15
+Sonar-generated issue IDs in the original issue export. Every flagged line was
+validated against the exported issue-key set; only those exact historical
+fingerprints are scoped. No broad source/test/report directory is excluded.
 
 Dependency audits cover the locked Python packages and pnpm graph. “No known vulnerabilities” is time-bound and does not establish absence of application flaws. `secret-canary-scan.json` checks named synthetic diagnostic strings in the exported successful logs; it is not a generic secret-scanning guarantee. No real passwords, JWTs, database URLs or provider credentials belong in this folder.
