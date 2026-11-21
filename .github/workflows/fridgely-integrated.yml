@@ -19,8 +19,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  secrets:
+    name: Repository secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Scan full reachable history with redacted output
+        run: |
+          mkdir -p test-results
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo \
+            --redact --no-banner --report-format json --report-path /repo/test-results/gitleaks.json
+      - name: Prove a synthetic credential makes the scanner fail
+        run: |
+          canary_dir="$(mktemp -d)"
+          python -c 'import secrets,sys; from pathlib import Path; Path(sys.argv[1],"probe.txt").write_text("credential = ghp_"+secrets.token_hex(18))' "$canary_dir"
+          if docker run --rm -v "$canary_dir:/canary" ghcr.io/gitleaks/gitleaks:v8.30.1 dir /canary --redact --no-banner --report-format json --report-path /canary/redacted.json; then
+            echo "Secret detector failed to reject its isolated synthetic canary"
+            exit 1
+          else
+            python -c 'import json,sys; from pathlib import Path; rows=json.loads(Path(sys.argv[1],"redacted.json").read_text()); assert len(rows)>0; Path("test-results/secret-gate-canary.json").write_text(json.dumps({"passed":True,"synthetic_detection_count":len(rows),"real_credentials_used":False}))' "$canary_dir"
+          fi
+          rm -rf "$canary_dir"
+      - name: Export redacted scan result
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: secret-scan-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            test-results/gitleaks.json
+            test-results/secret-gate-canary.json
+          retention-days: 30
+
   container:
     name: Cloud image and PostgreSQL smoke test
+    needs: source-scope
+    if: needs.source-scope.outputs.reuse != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
@@ -70,9 +107,9 @@ jobs:
       - name: Compare application and test sources with successful verification
         id: scope
         run: |
-          if git diff --quiet eb3baf990606178f130121aecb265d88c209e338 HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
+          if git diff --quiet 775e8b7a949b2910bb6818145c9066df610a0d01 HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
             echo "reuse=true" >> "$GITHUB_OUTPUT"
-            echo "Application, dependency and test sources match the successful 103-test PostgreSQL and cloud-image run. Reusing its immutable artifacts."
+            echo "Application, dependency and test sources match the successful 106-test PostgreSQL and cloud-image run. Reusing its immutable artifacts."
           else
             echo "reuse=false" >> "$GITHUB_OUTPUT"
           fi
@@ -156,6 +193,51 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+  coverage-policy:
+    name: Enforce source coverage policy
+    needs: [source-scope, full-stack]
+    if: always() && (needs.full-stack.result == 'success' || needs.source-scope.outputs.reuse == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v8.0.2
+        if: needs.source-scope.outputs.reuse != 'true'
+        with:
+          name: integrated-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results
+      - uses: actions/download-artifact@v8.0.2
+        if: needs.source-scope.outputs.reuse == 'true'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
+          path: test-results
+      - name: Enforce the actual backend and frontend measurements
+        run: python scripts/ci/check_coverage.py
+      - name: Prove a coverage regression is rejected
+        run: |
+          probe_dir="$(mktemp -d)"
+          python -c 'import json,sys; from pathlib import Path; d=json.loads(Path("test-results/backend-coverage.json").read_text());d["totals"]["percent_statements_covered"]=0;Path(sys.argv[1],"low.json").write_text(json.dumps(d))' "$probe_dir"
+          if python scripts/ci/check_coverage.py --backend "$probe_dir/low.json" --output "$probe_dir/result.json"; then
+            echo "Coverage policy did not reject the synthetic regression"
+            exit 1
+          fi
+          python -c 'import json,sys; from pathlib import Path; assert json.loads(Path(sys.argv[1],"result.json").read_text())["passed"] is False;Path("test-results/coverage-gate-canary.json").write_text(json.dumps({"passed":True,"synthetic_regression_rejected":True}))' "$probe_dir"
+          rm -rf "$probe_dir"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: coverage-policy-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            test-results/coverage-gate.json
+            test-results/coverage-gate-canary.json
+          retention-days: 30
+
   sonarqube:
     name: SonarQube analysis and evidence
     needs: [source-scope, full-stack]
@@ -182,13 +264,13 @@ jobs:
         uses: actions/download-artifact@v8.0.2
         with:
           github-token: ${{ github.token }}
-          run-id: 44801003983
-          name: integrated-evidence-eb3baf990606178f130121aecb265d88c209e338
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
           path: test-results
       - name: Record test and analysis revisions
         run: |
           mkdir -p test-results/sonarqube
-          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"eb3baf990606178f130121aecb265d88c209e338" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
+          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"775e8b7a949b2910bb6818145c9066df610a0d01" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
       - name: Start isolated loopback-only SonarQube
         run: |
           sudo sysctl -w vm.max_map_count=524288
