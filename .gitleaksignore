@@ -1,0 +1,5 @@
+# Reviewed historical false positives only; do not exclude files or directories.
+# Documentation prose: "credentials, claim/signature/expiry validation".
+eebacdf532dd6942e393c366222a949a28fcaf6c:backend/README-accounts.md:generic-api-key:59
+# Deliberately invalid, unsigned JWT used to prove HTTP 401 in an acceptance test.
+db9a00e62d83d16d8768df3f46d40b8c2985562b:tests/functional/requirements.test.mjs:generic-api-key:176

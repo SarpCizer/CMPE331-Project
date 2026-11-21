@@ -32,7 +32,8 @@ jobs:
         run: |
           mkdir -p test-results
           docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo \
-            --redact --no-banner --report-format json --report-path /repo/test-results/gitleaks.json
+            --gitleaks-ignore-path /repo/.gitleaksignore --redact --no-banner \
+            --report-format json --report-path /repo/test-results/gitleaks.json
       - name: Prove a synthetic credential makes the scanner fail
         run: |
           canary_dir="$(mktemp -d)"
