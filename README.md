@@ -84,6 +84,7 @@ requires the team's server-side provider credential.
   [contribution log](docs/ai-usage-log.md), [observed incidents](docs/ai-mistakes.md)
   and [demo/presentation runbook](docs/demo-runbook.md)
 - [Source-only ZIP and final account/owner actions](docs/submission.md)
+- [Executed test report, PDF and evidence index](docs/tests/README.md)
 
 Charter roles: Berfin Gökgöz (full-stack/database), İrem Demircan (product owner and
 fridge backend), Sarp Çizer (shopping/favorites/history), Ayşe Döne (recipe AI),

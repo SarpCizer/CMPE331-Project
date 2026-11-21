@@ -1,0 +1,16 @@
+<testsuites id="" name="" tests="6" failures="0" skipped="0" errors="0" time="15.654995">
+<testsuite name="kitchen.spec.js" timestamp="2026-11-20T18:14:57.686Z" hostname="" tests="6" failures="0" skipped="0" time="13.746" errors="0">
+<testcase name="real account, saved preferences, recipe details and collections survive reload and user switching" classname="kitchen.spec.js" time="4.416">
+</testcase>
+<testcase name="empty fridge and provider failure remain honest and retryable" classname="kitchen.spec.js" time="1.287">
+</testcase>
+<testcase name="core screens fit 360px and retain labelled controls" classname="kitchen.spec.js" time="1.403">
+</testcase>
+<testcase name="core screens fit 768px and retain labelled controls" classname="kitchen.spec.js" time="1.463">
+</testcase>
+<testcase name="core screens fit 1440px and retain labelled controls" classname="kitchen.spec.js" time="4.314">
+</testcase>
+<testcase name="keyboard skip link focuses the active main region" classname="kitchen.spec.js" time="0.863">
+</testcase>
+</testsuite>
+</testsuites>

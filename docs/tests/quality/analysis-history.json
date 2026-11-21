@@ -1,0 +1,73 @@
+{
+  "runs": [
+    {
+      "run_id": 44790642444,
+      "revision": "cc63b804e68c6dd99a885f6fdbae74b6c59a250d",
+      "full_stack": "PASS",
+      "sonarqube": "SCANNER INFRASTRUCTURE FAILURE",
+      "cause": "Default scanner work directory was not writable",
+      "fix_commit": "62576a5d1fd79ece88ae98599a1cb9a41022ff3d"
+    },
+    {
+      "run_id": 44792607894,
+      "revision": "62576a5d1fd79ece88ae98599a1cb9a41022ff3d",
+      "full_stack": "PASS",
+      "sonarqube": "Analysis completed; optional metric export failed",
+      "cause": "Unsupported optional metric in export request",
+      "fix_commit": "94c00cf8053c0e14ca043b10819f80a858d5cce3"
+    },
+    {
+      "run_id": 44794950185,
+      "revision": "94c00cf8053c0e14ca043b10819f80a858d5cce3",
+      "full_stack": "Identical source verified; reused immutable run 44792607894 artifacts",
+      "sonarqube": "PASS with completed issue/metrics/hotspot exports",
+      "findings": 17,
+      "blocker_findings": 12,
+      "gate": "OK (empty conditions on initial analysis)"
+    },
+    {
+      "run_id": 44798645271,
+      "revision": "03c8ffeeacc2d202a0d9de637c3d3644dbf8423b",
+      "full_stack": "PASS; new tests executed for changed source",
+      "sonarqube": "PASS",
+      "findings": 0,
+      "blocker_findings": 0,
+      "gate": "OK (empty conditions on initial analysis)"
+    },
+    {
+      "run_id": 44932416317,
+      "revision": "775e8b7a949b2910bb6818145c9066df610a0d01",
+      "status": "PASS",
+      "backend_passed": 106,
+      "acceptance_passed": 27,
+      "http_passed": 12,
+      "browser_passed": 8,
+      "penetration_passed": 4,
+      "sonar_issues": 0,
+      "load_requests": 54776,
+      "load_p95_ms": 77.72912899997664,
+      "load_errors": 0
+    },
+    {
+      "run_id": 44933260896,
+      "revision": "3fe6835be52efa6442f4f4922d2a0e2cf9452909",
+      "coverage_policy": "PASS",
+      "secret_scan": "FAIL; two reviewed historical false positives"
+    },
+    {
+      "run_id": 44933619926,
+      "revision": "9213e976f523ab79f706851adcc7303d959dc43c",
+      "coverage_policy": "PASS",
+      "secret_scan": "FAIL; quoting the same prose in triage introduced two more matches"
+    },
+    {
+      "run_id": 44933945505,
+      "revision": "80fbe8539562c7fc8df6bb86a7ce47d54f521d34",
+      "status": "PASS",
+      "coverage_policy": "PASS; negative canary rejected",
+      "secret_scan": "PASS; synthetic detection canary rejected",
+      "test_artifact_source": "775e8b7a949b2910bb6818145c9066df610a0d01",
+      "sonarqube": "PASS"
+    }
+  ]
+}

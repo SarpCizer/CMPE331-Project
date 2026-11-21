@@ -1,0 +1,20 @@
+<testsuites id="" name="" tests="8" failures="0" skipped="0" errors="0" time="14.680294">
+<testsuite name="kitchen.spec.js" timestamp="2026-11-20T19:09:29.892Z" hostname="" tests="8" failures="0" skipped="0" time="11.832" errors="0">
+<testcase name="public API documentation loads the actual schema and bearer authorization" classname="kitchen.spec.js" time="2.495">
+</testcase>
+<testcase name="real account, saved preferences, recipe details and collections survive reload and user switching" classname="kitchen.spec.js" time="2.6">
+</testcase>
+<testcase name="empty fridge and provider failure remain honest and retryable" classname="kitchen.spec.js" time="0.784">
+</testcase>
+<testcase name="core screens fit 360px and retain labelled controls" classname="kitchen.spec.js" time="0.928">
+</testcase>
+<testcase name="core screens fit 768px and retain labelled controls" classname="kitchen.spec.js" time="0.976">
+</testcase>
+<testcase name="core screens fit 1440px and retain labelled controls" classname="kitchen.spec.js" time="2.364">
+</testcase>
+<testcase name="keyboard skip link focuses the active main region" classname="kitchen.spec.js" time="0.436">
+</testcase>
+<testcase name="core kitchen actions work with keyboard-only input" classname="kitchen.spec.js" time="1.249">
+</testcase>
+</testsuite>
+</testsuites>

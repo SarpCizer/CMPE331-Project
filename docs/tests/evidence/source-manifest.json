@@ -1,0 +1,122 @@
+[
+  {
+    "path": "backend/src/fridgely_app/__init__.py",
+    "sha256": "dab5c8544a02ea30f1c5564ae55fed0834303c5052219a7b36ab7c4100046b77"
+  },
+  {
+    "path": "backend/src/fridgely_app/__main__.py",
+    "sha256": "e23a6225964774edaedd7db55e81212afe363b01208eeeff82d0ba1c60771b28"
+  },
+  {
+    "path": "backend/src/fridgely_app/acceptance.py",
+    "sha256": "c662bf6cd0dc7e5d1bcd0be70e6233cb100ffeed34699c5879f7e17f5cad860a"
+  },
+  {
+    "path": "backend/src/fridgely_app/core.py",
+    "sha256": "1f1b38ffa3ee7d94e3b301620659247113db31539c3de6fafcff044b7e2c2aa8"
+  },
+  {
+    "path": "backend/src/fridgely_app/database.py",
+    "sha256": "fd18dfb7480c771fd61c15a5e0b1826583798cc2fcab8c5fd6a3a4d03e23d6d9"
+  },
+  {
+    "path": "backend/src/fridgely_app/documentation.py",
+    "sha256": "3db96a1c0dc70cc2749770f4f747eb247a0558fd4ef91f0df073bfa0a1200e39"
+  },
+  {
+    "path": "backend/src/fridgely_app/host.py",
+    "sha256": "7cae963b77ef88bf02eca9b29af5e9a738a51b213079a3aa003da4d4310ea4f2"
+  },
+  {
+    "path": "backend/src/fridgely_app/migrations/env.py",
+    "sha256": "7b992232830f143b7186f9d0a5d5979a1d5482fc4d17c04f0e6919b532e3c702"
+  },
+  {
+    "path": "backend/src/fridgely_app/migrations/versions/0001_owned_schema.py",
+    "sha256": "aa44a3f11608cd9d81d720c09e08a3f3dbdf56508e7f21b89d609195521bc611"
+  },
+  {
+    "path": "backend/src/fridgely_app/migrations/versions/0002_ordered_preferences.py",
+    "sha256": "df8dd1b4a56af6722aef69c084511b468ae560b66e33b7ceae2e1ca6f2978cce"
+  },
+  {
+    "path": "backend/src/fridgely_app/models.py",
+    "sha256": "29a6a2691384e20b67b48d5f778e66e4fb6a2933a1d2f547713a479cf0e3eea3"
+  },
+  {
+    "path": "backend/src/fridgely_app/security.py",
+    "sha256": "866e2d2d24c6478661d84bfc556b2aad4c347283b45c5076087a1aaf506474a9"
+  },
+  {
+    "path": "backend/src/fridgely_collections/__init__.py",
+    "sha256": "603e0055c74d9319b8c582b2898a4228d0200357e52a11c8c59a647acf6b8d85"
+  },
+  {
+    "path": "backend/src/fridgely_collections/adapters.py",
+    "sha256": "046dfc92380d6ac4e757eb7e474107bc9cbbc7aa79bc61787a6bce964b31d01b"
+  },
+  {
+    "path": "backend/src/fridgely_collections/api.py",
+    "sha256": "9a027d2c03bbd10e559de8eb20d4cdbb3e8d67b33038ea0f17ef70c240eb6d38"
+  },
+  {
+    "path": "backend/src/fridgely_collections/errors.py",
+    "sha256": "77e0155e604cca3baf41b3794d74285f553148c3ec1828b29ae089862197e43b"
+  },
+  {
+    "path": "backend/src/fridgely_collections/models.py",
+    "sha256": "a3dc228972b136d95c4d1bdc5ef550d5b3b750d2abe216cada6e5c200a2ab53b"
+  },
+  {
+    "path": "backend/src/fridgely_collections/ports.py",
+    "sha256": "cf3b09e7b0ba6966d60050aaa96712d1350727b27b38c5f8eacea19e4df742ba"
+  },
+  {
+    "path": "backend/src/fridgely_collections/repository.py",
+    "sha256": "c50df3020cf687bb97d57e2756429a17551d5630e7de94790c94187826132667"
+  },
+  {
+    "path": "backend/src/fridgely_collections/schemas.py",
+    "sha256": "9d58bd8e7c2ee1077d053f3d7435908f7abbca1f55b250618bdb8ed2dc71e063"
+  },
+  {
+    "path": "backend/src/fridgely_collections/service.py",
+    "sha256": "7fb4083cbabade914f16084d1322d7ed324324afa5335214ef2283daf2ad7871"
+  },
+  {
+    "path": "backend/src/fridgely_recipes/__init__.py",
+    "sha256": "665d928627e694205a28a3f715861a643a72c77d16914ef684bdd2d632d52de1"
+  },
+  {
+    "path": "backend/src/fridgely_recipes/api.py",
+    "sha256": "bee9e59c3499725fade31e88c10cc7d96ce5285482fbfd8142ea9b817f1107ee"
+  },
+  {
+    "path": "backend/src/fridgely_recipes/provider.py",
+    "sha256": "35851499c43116d6a648799cebfbb5707eb29c3867111643a9377386822c3a94"
+  },
+  {
+    "path": "backend/src/fridgely_recipes/service.py",
+    "sha256": "f2420b310bff18dadafba33fed9d646c78c69316ada61c033bc30f1d2d5d4476"
+  },
+  {
+    "path": "backend/src/fridgely_recipes/storage.py",
+    "sha256": "319470799dfda2daddda872082d3937f26b7cd60a30883f377e051b780000468"
+  },
+  {
+    "path": "frontend/src/api.js",
+    "sha256": "c25a2ac57c06332c1bd5f96d5c884b7cca6ed7093177c176f11b99c3d5fdec39"
+  },
+  {
+    "path": "frontend/src/main.jsx",
+    "sha256": "5aac7665f8edd922bf0f4bfd6471c9c88345adaffccb29b3439d253d7249058f"
+  },
+  {
+    "path": "frontend/src/styles.css",
+    "sha256": "3740a190b8802ed1102afa74fd55253cdae265565f50aed996232279df18382c"
+  },
+  {
+    "path": "frontend/src/tokens.css",
+    "sha256": "d56e1355b32d39eed2a2e5af4cd72024b3e55d06cc4a2e493a103b6e1612f2a9"
+  }
+]

@@ -1,0 +1,29 @@
+✓ Lockfile passes supply-chain policies (verified 18m ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Done in 279ms using pnpm v11.25.0
+$ playwright test && node scripts/coverage.mjs
+
+Running 8 tests using 1 worker
+
+(node:21695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/kitchen.spec.js:33:1 › public API documentation loads the actual schema and bearer authorization (2.5s)
+  ✓  2 tests/kitchen.spec.js:64:1 › real account, saved preferences, recipe details and collections survive reload and user switching (2.6s)
+  ✓  3 tests/kitchen.spec.js:138:1 › empty fridge and provider failure remain honest and retryable (784ms)
+  ✓  4 tests/kitchen.spec.js:166:3 › core screens fit 360px and retain labelled controls (928ms)
+  ✓  5 tests/kitchen.spec.js:166:3 › core screens fit 768px and retain labelled controls (976ms)
+  ✓  6 tests/kitchen.spec.js:166:3 › core screens fit 1440px and retain labelled controls (2.4s)
+  ✓  7 tests/kitchen.spec.js:206:1 › keyboard skip link focuses the active main region (436ms)
+  ✓  8 tests/kitchen.spec.js:217:1 › core kitchen actions work with keyboard-only input (1.2s)
+
+  8 passed (14.7s)
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 1021/1021 )
+Branches     : 91.89% ( 170/185 )
+Functions    : 90.69% ( 39/43 )
+Lines        : 100% ( 1021/1021 )
+================================================================================
+Frontend coverage reports: /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/test-results/frontend-coverage

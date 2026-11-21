@@ -1,0 +1,53 @@
+{
+  "component": {
+    "key": "fridgely",
+    "name": "Fridgely",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "coverage",
+        "value": "92.3",
+        "bestValue": false
+      },
+      {
+        "metric": "bugs",
+        "value": "4",
+        "bestValue": false
+      },
+      {
+        "metric": "code_smells",
+        "value": "13",
+        "bestValue": false
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "value": "0.0",
+        "bestValue": true
+      },
+      {
+        "metric": "branch_coverage",
+        "value": "82.1",
+        "bestValue": false
+      },
+      {
+        "metric": "ncloc",
+        "value": "3179"
+      },
+      {
+        "metric": "vulnerabilities",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "line_coverage",
+        "value": "94.1",
+        "bestValue": false
+      },
+      {
+        "metric": "security_hotspots",
+        "value": "0",
+        "bestValue": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="US-01-T01 register without email verification" time="0.698068" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-01-T02 reject duplicate email and invalid registration without creating an account" time="0.692660" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-02-T01 accept correct credentials and reject incorrect credentials" time="0.688311" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-03-T01 persist and clear preferences" time="0.614990" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-04-T01 add an ingredient with addition timestamp" time="0.625246" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-04-T02 reject a blank ingredient" time="0.599382" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-05-T01 list own ingredients and preserve original dates" time="0.582260" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-06-T01 delete only the selected ingredient" time="0.643624" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-07-T01 send fridge and current preferences to provider without deducting inventory" time="0.600277" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-07-T02 reject a batch containing a declared allergen conflict" time="0.517825" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-07-T03 block recipe generation for an empty fridge" time="0.505687" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T01 return complete details using the application-assigned recipe ID" time="0.509143" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T02 reject empty cooking steps" time="0.494660" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T03 reject missing calories" time="0.487231" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T04 reject zero cooking time" time="0.490229" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T05 reject negative calories" time="0.488384" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T06 reject zero servings" time="0.500104" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-08-T07 reject blank ingredient names" time="0.497982" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-09-T01 return retryable provider error and preserve successful state snapshots" time="0.525003" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-10-T01 add only missing ingredients and preserve item IDs on repeated actions" time="0.508105" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-11-T01 manually add list and remove shopping items" time="0.494431" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-12-T01 save favorites idempotently without inventory changes" time="0.568307" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-13-T01 remove a favorite while retaining viewed history" time="0.590095" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-14-T01 record views and update history in newest-first order" time="0.591510" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-15-T01 deny requests with no token or a malformed token" time="0.494323" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-15-T02 isolate personal data and deny access to another users objects" time="0.590515" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<testcase name="US-15-T03 reject an authentic token after its expiry" time="0.494388" classname="test" file="/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/tests/functional/requirements.test.mjs"/>
+	<!-- tests 27 -->
+	<!-- suites 0 -->
+	<!-- pass 27 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 15157.083958 -->
+</testsuites>

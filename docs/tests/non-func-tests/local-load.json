@@ -1,0 +1,83 @@
+{
+  "started_utc": "2026-11-20T18:08:17.414077+00:00",
+  "revision": "9f43e3af07f08d070251e371fb6112c989db330e",
+  "environment": "local-macOS-ARM64-SQLite-one-worker",
+  "client": {
+    "system": "Darwin",
+    "architecture": "arm64",
+    "python": "3.12.14",
+    "cpu_count": 8
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 300.5635119590006,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 57400,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 44.35391700826585,
+    "max_ms": 437.5596249883529,
+    "mean_ms": 11.346609286397277,
+    "statuses": {
+      "200": 57400
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 14350,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 77.4049999890849,
+      "max_ms": 437.5596249883529,
+      "mean_ms": 19.14406640727709,
+      "statuses": {
+        "200": 14350
+      }
+    },
+    "profile": {
+      "requests": 14350,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 27.9940830077976,
+      "max_ms": 265.59983400511555,
+      "mean_ms": 8.77118869109557,
+      "statuses": {
+        "200": 14350
+      }
+    },
+    "shopping": {
+      "requests": 14350,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 28.502208995632827,
+      "max_ms": 320.9472500020638,
+      "mean_ms": 9.104601156503167,
+      "statuses": {
+        "200": 14350
+      }
+    },
+    "favorites": {
+      "requests": 14350,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 25.40183400560636,
+      "max_ms": 363.649582999642,
+      "mean_ms": 8.36658089071328,
+      "statuses": {
+        "200": 14350
+      }
+    }
+  },
+  "passed": true,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}

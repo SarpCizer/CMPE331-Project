@@ -1,0 +1,9 @@
+{
+  "ci_run_id": 44932416317,
+  "ci_revision": "775e8b7a949b2910bb6818145c9066df610a0d01",
+  "ci_dir": "evidence/ci-current",
+  "ci_status": "PASS",
+  "sonar_dir": "quality/current",
+  "sonar_revision": "775e8b7a949b2910bb6818145c9066df610a0d01",
+  "sonar_run_id": 44932416317
+}
