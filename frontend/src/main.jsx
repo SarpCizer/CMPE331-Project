@@ -924,7 +924,7 @@ function App() {
     if (!session) return;
     const version = generation.current,
       request = createApi(session.token, controller.current.signal);
-    loadResources(request, Object.keys(paths), version);
+    void loadResources(request, Object.keys(paths), version);
   }, [session]);
   async function run(operation, message, refresh = []) {
     if (busyRef.current) return false;
