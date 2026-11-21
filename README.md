@@ -80,6 +80,9 @@ requires the team's server-side provider credential.
 - [Analysis review PR #5](https://github.com/SarpCizer/CMPE331-Project/pull/5)
   and [design review PR #6](https://github.com/SarpCizer/CMPE331-Project/pull/6)
 - [Instructor review and current issues](https://github.com/SarpCizer/CMPE331-Project/issues/16)
+- [AI tooling and runtime recipe pipeline](docs/ai-pipeline.md),
+  [contribution log](docs/ai-usage-log.md), [observed incidents](docs/ai-mistakes.md)
+  and [demo/presentation runbook](docs/demo-runbook.md)
 
 Charter roles: Berfin Gökgöz (full-stack/database), İrem Demircan (product owner and
 fridge backend), Sarp Çizer (shopping/favorites/history), Ayşe Döne (recipe AI),
