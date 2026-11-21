@@ -10,6 +10,8 @@ Gitleaks 8.30.1 scans full reachable Git history with redacted logs and reports.
 
 The initial enforced scan stopped for two historical matches. Exact source review showed backend testing prose and a deliberately invalid unsigned JWT used to assert HTTP 401. Quoting the prose during triage produced two additional copies of that false-positive pattern. `.gitleaksignore` contains only the four exact historical commit/file/rule/line fingerprints, with explanations; the triggering quotation is removed from current triage text. New matches in these files remain subject to scanning. No actual credential is exempted and history is not rewritten. Both redacted finding exports are retained with the quality evidence.
 
+Committing the original Sonar issue export also triggered 15 generic-key matches on Sonar-generated issue identifiers. Each flagged line was checked against an issue object's `key` in the exported schema. Only those 15 exact export-commit/file/rule/line fingerprints are additionally scoped; no Sonar report directory or other fields are excluded. Future API credentials in reports still fail scanning. The original exported issues and redacted scan findings remain available for review.
+
 These jobs make a failing test, insufficient measured coverage or detected secret fail the PR check. Repository-owner branch protection must require successful checks; a workflow file alone cannot prevent a permitted direct push.
 
 ## Reuse and release limits
