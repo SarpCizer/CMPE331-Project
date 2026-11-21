@@ -2,8 +2,7 @@ services:
   - type: web
     name: fridgely-web
     runtime: docker
-    repo: https://github.com/SarpCizer/CMPE331-Project
-    branch: feature/berfin-api-cloud
+    branch: feature/berfin-cloud-candidate
     region: frankfurt
     plan: free
     dockerfilePath: ./Dockerfile
