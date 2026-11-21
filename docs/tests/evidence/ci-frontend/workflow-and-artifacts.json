@@ -1,0 +1,74 @@
+{
+  "jobs": [
+    {
+      "id": 136968703133,
+      "name": "Repository secret scan",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136968703415,
+      "name": "Verify tested source identity",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136968741459,
+      "name": "API, PostgreSQL, browser and load tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136968741466,
+      "name": "Cloud image and PostgreSQL smoke test",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136971549216,
+      "name": "Enforce source coverage policy",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136971549254,
+      "name": "SonarQube analysis and evidence",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 14723850284,
+      "name": "sonarqube-evidence-25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "sha256:6e5e865c99eb82ecab7b31360a70d4118175b9d9abaf698a726e1d0529408bb2",
+      "size": 1955
+    },
+    {
+      "id": 14723680765,
+      "name": "integrated-evidence-25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "sha256:d53b3e3f2f40931df29667b571efe1e8ca0780d0f334494925d892f9b8f84d46",
+      "size": 2615795
+    },
+    {
+      "id": 14723560658,
+      "name": "coverage-policy-25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "sha256:b28535c9e56536e07cb76b45548680a5d9983dbab4b96e367b7864a5ba650312",
+      "size": 569
+    },
+    {
+      "id": 14722763730,
+      "name": "container-evidence-25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "sha256:1de0b7a8869c3223df2a439da68f53857969eb695cd9deb138724770dc21c81a",
+      "size": 561
+    },
+    {
+      "id": 14722628975,
+      "name": "secret-scan-25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "sha256:f8606254ca09efe5210c3055254e91b9b4ffff7768c615ae1152fca84d807f9f",
+      "size": 356
+    }
+  ],
+  "run_id": 44944497368,
+  "source_revision": "25c111aa5a8d678b60c17745289675821b62f91d"
+}

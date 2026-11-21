@@ -1,6 +1,6 @@
 {
-  "started_utc": "2026-11-21T17:55:20.144929+00:00",
-  "revision": "775e8b7a949b2910bb6818145c9066df610a0d01",
+  "started_utc": "2026-11-21T20:10:48.755616+00:00",
+  "revision": "25c111aa5a8d678b60c17745289675821b62f91d",
   "environment": "GitHub-Actions-Ubuntu-PostgreSQL17-one-worker",
   "client": {
     "system": "Linux",
@@ -12,7 +12,7 @@
     "users": 50,
     "inventory_per_user": 100,
     "configured_seconds": 300,
-    "measured_seconds": 301.110271281,
+    "measured_seconds": 301.18961179499996,
     "think_seconds": 1,
     "shopping_and_favorites": "empty owned collections",
     "provider": "not called in measured loop"
@@ -22,59 +22,61 @@
     "error_rate_exclusive_max": 0.01
   },
   "overall": {
-    "requests": 54776,
-    "errors": 0,
-    "error_rate": 0.0,
-    "p95_ms": 77.72912899997664,
-    "max_ms": 550.9011760000249,
-    "mean_ms": 24.312454506389763,
+    "requests": 40336,
+    "errors": 1,
+    "error_rate": 2.479174930583102e-05,
+    "p95_ms": 371.46761799999695,
+    "max_ms": 1641.3529499999981,
+    "mean_ms": 120.8641836184303,
     "statuses": {
-      "200": 54776
+      "200": 40335,
+      "0": 1
     }
   },
   "routes": {
     "inventory": {
-      "requests": 13694,
-      "errors": 0,
-      "error_rate": 0.0,
-      "p95_ms": 82.14265399999476,
-      "max_ms": 472.86155099999405,
-      "mean_ms": 25.47731757382787,
+      "requests": 10084,
+      "errors": 1,
+      "error_rate": 9.916699722332408e-05,
+      "p95_ms": 404.6784170000137,
+      "max_ms": 1377.0308219999947,
+      "mean_ms": 135.93931778123724,
       "statuses": {
-        "200": 13694
+        "200": 10083,
+        "0": 1
       }
     },
     "profile": {
-      "requests": 13694,
+      "requests": 10084,
       "errors": 0,
       "error_rate": 0.0,
-      "p95_ms": 83.53678999992553,
-      "max_ms": 550.9011760000249,
-      "mean_ms": 26.822229360449814,
+      "p95_ms": 371.42709099998683,
+      "max_ms": 1489.9806290000015,
+      "mean_ms": 121.92423372243186,
       "statuses": {
-        "200": 13694
+        "200": 10084
       }
     },
     "shopping": {
-      "requests": 13694,
+      "requests": 10084,
       "errors": 0,
       "error_rate": 0.0,
-      "p95_ms": 75.68321000007927,
-      "max_ms": 453.59255400001075,
-      "mean_ms": 23.978433047831615,
+      "p95_ms": 364.43439099997477,
+      "max_ms": 1641.3529499999981,
+      "mean_ms": 117.91790322461388,
       "statuses": {
-        "200": 13694
+        "200": 10084
       }
     },
     "favorites": {
-      "requests": 13694,
+      "requests": 10084,
       "errors": 0,
       "error_rate": 0.0,
-      "p95_ms": 67.04198099998848,
-      "max_ms": 366.8570620000082,
-      "mean_ms": 20.971838043449747,
+      "p95_ms": 344.01910399998314,
+      "max_ms": 1402.2225909999975,
+      "mean_ms": 107.6752797454382,
       "statuses": {
-        "200": 13694
+        "200": 10084
       }
     }
   },

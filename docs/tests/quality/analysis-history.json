@@ -68,6 +68,44 @@
       "secret_scan": "PASS; synthetic detection canary rejected",
       "test_artifact_source": "775e8b7a949b2910bb6818145c9066df610a0d01",
       "sonarqube": "PASS"
+    },
+    {
+      "run_id": 44943105424,
+      "revision": "522e0db8e2a9c6d9c3e22b5b8a71e9de05ffc82a",
+      "status": "PASS; Sonar gate OK with empty conditions",
+      "backend_passed": 106,
+      "acceptance_passed": 27,
+      "http_passed": 12,
+      "browser_passed": 18,
+      "penetration_passed": 4,
+      "sonar_issues": 1,
+      "sonar_critical_blocker": 0,
+      "sonar_major_rule": "javascript:S9383",
+      "mitigation_commit": "25c111aa5a8d678b60c17745289675821b62f91d",
+      "load_requests": 50068,
+      "load_p95_ms": 172.64259399996718,
+      "load_errors": 0
+    },
+    {
+      "run_id": 44944497368,
+      "revision": "25c111aa5a8d678b60c17745289675821b62f91d",
+      "status": "PASS",
+      "backend_passed": 106,
+      "acceptance_passed": 27,
+      "http_passed": 12,
+      "browser_passed": 18,
+      "penetration_passed": 4,
+      "sonar_issues": 0,
+      "sonar_bugs": 0,
+      "sonar_vulnerabilities": 0,
+      "sonar_hotspots": 0,
+      "coverage_policy": "PASS; negative canary rejected",
+      "secret_scan": "PASS; synthetic canary detected",
+      "load_requests": 40336,
+      "load_p95_ms": 371.46761799999695,
+      "load_errors": 1,
+      "load_error_rate": 2.479174930583102e-05,
+      "load_result": "PASS within agreed thresholds; connection failure preserved"
     }
   ]
 }

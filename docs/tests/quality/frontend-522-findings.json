@@ -1,0 +1,19 @@
+{
+  "source_revision": "522e0db8e2a9c6d9c3e22b5b8a71e9de05ffc82a",
+  "run_id": 44943105424,
+  "artifact_id": 14722583682,
+  "artifact_sha256": "69f37db58a33e0e239496e83668b006f061b8e7311e8c305c12c7cf6afc58f7e",
+  "scope": "Selected actual finding fields; service-generated issue identifiers omitted. Full original export is retained in the cited Actions artifact.",
+  "total": 1,
+  "issues": [
+    {
+      "rule": "javascript:S9383",
+      "severity": "MAJOR",
+      "component": "fridgely:frontend/src/main.jsx",
+      "line": 927,
+      "message": "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+      "status": "OPEN"
+    }
+  ],
+  "mitigation": "Explicit void marks the internally handled background load; follow-up source 25c111aa5a8d678b60c17745289675821b62f91d is verified separately."
+}

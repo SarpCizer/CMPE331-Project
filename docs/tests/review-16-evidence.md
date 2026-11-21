@@ -16,11 +16,11 @@ This index links concrete feature-branch evidence. It does not tick instructor b
 | #27/#28/#29 | Ayse's exact #7 code composed in #10; current snapshot, whole-batch validation and measured 28-second timeout | Real provider credential and live smoke |
 | #30 | Sarp's owned detail/history port composed with accepted recipe storage in #10 | Backend/AI/UI cross-review |
 | #31/#32/#33/#34 | Sarp's shopping/favorite/history implementation retained and connected in #10; HTTP/browser tests | Backend peer review |
-| #35/#36/#37/#38/#39 | #11 supplies the connected React UI; eight browser tests, three widths, keyboard and WCAG checks | Frontend peer review; library choice is recorded in #50 |
+| #35/#36/#37/#38/#39 | #11 supplies the connected React UI; #56 completes linked validation, independent collection loading, safe modal feedback and the team handoff; 18 local and CI browser tests pass (including three widths, keyboard and accessibility), with [test-first evidence](frontend-completion.md) | Frontend peer review; library choice is recorded in #50 |
 | #40 | #14 production image, managed-PostgreSQL contract and restart smoke pass | Render cannot read the private Git source yet; HTTPS URL/CD activation and live checks remain blocked on access |
 | #41 | 48/48 criteria mapped; 27 real-host acceptance cases; unit-module map and actual #49 red/green history | Reviewer assesses scope; no invented earlier TDD |
 | #42 | #13 zero-issue follow-up; #15 four probes; JWT/HTTP suite and #52 redacted secret gate | Review evidence and any explicitly scoped false positives |
-| #43 | Current PostgreSQL CI: 54,776 requests / p95 77.73 ms / 0 errors; timeout and environment recorded | Repeat agreed deployment measurement after cloud access |
+| #43 | Current candidate CI: 40,336 requests / p95 371.47 ms / one connection error (0.00248%); both agreed thresholds pass; timeout and environment recorded | Repeat agreed deployment measurement after cloud access |
 | #44 | Test report, PDF with embedded figures and dedicated coverage/non-functional/quality evidence in test_work | Yeşim approval, then course PDF upload by authorized account |
 | #45/#46 | #51 instructions, prompts, pipeline, commit-linked contribution and observed incident logs | Each member adds their own verified experiences; human review is not fabricated |
 | #47 | #50 README, #53 source archive and #54 generic-placeholder cleanup | Team integrates approved docs and verifies final archive; no stale PR deletion here |

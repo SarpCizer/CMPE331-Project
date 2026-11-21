@@ -3,9 +3,9 @@
   "actual_percent": {
     "backend_statements": 91.43700787401575,
     "backend_branches": 72.82608695652173,
-    "frontend_lines": 96.18,
-    "frontend_branches": 91.89,
-    "frontend_functions": 90.69
+    "frontend_lines": 96.39,
+    "frontend_branches": 92.18,
+    "frontend_functions": 92.45
   },
   "minimum_percent": {
     "backend_statements": 90,
