@@ -5,6 +5,10 @@ PostgreSQL/SQLite storage. Accounts, saved preferences, fridge entries, recipe
 generation, shopping, favorites and viewed history share the same verified JWT
 identity and owner-qualified database.
 
+The initial release uses manually entered ingredient names and addition dates.
+Receipt OCR, expiry alerts, quantity arithmetic, automatic inventory deduction and
+native mobile applications are outside this reviewed scope.
+
 ## Run the integrated application
 
 Use Python 3.12, Node 24 and pnpm 11.25.0. In a virtual environment:
@@ -35,6 +39,9 @@ continue to work. Do not copy the old ZIP database or execute its reset schema.
 ```bash
 python -m pytest backend/tests
 FRIDGELY_PYTHON=python node --test tests/functional/requirements.test.mjs
+API_BASE_URL=http://127.0.0.1:8000 node --test tests/fullstack/accounts-isolation.http.test.mjs
+pnpm --dir frontend test:e2e
+node tests/security/penetration.mjs
 ```
 
 See the [interactive API contract](docs/api.md), [cloud deployment](docs/cloud-deployment.md),
@@ -56,4 +63,29 @@ composition, web integration, CI verification and the test report. Existing
 backend module history is preserved. No automatic main-branch merge or production
 deployment from main is configured. The separate cloud feature branch configures
 the Render teaching deployment; see its reviewable Blueprint and deployment record.
+
+The public cloud URL is **pending Render GitHub repository access**. The connected
+Render account currently cannot read this private repository; a PostgreSQL instance
+is provisioned, but no live web service is claimed. The localhost URL above is
+accessible only on the machine running the host. Live generation additionally
+requires the team's server-side provider credential.
+
+## Documentation and team
+
+- [Branching, independent review and Semantic Versioning](docs/CONTRIBUTING.md)
+- [Approved stories, API contract and quality requirements](docs/requirements/README.md)
+- [Implemented database and transaction boundaries](docs/database.md)
+- [Recorded implementation decisions for team review](docs/requirements/decisions.md)
+- [Existing requirements report and WBS/PERT/Gantt plans](docs/requirements-specification.md)
+- [Analysis review PR #5](https://github.com/SarpCizer/CMPE331-Project/pull/5)
+  and [design review PR #6](https://github.com/SarpCizer/CMPE331-Project/pull/6)
+- [Instructor review and current issues](https://github.com/SarpCizer/CMPE331-Project/issues/16)
+
+Charter roles: Berfin Gökgöz (full-stack/database), İrem Demircan (product owner and
+fridge backend), Sarp Çizer (shopping/favorites/history), Ayşe Döne (recipe AI),
+Mustafa Safa Bayrak (frontend), Kerem Sönmez (DevOps/QA). Current integration retains
+Sarp's and Ayşe's module histories; Berfin's PRs also supply the connected React UI
+and integrated checks. The team must confirm its contact, obtain independent reviews
+and ensure each member makes their own real contribution. No contribution or
+approval is fabricated for another member.
 
