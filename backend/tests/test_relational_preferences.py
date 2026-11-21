@@ -1,5 +1,7 @@
 """US-03 and review #17: ordered, repeated values and lossless migration."""
 import json
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
 
 import pytest
 from sqlalchemy import inspect, text
@@ -28,6 +30,8 @@ def test_upgrade_preserves_legacy_lists_and_position_keys(tmp_path):
         connection.execute(text("INSERT INTO dietary_preferences (owner_id,position,display_value,value_key) VALUES ('a',0,'duplicate','duplicate')"))
     with pytest.raises(IntegrityError), engine.begin() as connection:
         connection.execute(text("INSERT INTO allergen_exclusions (owner_id,position,display_value,value_key) VALUES ('missing',0,'Peanut','peanut')"))
+    with pytest.raises(IntegrityError), engine.begin() as connection:
+        connection.execute(text("INSERT INTO accounts (id,email,password_hash,created_at) VALUES ('b','A@example.test','hash',CURRENT_TIMESTAMP)"))
     engine.dispose()
 
 
@@ -55,3 +59,20 @@ def test_relational_lists_replace_clear_and_remain_isolated(tmp_path):
         with app.state.engine.connect() as connection:
             assert connection.scalar(text('SELECT count(*) FROM dietary_preferences')) == 0
             assert connection.scalar(text('SELECT count(*) FROM allergen_exclusions')) == 0
+
+
+def test_concurrent_case_variant_registration_creates_one_account(tmp_path):
+    url = f'sqlite:///{tmp_path / "concurrent.db"}'
+    engine = make_engine(url)
+    migrate(engine)
+    engine.dispose()
+    app = create_app(database_url=url,jwt_secret='concurrent-registration-test-signing-key-at-least-32-bytes')
+    barrier = Barrier(2)
+    with TestClient(app) as client:
+        def register(email):
+            barrier.wait(timeout=5)
+            return client.post('/api/accounts',json={'email':email,'password':'Concurrent-test-password!'}).status_code
+        with ThreadPoolExecutor(max_workers=2) as workers:
+            assert sorted(workers.map(register,['Alice@example.test','ALICE@example.test'])) == [201,409]
+        with app.state.engine.connect() as connection:
+            assert connection.scalar(text('SELECT count(*) FROM accounts')) == 1
