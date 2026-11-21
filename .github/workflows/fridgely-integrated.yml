@@ -108,7 +108,7 @@ jobs:
       - name: Compare application and test sources with successful verification
         id: scope
         run: |
-          if git diff --quiet 775e8b7a949b2910bb6818145c9066df610a0d01 HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
+          if git diff --quiet 25c111aa5a8d678b60c17745289675821b62f91d HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
             echo "reuse=true" >> "$GITHUB_OUTPUT"
             echo "Application, dependency and test sources match the successful 106-test PostgreSQL and cloud-image run. Reusing its immutable artifacts."
           else
@@ -215,8 +215,8 @@ jobs:
         if: needs.source-scope.outputs.reuse == 'true'
         with:
           github-token: ${{ github.token }}
-          run-id: 44932416317
-          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
+          run-id: 44944497368
+          name: integrated-evidence-25c111aa5a8d678b60c17745289675821b62f91d
           path: test-results
       - name: Enforce the actual backend and frontend measurements
         run: python scripts/ci/check_coverage.py
@@ -265,13 +265,13 @@ jobs:
         uses: actions/download-artifact@v8.0.2
         with:
           github-token: ${{ github.token }}
-          run-id: 44932416317
-          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
+          run-id: 44944497368
+          name: integrated-evidence-25c111aa5a8d678b60c17745289675821b62f91d
           path: test-results
       - name: Record test and analysis revisions
         run: |
           mkdir -p test-results/sonarqube
-          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"775e8b7a949b2910bb6818145c9066df610a0d01" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
+          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"25c111aa5a8d678b60c17745289675821b62f91d" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
       - name: Start isolated loopback-only SonarQube
         run: |
           sudo sysctl -w vm.max_map_count=524288

@@ -37,13 +37,14 @@ def junit(path):
     return values
 
 local_backend=junit(ROOT/'docs/tests/evidence/local/backend-junit.xml')
-local_browser=junit(ROOT/'docs/tests/evidence/local/browser-junit.xml')
+local_browser=junit(BASE/CONFIG.get('local_browser','evidence/local/browser-junit.xml'))
 backend=read(ROOT/'docs/tests/coverage/backend-local.json')['totals']
 frontend=read(ROOT/'docs/tests/coverage/frontend-local.json')['total']
 local_load=read(ROOT/'docs/tests/non-func-tests/local-load.json')
 ci_dir=BASE/CONFIG['ci_dir']
 pg_load=read(BASE/'non-func-tests/postgresql-load.json')
 ci_backend=junit(ci_dir/'backend-junit.xml')
+ci_browser=junit(ci_dir/'browser-junit.xml')
 ci_code=read(BASE/'coverage/backend-ci.json')['totals']
 ci_frontend=read(BASE/'coverage/frontend-ci.json')['total']
 timeout=read(ROOT/'docs/tests/non-func-tests/provider-timeout.json')
@@ -58,6 +59,7 @@ high=[issue for issue in issues.get('issues',[]) if issue.get('severity') in {'B
     impact.get('severity') in {'HIGH','BLOCKER'} for impact in issue.get('impacts',[]))]
 run_url=f'https://github.com/SarpCizer/CMPE331-Project/actions/runs/{CONFIG["ci_run_id"]}'
 repo_url='https://github.com/SarpCizer/CMPE331-Project'
+artifact_ref=CONFIG.get('artifact_ref','test_work')
 
 font_candidates=[
     ('/System/Library/Fonts/Supplemental/Arial.ttf','/System/Library/Fonts/Supplemental/Arial Bold.ttf','/System/Library/Fonts/Supplemental/Arial Italic.ttf'),
@@ -126,12 +128,14 @@ table(['Verification','Recorded result'],[
     ['Local browser suite',f'{local_browser["passed"]} passed; core flows, three widths, WCAG audit and keyboard use'],
     ['Targeted penetration probes','4 passed: SQL payload, mass assignment, file disclosure and stored XSS'],
     ['PostgreSQL CI backend',f'{ci_backend["passed"]} passed in the cited run; separate processes verify persistence'],
+    ['CI browser suite',f'{ci_browser["passed"]} passed on the cited source revision'],
     ['Five-minute load scenarios','Targets met in both local SQLite and CI PostgreSQL environments'],
     ['Dependency audits','No known vulnerabilities reported by the recorded Python/npm audits'],
     ['SonarQube quality gate',gate_status],
 ],[150,350])
 paragraph('The production Docker image also passed a real PostgreSQL restart/isolation smoke test. Public HTTPS hosting is still blocked by Render GitHub repository access, and live recipe generation requires the team provider credential. Controlled provider fixtures are explicitly separate from these release checks.',True)
 paragraph(f'[GitHub verification run]({run_url}) | [Feature PRs]({repo_url}/pulls)',True)
+paragraph(f'Application verification revision: {CONFIG["ci_revision"]}. Report and current frontend handoff are proposed in PR #56; main remains unmerged.',True)
 
 page();heading('1. Scope, baseline and test design',1)
 paragraph('The repository is authoritative. The initial main inspection at 48b77e9 and latest check at cb99673 both contain the historical 501 acceptance scaffold. The collections module was taken from backend_work at 862005f and the recipe module from Ayse\'s PR #7 at e5391fe. Their history was preserved on the integration branch. No merge to main was performed.')
@@ -148,6 +152,7 @@ paragraph('US-15: authentic tokens work before expiry and fail afterward; malfor
 paragraph('US-03/US-07: preferences can be replaced and cleared atomically. Generating again after a saved update supplies the latest committed lists to the provider. US-09: a provider failure preserves all five personal collections; malformed/allergen-conflicting batches are rejected without partial persistence.')
 paragraph('Timestamp scenarios explicitly sign in again after advancing beyond the one-hour session lifetime. This preserves both the original date/history assertions and real expiration enforcement. The separate expired-token test still expects 401.',True)
 paragraph('Review #17 is addressed by the ordered relational preference migration. The actual test-first commit 9450fac contains two failing relational tests before the implementation commit 775e8b7. The following green run includes legacy-data preservation, repeated upgrade, duplicates/order, foreign keys, replacement/clear, two-account isolation and concurrent case-variant registration. Older work is not retroactively labelled as TDD.',True)
+paragraph('Frontend completion in #56 retains nine browser regressions in commit 2b2797f that failed against a7c7456 before implementation. The fixed application passes those regressions and the original complete flows. A further committed-write/failed-refresh regression was added during review; no earlier test-first history is claimed for it. Coverage and JUnit are retained under evidence/frontend-completion.',True)
 
 page();heading('2. Requirement and code coverage',1)
 paragraph('The denominator is the 15 user stories and 48 acceptance criteria stored under docs/requirements. Each criterion has an assertion mapping in docs/tests/coverage/traceability.csv. Mapping coverage is 48/48; executed assertions within the stated fixture/SQL/browser scope support the recorded passes. Mapping is separate from line/branch coverage and from release approval.')
@@ -204,8 +209,9 @@ if high:
 else:
     paragraph('The initial scan recorded 17 findings: one email regex concern, four implicit form-submit types and twelve assertion-helper classification findings. PR #13 replaces the regex with a maintained parser, makes submit types explicit, and renames the custom HTTP helper while retaining its assertions. Completed scans of the corrected and current application report zero issues. Both initial exports and rule-specific mitigation evidence are committed.')
 paragraph('The quality-gate export is OK with an empty conditions array on this initial project analysis. The explicit zero issue/high-severity/hotspot totals and actual measured tests are preserved; gate OK is not presented as proof that a custom release policy was evaluated.',True)
+paragraph('The first frontend-completion scan at 522e0db reported one MAJOR javascript:S9383 finding on the unmarked background load. Its selected original fields and artifact identity are retained in quality/frontend-522-findings.json. Commit 25c111a explicitly marks this internally handled promise with void; the follow-up scan and measured tests are recorded against that source. No runtime rejection incident is claimed from the static finding alone.',True)
 paragraph('Separate CI policy checks enforce backend statement/branch floors of 90%/70% and frontend line/branch/function floors of 90%/85%/85%. Their observed job status is recorded separately from the application run. A full-history secret scan initially flagged documentation prose and a deliberately invalid unsigned test JWT; only specific verified historical fingerprints are scoped as false positives. No broad file exclusion or history rewrite is used.',True)
-paragraph('Policy run 44933945505 completed successfully: actual coverage satisfies the explicit floors, the lowered-coverage canary is rejected, the redacted full-history secret scan passes, and an isolated synthetic credential is detected. Source identity is verified before reusing immutable application evidence from run 44932416317.',True)
+paragraph(f'Current verification run {CONFIG["ci_run_id"]} executes the application and browser suites on the cited source revision. Its coverage-policy and secret-scan jobs enforce the explicit floors and their negative canaries. Historical policy-only run 44933945505 separately verified source identity before reusing immutable application evidence from run 44932416317; those older results are not relabelled as a new source run.',True)
 paragraph('The scan runs against a disposable loopback-only SonarQube server inside CI. It does not require uploading this private repository to an unrelated hosted analysis account. The temporary initial admin password is rotated, tokens are masked and the server is removed after export. The exported JSON remains reviewable after the server is destroyed.',True)
 
 page();heading('5. Review, interpretation and release gates',1)
@@ -218,13 +224,14 @@ table(['PR','Review scope'],[
  ['#13 / #14 / #15','Quality fixes; self-host API documentation and production image; four penetration probes.'],
  ['#49 / #50 / #51 / #52','Relational migration with actual TDD; review/version policies; AI evidence; coverage and secret failure gates.'],
  ['test_work Test report','Traceability, measured results, non-functional evidence, quality findings/mitigations and this PDF.'],
+ ['#56 Frontend completion','Linked validation, independent loading/retry, committed-write acknowledgement, safe modal feedback, team setup guide and current evidence.'],
 ],[160,340])
 paragraph('Each PR is opened from Berfin\'s account with an English title/description. The dependent bases keep feature reviews separate and preserve teammate commits. Yeşim\'s verified reviewer handle is yesimyigitbasi. No PR has been merged to main by this work.')
 heading('Remaining release checks')
 paragraph('Render GitHub access must be granted for the private source repository or an authorized private fork before public hosting can complete. Supply the team\'s real provider credential outside source control and run live recipe checks, then record deployment-specific smoke/performance results. Obtain independent reviews, owner-applied main protection, team contribution/Project evidence and course-platform submission. These human/account actions are not inferred from test execution.')
 heading('Submission schedule')
 paragraph('Internal preparation target: 22 November 2026. The supplied updated instructor email sets the test PR/reviewer deadline to 25 November and the approved PDF submission to 29 November 2026. This is a review copy. Submission to learn.bilgi follows PR approval and is not claimed here.')
-paragraph(f'Artifacts: [verification run]({run_url}), [criterion CSV]({repo_url}/blob/test_work/docs/tests/coverage/traceability.csv), [quality evidence]({repo_url}/tree/test_work/docs/tests/quality), [non-functional results]({repo_url}/tree/test_work/docs/tests/non-func-tests). Images are embedded on the following pages, as required.',True)
+paragraph(f'Artifacts: [verification run]({run_url}), [criterion CSV]({repo_url}/blob/{artifact_ref}/docs/tests/coverage/traceability.csv), [quality evidence]({repo_url}/tree/{artifact_ref}/docs/tests/quality), [non-functional results]({repo_url}/tree/{artifact_ref}/docs/tests/non-func-tests). Images are embedded on the following pages, as required.',True)
 
 page();heading('6. Desktop browser evidence',1)
 paragraph('1440 px viewport, production React build served by the actual API host. The displayed ingredient and addition date were created through the authenticated SQL-backed endpoint. Synthetic test accounts are used throughout.',True)
@@ -264,6 +271,22 @@ md.extend(['![API documentation evidence](evidence/screenshots/api-documentation
 story.append(Spacer(1,12))
 paragraph('The production image was built and started against PostgreSQL in CI. Two users, persisted inventory/preferences/shopping, relogin and an unchanged signed token were checked after an actual container restart. Missing provider credentials correctly produce 503. This proves the packaged host and managed-database contract in the named CI environment, not public Render availability or live recipe generation.')
 paragraph('Render workspace access succeeds and the free PostgreSQL instance exists. The attempted Blueprint import returns repository/branch/file access denied, so there is no verified public web URL. A repository-owner GitHub grant or authorized private fork is required. The free database created on 20 November is scheduled to expire on 20 December 2026; longer retention needs a reviewed plan. These remaining actions are tracked explicitly.',True)
+
+page();heading('10. Frontend validation and recovery',1)
+paragraph('Current #56 screenshots use isolated accounts and the actual React/API host. Validation is associated with the input and blocks invalid writes. An unavailable favorites collection has its own retry; the fridge and other collections remain usable. These error states are included in the three-width accessibility checks.',True)
+validation=BASE/'evidence/frontend-completion/validation-360.png'
+unavailable=BASE/'evidence/frontend-completion/favorites-unavailable-768.png'
+with PILImage.open(validation) as picture:w,h=picture.size
+validation_image=Image(str(validation),width=175,height=175*h/w)
+with PILImage.open(unavailable) as picture:w,h=picture.size
+unavailable_image=Image(str(unavailable),width=290,height=290*h/w)
+layout=Table([[validation_image,unavailable_image]],colWidths=[195,305],hAlign='LEFT')
+layout.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),0)]))
+story.append(layout)
+md.extend(['![Linked validation at 360px](evidence/frontend-completion/validation-360.png)','',
+    '![Independent favorites retry at 768px](evidence/frontend-completion/favorites-unavailable-768.png)',''])
+story.append(Spacer(1,12))
+paragraph('Recipe actions also display their error/success feedback inside the dialog, prevent duplicate submissions and provide a View shopping list link after missing ingredients are added. A completed write with a failed list refresh is acknowledged separately; retrying reads data without repeating the write. A 401 from any request clears personal state even during another collection outage.',True)
 
 def footer(canvas,document):
     canvas.saveState()

@@ -1,0 +1,23 @@
+{
+  "source_revision": "522e0db8e2a9c6d9c3e22b5b8a71e9de05ffc82a",
+  "environment": "isolated actual React/FastAPI/SQLite; controlled external recipe provider",
+  "verification": "supplementary scripted browser walkthrough, separate from the 18-case suite",
+  "results": [
+    {
+      "scenario": "Preferences can be cleared and stay cleared after reload",
+      "passed": true
+    },
+    {
+      "scenario": "Fridge filtering restores existing inventory after an empty search result",
+      "passed": true
+    },
+    {
+      "scenario": "Removing a favorite updates the UI and preserves viewed history",
+      "passed": true
+    },
+    {
+      "scenario": "Repeated shopping addition stays idempotent; shopping removal leaves inventory unchanged",
+      "passed": true
+    }
+  ]
+}

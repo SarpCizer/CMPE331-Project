@@ -105,15 +105,15 @@
   },
   {
     "path": "frontend/src/api.js",
-    "sha256": "c25a2ac57c06332c1bd5f96d5c884b7cca6ed7093177c176f11b99c3d5fdec39"
+    "sha256": "08f86b6d43fad60a7ba7ddcf071fb5e8f4a3d039ef413d0791b1e7795bcfb464"
   },
   {
     "path": "frontend/src/main.jsx",
-    "sha256": "5aac7665f8edd922bf0f4bfd6471c9c88345adaffccb29b3439d253d7249058f"
+    "sha256": "ed8ec66f0f3763415f185119b0c089fe31f37f2aab8ec04019b8bbc7937c5d5b"
   },
   {
     "path": "frontend/src/styles.css",
-    "sha256": "3740a190b8802ed1102afa74fd55253cdae265565f50aed996232279df18382c"
+    "sha256": "84d1411a3ebb357dd22cfb4bfc017233fe2144dc0ab65f217077430db690d066"
   },
   {
     "path": "frontend/src/tokens.css",

@@ -63,7 +63,7 @@
 ]]>
 </system-out>
 <failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
-<![CDATA[  completion.spec.js:64:1 › a failed collection does not discard inventory or turn a committed write into failure 
+<![CDATA[  completion.spec.js:64:1 › a failed collection does not discard inventory or turn a committed write into failure
 
     Error: expect(locator).toBeVisible() failed
 
@@ -213,7 +213,7 @@
 ]]>
 </system-out>
 <failure message="expect(locator).toBeDisabled() failed" type="expect.toBeDisabled">
-<![CDATA[  completion.spec.js:112:1 › recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list 
+<![CDATA[  completion.spec.js:112:1 › recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list
 
     Error: expect(locator).toBeDisabled() failed
 
@@ -265,7 +265,7 @@
 ]]>
 </system-out>
 <failure message="expect(locator).not.toContainText(expected) failed" type="expect.not.toContainText">
-<![CDATA[  completion.spec.js:147:1 › failed generation keeps previous results and hides provider diagnostics 
+<![CDATA[  completion.spec.js:147:1 › failed generation keeps previous results and hides provider diagnostics
 
     Error: expect(locator).not.toContainText(expected) failed
 

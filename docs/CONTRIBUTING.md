@@ -2,6 +2,12 @@
 
 Refs #16, #22, #24. Use small English branches: `feature/<owner>-<purpose>`, `fix/<owner>-<defect>`, `test/<owner>-<scope>`, `docs/<owner>-<scope>` or `ci/<owner>-<scope>`. Keep one review purpose per PR. Link the task issue, #16, exact tests/evidence, AI assistance and dependent PRs. Never commit credentials, local databases or installed libraries.
 
+Group related implementation, regression tests, handoff and evidence in the same
+existing branch. A new branch is for an independently reviewable work package,
+not every small edit or checklist row. The frontend completion and updated
+integration evidence continue in existing #56. Preserve the earlier review
+history rather than deleting or rewriting branches to reduce the visible count.
+
 Stacked PRs target the preceding feature branch to keep diffs focused. Current integration order is #9 -> #10 -> #11 -> #12 -> #13 -> #14 -> #15 -> #49, followed by workflow/docs and final evidence PRs. #10 preserves the exact recipe and collections module commits, including Ayse's #7; #8 is Kerem's independent CI/report draft and must be reviewed with him before deciding how to reconcile its overlap. Preserve #6's design review separately. Do not merge or close another teammate's work without the team's decision. When reviewed parents are merged, the team contact retargets/rebases dependent PRs under a checked plan. This work performs no main merge.
 
 At least one teammate other than the author must approve a merge. Yeşim is also requested for course deliverables. Address review findings with linked commits; do not equate a request, a bot check or an author review with independent approval.

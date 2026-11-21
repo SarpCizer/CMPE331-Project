@@ -14,6 +14,7 @@
 | `tests/functional/requirements.test.mjs` | 27 executable cases with criterion-level mapping in traceability.csv |
 | `tests/fullstack/accounts-isolation.http.test.mjs` | 12 real HTTP authentication/authorization cases |
 | `frontend/tests/kitchen.spec.js` | Eight production-build browser, layout, accessibility and keyboard cases |
+| `frontend/tests/completion.spec.js` | Ten additional validation, collection-isolation, refresh, modal/error and three-width accessibility cases |
 | `tests/security/penetration.mjs` | Four scoped attack probes, including actual-browser stored XSS |
 
 Read raw JUnit and source-coverage denominators with this table. Some module tests use isolated service ports; combined host/HTTP/browser cases establish the actual integration. Controlled provider fixtures do not establish live provider availability or hidden-allergen safety.

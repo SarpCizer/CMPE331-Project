@@ -6,7 +6,7 @@
     "measures": [
       {
         "metric": "coverage",
-        "value": "92.1",
+        "value": "92.5",
         "bestValue": false
       },
       {
@@ -26,12 +26,12 @@
       },
       {
         "metric": "branch_coverage",
-        "value": "82.4",
+        "value": "83.8",
         "bestValue": false
       },
       {
         "metric": "ncloc",
-        "value": "3341"
+        "value": "3580"
       },
       {
         "metric": "vulnerabilities",
@@ -40,7 +40,7 @@
       },
       {
         "metric": "line_coverage",
-        "value": "93.8",
+        "value": "94.2",
         "bestValue": false
       },
       {

@@ -65,16 +65,21 @@ course-platform submission are not inferred from test execution. Main is unchang
 
 Refs #16, #39, #41-#44. Start with [the test plan](test-plan.md),
 [review checklist evidence](review-16-evidence.md), [unit-module mapping](coverage/unit-modules.md)
-and the criterion CSV. Current application run 44932416317 tests revision 775e8b7:
-106 Python, 27 acceptance, 12 HTTP, 8 browser and 4 penetration scenarios pass;
-production-image/PostgreSQL restart checks pass; Sonar reports zero issues.
-The policy-only run 44933945505 verifies identical application/test/image inputs,
-reuses those immutable test artifacts and separately passes coverage/secret gates
-and their negative canaries. Raw failures and narrowly reviewed false positives
-remain in quality/analysis-history.json and the redacted finding exports.
+and [the frontend completion](frontend-completion.md). Candidate #56 source
+25c111a is verified in run 44944497368: 106 Python, 27 acceptance, 12 HTTP,
+18 browser and four penetration cases pass; the production-image/PostgreSQL
+restart check passes. CI coverage and secret policies include passing negative
+canaries. Current raw application results are in evidence/ci-frontend.
+
+The initial frontend-completion scan at 522e0db reported one MAJOR S9383 finding;
+25c111a marks the internally handled background promise explicitly. Selected
+finding fields, artifact identity and mitigation are retained. Final follow-up
+analysis is recorded in quality/current and quality/analysis-history.json.
+Historical database and policy runs retain their own source/run identities;
+old evidence is not relabelled as a new source measurement.
 
 The actual relational preference red/green sequence is in evidence/tdd and PR #49.
-The report PDF embeds all four screenshot figures. To regenerate from a full
+The report PDF embeds all six screenshot figures. To regenerate from a full
 checkout containing the committed evidence:
 
 ```sh
