@@ -2,6 +2,8 @@
 
 Bu paket charter'daki **alışveriş listesi, favoriler, tarif geçmişi ve ilgili API desteğini** uygular (US-10–US-14). GET tarif detayı, geçmiş kaydını aynı işlemde tamamlayabilmek için bir entegrasyon noktasıdır. Kayıt/giriş/JWT üretimi, dolap CRUD, AI öneri üretimi, frontend veya deployment uygulaması bu pakette yoktur.
 
+23 Kasım görev/entegrasyon rehberi: [Sarp handoff](docs/sarp-handoff.md). Burada #31–#34 eşlemesi, #30 ortak DTO sözleşmesi, dosyaların görevleri, gerçek RED/GREEN kayıtları ve arkadaşların ortak host'u ile tekrarlanabilir uyumluluk kontrolü bulunur. `backend_work` korunur; başka dallara merge/push yapılmaz. #22 için yalnızca [repo sahibi ayar önerisi](docs/main-protection.md) hazırlanmıştır.
+
 Gönderilen `backend.zip` FastAPI/SQLAlchemy kullandığı ve charter Python/FastAPI seçeneğine izin verdiği için bu paket o yapıya takılabilen bir Python modülüdür. Ayrı `design_work` raporu Express önerir; bu uygulama o raporu değiştirmez. Son uygulama Express seçilirse Python router doğrudan Express'e eklenemez; API sözleşmesi korunarak servis sınırı veya bir port gerekir. Burada yeni bir genel teknoloji kararı alınmıyor.
 
 ## ZIP dosyalarıyla uyum
@@ -89,7 +91,9 @@ Linux/macOS'ta `.venv/Scripts/python.exe` yerine `.venv/bin/python` kullanılır
 
 19 Kasım 2026'da Windows/Python 3.12.14 üzerinde **59 test geçti**. HTTP testleri gerçek SQLAlchemy/SQLite dosyası kullanır; JWT sağlayıcısı ve diğer ekip servisleri test double'dır. Senaryolar US-10–US-14 davranışları, sahiplik, doğrulama, eşzamanlı tekrarlar, diskten tekrar açılış, rollback ve commit öncesi başarı verilmemesini kapsar. PostgreSQL için SQL yolu vardır; canlı PostgreSQL veya gerçek JWT/AI entegrasyonu bu doğrulama kapsamında çalıştırılmadı.
 
-Mevcut Node `src/acceptance-app.mjs` 501 test iskeleti ve tüm projeyi kapsayan 27 kabul testi değiştirilmedi. Python modülünün test sonuçları o uçtan uca takım testlerinin geçtiği anlamına gelmez. Ortak auth, inventory ve recipe servisleri bağlandığında HTTP adaptörü üzerinden takım kabul testlerine de bağlanmalıdır.
+23 Kasım 2026 kontrolünde **64 modül testi geçti**. Ayrıca arkadaşların `929776c` ortak uygulamasının ayrı ve geçici kopyasına bu branch'in modülü bağlandı: gerçek JWT, migrations ve kalıcı veri kullanan **126 Python testi ile 27 Node kabul testi geçti**. Yerel PostgreSQL olmadığı için bir PostgreSQL testi atlandı; canlı AI sağlayıcısı denenmedi. Ayrıntı ve tekrar çalıştırma adımları [rehberde](docs/sarp-handoff.md), ölçülen sonuçlar [verification.json](docs/verification.json) içindedir.
+
+Bu branch'in kökündeki Node `src/acceptance-app.mjs` 501 iskeleti ve 27 kabul testi değiştirilmedi. Yukarıdaki 27 başarı, arkadaşların ortak HTTP adaptörü ve gerçek host'u üzerindeki uyumluluk çalışmasına aittir; bu branch tek başına bütün ekip uygulamasını içermez. Diğer branch'lere kod yazılmadı veya merge yapılmadı.
 
 Kaynak sözleşmeler: [charter](../docs/CHARTER.MD), [API](../docs/requirements/api-contract.md), [US-10](../docs/requirements/US-10.md), [US-11](../docs/requirements/US-11.md), [US-12](../docs/requirements/US-12.md), [US-13](../docs/requirements/US-13.md), [US-14](../docs/requirements/US-14.md).
 

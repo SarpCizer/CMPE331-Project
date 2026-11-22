@@ -1,0 +1,56 @@
+{
+  "team_revision": "929776ccc51d914084ebb49d5997942c51c64b58",
+  "python": "3.12.14",
+  "overlay_sha256": {
+    "backend/src/fridgely_collections/adapters.py": "9c22418cecd752afd91f91b6aaa6d37f64dd28cbd50ae1a1144aa86a3db3001b",
+    "backend/src/fridgely_collections/api.py": "5e6b72e0cf5e7b484ac3c6e2035e2be569e9269f526b8b6c7f20d4bd95f744e5",
+    "backend/src/fridgely_collections/errors.py": "d692a61224e3618e38ad10e5f5abd6eb8f190b7a6978dd73f8f5d23cdb3df358",
+    "backend/src/fridgely_collections/models.py": "8bb978bbfea73b5f08791006e12b89c5b99da032ca24ee00a2dbbb9a277d6a02",
+    "backend/src/fridgely_collections/ports.py": "2ffdd0c8f30a517faa6f4d5b2e42316731c4943dcebf34b59906d9225f2f3bac",
+    "backend/src/fridgely_collections/repository.py": "8d62b6f048478090b49f3448545b5535619d6e2f645e6849fb9e4e2597bfe90e",
+    "backend/src/fridgely_collections/schemas.py": "cecef7a4d569e6dfa3d4bf0d8379314a8589d78076efd1cd91e1bde8ae4923f0",
+    "backend/src/fridgely_collections/service.py": "6ee073f291cafc1e3ac0f2e052ce4d1d0fd7e0f4c99b04eddc6ea64206cbb43b",
+    "backend/src/fridgely_collections/__init__.py": "fac0ff8872ea050dba3c51d6179f4f9adb26097f27a6b9d900e66e278afb2844",
+    "backend/tests/test_history_dependency_failures.py": "313513f8229961eca092458bdca49792729f56c11e13f6bf4913daf099d3a093",
+    "backend/tests/test_sarp_collections_contract.py": "7587d9db98968948a8d5ec39e343cda8bcbcf44f790216b7f7d9e1811cea864a"
+  },
+  "results": {
+    "python": {
+      "exit_code": 0,
+      "tests": 127,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 126
+    },
+    "acceptance": {
+      "exit_code": 0,
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "postgres_requested": false,
+  "provider": "controlled fixtures; live OpenAI not exercised",
+  "teammate_inputs_preserved": true,
+  "recorded_on": "2026-11-23",
+  "standalone": {
+    "passed": 64,
+    "failed": 0,
+    "warnings": 1
+  },
+  "tdd": {
+    "baseline": "862005f",
+    "red_commit": "fc2a560",
+    "failed_before_fix": 5,
+    "green_commit": "63dcd7a",
+    "passed_after_fix": 5,
+    "scope": "new history dependency regression only"
+  },
+  "limitations": [
+    "Local PostgreSQL unavailable: one test skipped; CI must exercise PostgreSQL separately.",
+    "Controlled provider fixtures; no live AI or deployment tested.",
+    "Independent human review and issue closure are still pending."
+  ]
+}
