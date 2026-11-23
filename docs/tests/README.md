@@ -61,7 +61,15 @@ email sets the PR deadline to 25 November 2026 and approved PDF submission to
 29 November; the internal preparation target is 22 November. PR approval and
 course-platform submission are not inferred from test execution. Main is unchanged.
 
-## Current review evidence
+## Verification checkpoints and current follow-up
+
+The last complete integrated checkpoint is source273a983, [run45241264964](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45241264964):113 PostgreSQL/backend,27 acceptance,20 browser,12 HTTP and4 penetration cases; all seven jobs pass, including image/restart, archive, coverage, secret scan and Sonar (zero issues). The 50-user/5-minute run records42,336 requests, p95336.34ms and2 connection failures (0.004724%); both unchanged thresholds pass. This is a CI environment result, not a public-cloud measurement.
+
+The #63 recipe-to-shopping follow-up in current #56 adds real-auth/SQL regressions for invalid mixed batches and valid name boundaries. Its source and test-first evidence are recorded in [ingredient-contract/tdd.json](evidence/ingredient-contract/tdd.json); check its own CI run on #56 before using later-source results. [The review checklist](review-16-evidence.md) distinguishes implemented work, review gates and remaining owner/team actions. Cloud deployment is explicitly on hold until Sarp grants Render access to the original repository; the personal fork must not be deployed.
+
+The following report/PDF baseline remains historical. Regenerate the final report and ZIP from the team-selected source after review; do not relabel its old measurements as testing newer code.
+
+## Report baseline evidence (25c111a)
 
 Refs #16, #39, #41-#44. Start with [the test plan](test-plan.md),
 [review checklist evidence](review-16-evidence.md), [unit-module mapping](coverage/unit-modules.md)

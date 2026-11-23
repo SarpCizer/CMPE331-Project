@@ -6,7 +6,8 @@ from uuid import uuid4
 from pydantic import ValidationError
 from starlette.concurrency import run_in_threadpool
 
-from fridgely_collections.schemas import RecipeDTO
+from fridgely_collections.errors import CollectionError
+from fridgely_collections.schemas import RecipeDTO, ingredient_name
 
 MAX_PROVIDER_SECONDS = 28
 
@@ -38,8 +39,11 @@ def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[Recip
             raise RecipeError(502, "The recipe service returned an invalid response.")
         fields = {key: candidate.get(key) for key in RecipeDTO.model_fields if key != "id"}
         try:
-            recipes.append(RecipeDTO(id=uuid4().hex, **fields))
-        except ValidationError:
+            recipe = RecipeDTO(id=uuid4().hex, **fields)
+            for name in recipe.ingredients:
+                ingredient_name(name)
+            recipes.append(recipe)
+        except (ValidationError, CollectionError):
             raise RecipeError(502, "The recipe service returned an invalid response.") from None
 
     exclusions = {name.strip().casefold() for name in allergens}
