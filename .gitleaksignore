@@ -23,3 +23,6 @@ f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.
 f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:679
 f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:729
 f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:779
+
+# Verified SHA-256 of the historical collections API source recorded in the compatibility report.
+a38b8b4417884a0c547e28f8f84b99f3c8fed8b5:backend/docs/verification.json:generic-api-key:6
