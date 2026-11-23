@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createApi } from "./api";
+import { formatPreferences, parsePreferences } from "./preferences";
 import "./styles.css";
 
 const initialData = () => ({
@@ -57,17 +58,19 @@ function focusInvalid(form, errors) {
 function nameError(value, label) {
   return value.trim() ? "" : `Enter ${label} before adding it.`;
 }
-function splitPreferences(value) {
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
 function preferenceError(values) {
   if (values.length > 100) return "Use at most 100 entries in this field.";
   if (values.some((value) => [...value].length > 128))
     return "Use at most 128 characters per entry.";
   return "";
+}
+function preferenceField(text) {
+  try {
+    const values = parsePreferences(text);
+    return { values, error: preferenceError(values) };
+  } catch (error) {
+    return { values: [], error: error.message };
+  }
 }
 function ResourceError({ label, error, retry, busy }) {
   return (
@@ -670,22 +673,22 @@ function RecipeDialog({
 }
 
 function Preferences({ value, run, api }) {
-  const [dietary, setDietary] = useState(value.dietary.join(", ")),
-    [allergens, setAllergens] = useState(value.allergens.join(", ")),
+  const [dietary, setDietary] = useState(formatPreferences(value.dietary)),
+    [allergens, setAllergens] = useState(formatPreferences(value.allergens)),
     [errors, setErrors] = useState({});
   useEffect(() => {
-    setDietary(value.dietary.join(", "));
-    setAllergens(value.allergens.join(", "));
+    setDietary(formatPreferences(value.dietary));
+    setAllergens(formatPreferences(value.allergens));
   }, [value]);
   function submit(event) {
     event.preventDefault();
-    const body = {
-      dietary: splitPreferences(dietary),
-      allergens: splitPreferences(allergens),
+    const fields = {
+      dietary: preferenceField(dietary),
+      allergens: preferenceField(allergens),
     };
     const invalid = Object.fromEntries(
-      Object.entries(body)
-        .map(([key, values]) => [key, preferenceError(values)])
+      Object.entries(fields)
+        .map(([key, field]) => [key, field.error])
         .filter(([, message]) => message),
     );
     setErrors(invalid);
@@ -693,6 +696,10 @@ function Preferences({ value, run, api }) {
       focusInvalid(event.currentTarget, invalid);
       return;
     }
+    const body = {
+      dietary: fields.dietary.values,
+      allergens: fields.allergens.values,
+    };
     run(
       () => api("/profile/preferences", { method: "PUT", body }),
       "Preferences saved.",
@@ -706,8 +713,9 @@ function Preferences({ value, run, api }) {
       <p>Your saved preferences are included whenever you ask for recipes.</p>
       <form noValidate onSubmit={submit}>
         <label htmlFor="dietary">Dietary preferences</label>
-        <input
+        <textarea
           id="dietary"
+          rows="2"
           value={dietary}
           onChange={(e) => {
             setDietary(e.target.value);
@@ -717,11 +725,15 @@ function Preferences({ value, run, api }) {
           aria-invalid={!!errors.dietary}
           aria-describedby={`dietary-help${errors.dietary ? " dietary-error" : ""}`}
         />
-        <small id="dietary-help">Separate preferences with commas.</small>
+        <small id="dietary-help">
+          Separate preferences with commas. Quote a name containing commas; use
+          two double quotes for a quote inside a name.
+        </small>
         <FieldError id="dietary-error">{errors.dietary}</FieldError>
         <label htmlFor="allergens">Ingredients to exclude</label>
-        <input
+        <textarea
           id="allergens"
+          rows="2"
           value={allergens}
           onChange={(e) => {
             setAllergens(e.target.value);
@@ -732,7 +744,8 @@ function Preferences({ value, run, api }) {
           aria-describedby={`allergens-help${errors.allergens ? " allergens-error" : ""}`}
         />
         <small id="allergens-help">
-          Use ingredient names, separated by commas. Review recipe ingredients
+          Separate names with commas. Quote a name containing commas; use two
+          double quotes for a quote inside a name. Review recipe ingredients
           before cooking.
         </small>
         <FieldError id="allergens-error">{errors.allergens}</FieldError>

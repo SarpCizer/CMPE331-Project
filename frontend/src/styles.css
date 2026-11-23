@@ -16,12 +16,14 @@ body {
   line-height: 1.55;
 }
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 button,
 a,
-input {
+input,
+textarea {
   touch-action: manipulation;
 }
 button {
@@ -34,7 +36,8 @@ fieldset:disabled button {
 }
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible {
   outline: 3px solid #bd6239;
   outline-offset: 3px;
 }
@@ -76,7 +79,8 @@ label {
   font-weight: 600;
   margin: 0 0 8px;
 }
-input {
+input,
+textarea {
   width: 100%;
   min-width: 0;
   border: 1px solid #cdd6ce;
@@ -85,8 +89,12 @@ input {
   padding: 12px 14px;
   color: var(--ink);
 }
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: #778279;
+}
+textarea {
+  resize: vertical;
 }
 form label:not(:first-child) {
   margin-top: 22px;
@@ -194,7 +202,8 @@ button {
   margin: 8px 0 16px;
   overflow-wrap: anywhere;
 }
-input[aria-invalid="true"] {
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
   border-color: #923d2a;
 }
 .resource-error p,
