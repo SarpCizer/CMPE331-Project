@@ -17,7 +17,7 @@ requirements and persistence pages were rendered and visually checked.
 
 | Full-stack/frontend/database responsibility | Observed implementation and finding |
 | --- | --- |
-| Accounts, signed JWT, owner-qualified personal data | Real host/authentication and cross-owner tests retained; #9 foundation is carried into expanded #57, with later validation and relational improvements. |
+| Accounts, signed JWT, owner-qualified personal data | The separate #9 foundation and #10 shared host are retained in #56 with later validation/relational improvements. A comparison with the earlier expanded #57 was historical; #57 has since returned to module-only scope and #9 stays open. |
 | Ordered dietary/allergen values | Migration 0002 and database/API preserve strings, order and repeats. The browser conversion was lossy: saving without edits split comma-containing names and trimmed original values. Corrected in #62 without changing the API or schema. |
 | Manual fridge names and immutable addition dates | Existing real API/browser/inventory-invariant tests cover add/list/delete/reload. No expiry tracking, quantity arithmetic or automatic deduction added. |
 | Complete recipe UI and collections integration | Existing generation/details, estimate labels, missing ingredients, favorites/history and failure/empty/loading flows remain tested. A reproduced provider-to-shopping ingredient-domain mismatch is tracked in #63 for Ayse/Sarp. |
@@ -28,11 +28,19 @@ requirements and persistence pages were rendered and visually checked.
 
 ## Exact verification boundary
 
-The current integrated application was reviewed at #57 `9b00eced81cbca8256e38f9e625b349da9ad8ec6`.
+The initial integrated application audit used #57 `9b00eced81cbca8256e38f9e625b349da9ad8ec6`.
 Comparison with `d9842e2` shows only CI/evidence/report/archive changes; backend,
 frontend and runtime test sources are unchanged. Its completed checks are in
 run45232749347; the prior application execution is run45228220407, whose first
 secret failure remains recorded and was subsequently narrowly triaged by Sarp.
+
+Sarp later restored #57 to collections-only at81fd395. That expanded snapshot is
+no longer its current scope, and Berfin's conditional proposal to close #9 as
+superseded was withdrawn. #9 remains a separate open/mergeable account/database
+PR. #56 remains the full-stack work branch. It carries only Sarp's reviewed clock
+service correction and its five regressions (original RED fc2a560, fix63dcd7a),
+preserving missing/foreign404 and sanitized owned-recipe503. Its final current CI
+must be checked after that integration; an older source's result is not relabelled.
 
 For #62, two new real-browser regressions fail on the unchanged frontend from
 #56 `929776c`, then pass after the reversible editor correction. All twenty local
