@@ -30,7 +30,11 @@ jobs:
       - run: python -m pip install -r sarp/backend/requirements-test.lock
       - run: python -m pip install --no-deps -e sarp/backend
       - name: Test Sarp's module
-        run: python -m pytest sarp/backend/tests -q
+        run: >-
+          python -m pytest
+          sarp/backend/tests/test_collections_api.py
+          sarp/backend/tests/test_transactions_and_integration.py
+          sarp/backend/tests/test_history_dependency_failures.py -q
 
   compatibility:
     name: Sarp real-host compatibility

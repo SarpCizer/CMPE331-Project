@@ -2,6 +2,15 @@
 
 This guide describes the personal-collections module on `backend_work`. It does not merge or replace teammates' branches. The account, inventory, recipe and React implementations are exercised from the separately pinned team checkout.
 
+The accidental full-application snapshot was reverted to the collections-only
+`a38b8b4` tree. PR #9's account/database code and #10's host composition were read
+to verify the existing `AccountPrincipal`, `CoreCallbacks`, session and DTO
+interfaces; those implementations are not copied into this branch. They remain
+separate team PRs for review and merge. The standalone CI now names only the three
+collections test files, so a future merge of #9 does not make that minimal-dependency
+job collect the other contributor's account tests. Full-host verification remains
+isolated in the compatibility checkout.
+
 ## 1. Responsibility and issue map
 
 | Issue | Implemented behavior | Main tests |
