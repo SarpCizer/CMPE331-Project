@@ -15,3 +15,11 @@ Refs #16, #46. Codex assisted Berfin with the following actual changes. GitHub c
 | Finish frontend validation, independent collection loading and recipe modal feedback | Existing #56; test-first commit 2b2797f | Nine new browser regressions failed against a7c7456 before implementation; one further committed-write refresh regression added during review. Current run evidence is recorded in docs/tests/frontend-completion.md. |
 
 The assistant used the PDF skill to prepare and visually inspect the test report and the Render deploy skill for infrastructure preparation. Browser verification uses the actual application, with an isolated external-provider fixture. The team must independently review the diff, confirm decisions and complete live-provider/cloud checks; those actions are not claimed here. Each other member should add their own verified tool usage and incidents, rather than Berfin inventing their contribution history.
+
+## İrem Demircan
+
+| Contribution | PR / source | Validation |
+| --- | --- | --- |
+| Claude helped draft the backlog issues, as reported by İrem. | #17–#48, linked from #16 | Codex cross-checked issue metadata, dependencies and open PRs. The backlog snapshot was superseded by the current integration stack. |
+| Codex helped identify and cover inventory regression gaps. | #58, 6c2aa58 | 27 baseline functional tests and 28 after the coverage change; 23 account/database and host integration tests passed locally with an isolated provider. |
+| Codex reproduced archive defects and prepared review feedback for the final deliverable. | #53 | A harmless untracked file reached the archive, and two identical-input builds yielded distinct ZIP bytes. Corrective review feedback is recorded on the PR. |
