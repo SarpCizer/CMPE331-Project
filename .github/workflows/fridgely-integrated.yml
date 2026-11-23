@@ -55,6 +55,37 @@ jobs:
             test-results/secret-gate-canary.json
           retention-days: 30
 
+  source-archive:
+    name: Immutable source archive and reproducibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Exercise dirty-checkout, revision and ZIP metadata regressions
+        run: python -B -m unittest discover -s scripts/release -p test_package_source.py -v
+      - name: Package the exact checked-out commit twice and compare bytes
+        run: |
+          archive_revision="$(git rev-parse HEAD)"
+          archive_first="$RUNNER_TEMP/release/Fridgely-source-0.1.0.zip"
+          archive_second="$RUNNER_TEMP/release/repeated-source.zip"
+          python scripts/release/package_source.py --revision "$archive_revision" --output "$archive_first"
+          python scripts/release/package_source.py --revision "$archive_revision" --output "$archive_second"
+          cmp "$archive_first" "$archive_second"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: source-archive-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/release/Fridgely-source-0.1.0.zip
+            ${{ runner.temp }}/release/Fridgely-source-0.1.0.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
+
   container:
     name: Cloud image and PostgreSQL smoke test
     needs: source-scope
@@ -108,7 +139,7 @@ jobs:
       - name: Compare application and test sources with successful verification
         id: scope
         run: |
-          if git diff --quiet 25c111aa5a8d678b60c17745289675821b62f91d HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
+          if git diff --quiet 775e8b7a949b2910bb6818145c9066df610a0d01 HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
             echo "reuse=true" >> "$GITHUB_OUTPUT"
             echo "Application, dependency and test sources match the successful 106-test PostgreSQL and cloud-image run. Reusing its immutable artifacts."
           else
@@ -215,8 +246,8 @@ jobs:
         if: needs.source-scope.outputs.reuse == 'true'
         with:
           github-token: ${{ github.token }}
-          run-id: 44944497368
-          name: integrated-evidence-25c111aa5a8d678b60c17745289675821b62f91d
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
           path: test-results
       - name: Enforce the actual backend and frontend measurements
         run: python scripts/ci/check_coverage.py
@@ -265,13 +296,13 @@ jobs:
         uses: actions/download-artifact@v8.0.2
         with:
           github-token: ${{ github.token }}
-          run-id: 44944497368
-          name: integrated-evidence-25c111aa5a8d678b60c17745289675821b62f91d
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
           path: test-results
       - name: Record test and analysis revisions
         run: |
           mkdir -p test-results/sonarqube
-          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"25c111aa5a8d678b60c17745289675821b62f91d" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
+          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"775e8b7a949b2910bb6818145c9066df610a0d01" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
       - name: Start isolated loopback-only SonarQube
         run: |
           sudo sysctl -w vm.max_map_count=524288

@@ -1,0 +1,12 @@
+test_non_repository_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_non_repository_is_rejected_before_writing_output) ... ok
+test_output_cannot_overwrite_tracked_source (test_package_source.SourceArchiveTests.test_output_cannot_overwrite_tracked_source) ... ok
+test_regular_git_blobs_only_never_follow_tracked_symlinks (test_package_source.SourceArchiveTests.test_regular_git_blobs_only_never_follow_tracked_symlinks) ... ok
+test_release_filter_keeps_sources_and_excludes_local_or_generated_data (test_package_source.SourceArchiveTests.test_release_filter_keeps_sources_and_excludes_local_or_generated_data) ... ok
+test_requested_revision_survives_dirty_checkout_and_different_head (test_package_source.SourceArchiveTests.test_requested_revision_survives_dirty_checkout_and_different_head) ... ok
+test_same_revision_has_identical_digest_and_normalized_metadata (test_package_source.SourceArchiveTests.test_same_revision_has_identical_digest_and_normalized_metadata) ... ok
+test_unknown_revision_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_unknown_revision_is_rejected_before_writing_output) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.179s
+
+OK

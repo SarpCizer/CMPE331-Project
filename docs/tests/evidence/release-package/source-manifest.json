@@ -1,0 +1,10 @@
+[
+  {
+    "path": "scripts/release/package_source.py",
+    "sha256": "37dcffa3cb3d1f3edee0ec4dec56fbbccbb3265adaf321b4447b013ea33cbadc"
+  },
+  {
+    "path": "scripts/release/test_package_source.py",
+    "sha256": "af7ae7657c28f44b2d64cd8334ab57ded9ba3844cf9003cecb61b2249eee41b8"
+  }
+]
