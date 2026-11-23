@@ -8,8 +8,8 @@ Each story has at least one executable functional test. IDs are included in test
 | [US-02](US-02.md) | Sign in | US-02-T01 | NFR checks as relevant |
 | [US-03](US-03.md) | Save dietary and allergen preferences | US-03-T01 | NFR checks as relevant |
 | [US-04](US-04.md) | Add fridge ingredients manually | US-04-T01, US-04-T02 | NFR checks as relevant |
-| [US-05](US-05.md) | List ingredients and their addition dates | US-05-T01 | UI labels/empty states; NFR checks |
-| [US-06](US-06.md) | Delete fridge ingredients manually | US-06-T01 | NFR checks as relevant |
+| [US-05](US-05.md) | List ingredients and their addition dates | US-05-T01, US-05-T02 | UI labels/empty states; NFR checks |
+| [US-06](US-06.md) | Delete fridge ingredients manually | US-06-T01, US-07-T01, US-10-T01, US-11-T01, US-12-T01, US-13-T01, US-14-T01 | NFR checks as relevant |
 | [US-07](US-07.md) | Generate recipes using the fridge and preferences | US-07-T01, US-07-T02, US-07-T03 | NFR checks as relevant |
 | [US-08](US-08.md) | View recipe details | US-08-T01, US-08-T02, US-08-T03, US-08-T04, US-08-T05, US-08-T06, US-08-T07 | UI labels/empty states; NFR checks |
 | [US-09](US-09.md) | Handle recipe service failures | US-09-T01 | UI labels/empty states; NFR checks |
