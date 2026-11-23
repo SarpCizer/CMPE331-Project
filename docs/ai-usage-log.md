@@ -15,3 +15,10 @@ Refs #16, #46. Codex assisted Berfin with the following actual changes. GitHub c
 | Finish frontend validation, independent collection loading and recipe modal feedback | Existing #56; test-first commit 2b2797f | Nine new browser regressions failed against a7c7456 before implementation; one further committed-write refresh regression added during review. Current run evidence is recorded in docs/tests/frontend-completion.md. |
 
 The assistant used the PDF skill to prepare and visually inspect the test report and the Render deploy skill for infrastructure preparation. Browser verification uses the actual application, with an isolated external-provider fixture. The team must independently review the diff, confirm decisions and complete live-provider/cloud checks; those actions are not claimed here. Each other member should add their own verified tool usage and incidents, rather than Berfin inventing their contribution history.
+
+## Mustafa Safa Bayrak
+
+| Contribution | PR / source | Validation |
+| --- | --- | --- |
+| Reviewed the frontend and delivery PRs as the frontend owner. Claude helped summarize the diffs and draft the review wording. | #56, #11, #59 | I checked each finding against the code before submitting, e.g. the US-06 traceability row in #59 and the "1 ingredients" text in the recipes page. |
+| Moved the frontend API client from `fetch` to Axios with a token interceptor, as listed in #35 and the charter. Claude helped write the client. | `feature/safa-frontend-charter` | Compared the old and new client on 11 cases (token header, 204, malformed body, 400/401/409, redirect, cancellation, network failure); production build passed. |
