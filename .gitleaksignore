@@ -6,3 +6,23 @@ db9a00e62d83d16d8768df3f46d40b8c2985562b:tests/functional/requirements.test.mjs:
 # Two copies of the same prose introduced while documenting scanner triage.
 9213e976f523ab79f706851adcc7303d959dc43c:docs/ci-policy.md:generic-api-key:11
 9213e976f523ab79f706851adcc7303d959dc43c:.gitleaksignore:generic-api-key:2
+
+# Generated Sonar issue identifiers in the original exported issue snapshot.
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:4
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:49
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:94
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:184
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:229
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:279
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:329
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:379
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:479
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:529
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:579
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:629
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:679
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:729
+f0e3941ac0e621dcf19efc811adf6765eca13ab4:docs/tests/quality/before-fixes/issues.json:generic-api-key:779
+
+# Verified SHA-256 of the historical collections API source recorded in the compatibility report.
+a38b8b4417884a0c547e28f8f84b99f3c8fed8b5:backend/docs/verification.json:generic-api-key:6
