@@ -26,3 +26,12 @@ Migration `0002_ordered_preferences` copies each JSON list from `0001_owned_sche
 | Open recipe details | Owner-qualified recipe lookup and committed history upsert before the successful HTTP response. |
 
 HTTP identities always come from verified JWT subjects, never caller-supplied owner fields. No generation, detail, favorite, history or shopping operation changes inventory. The new tests record a genuine red-to-green implementation sequence in the PR; prior feature work is not retroactively described as tests-first.
+
+The preference reader now returns both ordered lists with one owner-qualified
+`UNION ALL` statement. This gives a profile read one statement snapshot on
+PostgreSQL and avoids the previous parent lookup plus two lazy relationship
+queries. Exact display strings, repeated entries and position order are retained;
+an absent/empty profile produces two empty lists. The API and recipe input reader
+share this function. The separate write transaction still atomically replaces
+both arrays. SQLite and PostgreSQL regressions enforce the single-query boundary,
+ordering and owner isolation. Refs #20, #43, #62.

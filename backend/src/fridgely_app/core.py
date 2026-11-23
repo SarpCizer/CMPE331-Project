@@ -7,7 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from email_validator import validate_email
-from sqlalchemy import delete, select, text
+from sqlalchemy import delete, literal, select, text, union_all
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette.exceptions import HTTPException
 
@@ -15,7 +15,7 @@ from fridgely_collections.api import CollectionsRoute
 from fridgely_collections.ports import AccountPrincipal
 from fridgely_collections.schemas import ingredient_name
 from .database import make_engine, session_factory
-from .models import Account, InventoryEntry, Preferences
+from .models import Account, AllergenExclusion, DietaryPreference, InventoryEntry, Preferences
 from .security import Authentication, PASSWORDS, hash_password, utc_now
 
 
@@ -76,8 +76,15 @@ def inventory_names(session, owner):
 
 
 def preference_lists(session, owner):
-    row = session.get(Preferences, owner)
-    return (list(row.dietary), list(row.allergens)) if row else ([], [])
+    # A single statement gives both lists one database snapshot and avoids the
+    # parent lookup plus two lazy relationship reads on each profile request.
+    queries = [select(literal(kind).label('kind'), model.position.label('position'),
+        model.display_value.label('display_value')).where(model.owner_id == owner)
+        for kind, model in [('dietary', DietaryPreference), ('allergens', AllergenExclusion)]]
+    values = {'dietary': [], 'allergens': []}
+    for kind, _position, value in session.execute(union_all(*queries).order_by('kind', 'position')):
+        values[kind].append(value)
+    return values['dietary'], values['allergens']
 
 
 def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3600):

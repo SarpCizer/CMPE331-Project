@@ -58,3 +58,23 @@ or an actual learn.bilgi submission.
 AI assistance: Codex compared the submitted documents and repository, reproduced
 the two defects, prepared the narrow browser correction and verification evidence,
 and opened #62/#63 at Berfin's request. No teammate authorship or review is fabricated.
+
+## Additional database correction after measured CI failure
+
+Run45235374687 at5518622 passed106 PostgreSQL/backend,27 acceptance,20 browser,
+12 HTTP and4 penetration cases, plus the image/restart and archive checks. The
+five-minute50-user measurement failed:35,108 requests, p95=508.012ms against the
+unchanged500ms limit, with6 connection failures (0.01709%). Coverage/Sonar were
+skipped after this job failed. The original machine-readable result is retained
+in non-func-tests/pr56-before-preference-snapshot.json; it is not a passing run.
+
+The preference reader made three SQL calls for the parent and its two lazy lists.
+A separate test-first regression (a9fe492) fails that boundary before the read is
+changed. One owner-qualified UNION ALL now reads both lists in one statement,
+preserving their values/order and avoiding a mixed statement snapshot during
+concurrent updates. No schema, public API, timeout, load threshold or credential
+policy changes. The current combined-host local backend/contract run passes127
+cases with two explicit PostgreSQL-only skips; PostgreSQL and performance are
+remeasured by the final published CI. This does not assert that the first slow
+measurement was caused only by those queries or that an optimization proves a
+performance pass before a new measurement completes.
