@@ -2,6 +2,12 @@ import { useOutletContext } from "react-router-dom";
 import Empty from "../components/Empty";
 import RecipeCard from "../components/RecipeCard";
 
+// Same English date style as the fridge, independent of the browser language.
+const viewedFormat = new Intl.DateTimeFormat("en", {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
 export default function HistoryPage() {
   const { data, openRecipe } = useOutletContext();
   return !data.history.length ? (
@@ -13,7 +19,7 @@ export default function HistoryPage() {
       {data.history.map((item) => (
         <div key={item.recipe.id}>
           <p className="mb-2 text-[0.8rem]">
-            Viewed {new Date(item.lastViewedAt).toLocaleString()}
+            Viewed {viewedFormat.format(new Date(item.lastViewedAt))}
           </p>
           <RecipeCard recipe={item.recipe} onOpen={openRecipe} />
         </div>

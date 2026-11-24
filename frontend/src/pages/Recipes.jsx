@@ -12,8 +12,9 @@ export default function RecipesPage() {
         <span className="eyebrow">A LITTLE INSPIRATION</span>
         <h2>Something good is already here.</h2>
         <p className="max-w-[580px] text-[0.95rem]">
-          Turn the {data.inventory.length} ingredients in your fridge into your
-          next meal, with your saved preferences included.
+          Turn the {data.inventory.length}{" "}
+          {data.inventory.length === 1 ? "ingredient" : "ingredients"} in your
+          fridge into your next meal, with your saved preferences included.
         </p>
         <button
           className="btn-primary"
