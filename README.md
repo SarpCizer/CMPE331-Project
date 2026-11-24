@@ -65,13 +65,17 @@ module history and the approved submission source/report pair remain traceable.
 The existing [Render application](https://fridgely-web.onrender.com) is configured
 to follow `main` after successful CI checks, as recorded in
 [#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Check that issue and
-the Render deploy record for the actual deployed commit. The repository Blueprint
-still names the earlier feature branch; [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70)
-tracks that alignment. Keep Blueprint sync paused until its reviewed plan agrees
-with the existing service.
+the Render deploy record for the actual deployed commit. Blueprint source alignment
+is tracked by [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70); follow the
+[post-merge checks](docs/cloud-deployment.md#finish-blueprint-alignment-after-70)
+for both the YAML and the Blueprint's source branch. Keep Blueprint sync paused
+until its reviewed plan agrees with the existing service.
 
-Live recipe generation additionally requires account verification, a scoped
-provider token and the [provider activation checks](docs/cloud-deployment.md#activate-and-verify-cloudflare).
+Cloudflare Workers Free recipe generation was verified on deployed `ec9142e`
+on 25 November 2026: 25 live HTTP/behavior checks passed, missing ingredients
+reached shopping without duplicates, and the fridge remained unchanged. See the
+[source-pinned live result and sanitized evidence](docs/cloud-deployment.md#verified-live-result-25-november-2026).
+Provider setup and future changes follow the [activation checks](docs/cloud-deployment.md#activate-and-verify-cloudflare).
 
 ## Documentation and team
 

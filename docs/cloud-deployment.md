@@ -4,9 +4,38 @@ The deployable unit is one Docker web service containing the built React app, se
 
 `render.yaml` declares free resources in Frankfurt, a database reference for `DATABASE_URL`, a platform-generated `JWT_SECRET`, and readiness checks at `/api/health`. The existing `fridgely-web` service uses the original `SarpCizer/CMPE331-Project` repository and now follows **main**, with auto-deploy set to **After CI Checks Pass**, as recorded in [#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Its public URL is [https://fridgely-web.onrender.com](https://fridgely-web.onrender.com).
 
-The committed Blueprint still selects `feature/berfin-cloud-candidate`; [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70) proposes the change to `main`. Keep Blueprint auto-sync paused until the selected source and reviewed sync plan agree with the existing service. Reuse the existing free `fridgely-postgres` database. Review a Blueprint plan before applying it, particularly any proposed resource creation, deletion or database change.
+At the recorded live verification, the committed Blueprint and its own source setting still selected `feature/berfin-cloud-candidate`; [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70) provides the YAML correction to `main`. Follow the [post-merge alignment steps](#finish-blueprint-alignment-after-70) for both settings. Keep Blueprint auto-sync paused until the selected source and reviewed sync plan agree with the existing service. Reuse the existing free `fridgely-postgres` database. Review a Blueprint plan before applying it, particularly any proposed resource creation, deletion or database change.
 
 The Docker build pins Node 24 / pnpm 11.25.0, frontend dependencies and Python runtime dependencies. The runtime runs as a non-root user. The start script explicitly applies the Alembic migration and then starts a single Uvicorn worker bound to `0.0.0.0:$PORT`. Importing the app does not run migrations. Concurrent Argon2 work is bounded to avoid unbounded password-hashing memory on the teaching instance. Database migrations are packaged in the installed wheel and apply successfully even when the source checkout is absent.
+
+## Verified live result (25 November 2026)
+
+Berfin completed the following bounded live acceptance at **02:08:55–02:09:03 Europe/Istanbul**. These are observed provider results, separate from controlled-provider CI.
+
+| Evidence | Observed result |
+| --- | --- |
+| Application source | `ec9142ea855b7d947430b1753b2deb522962e4e8`, including merged #65 and #68 |
+| Main CI | [45503826185](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45503826185): all seven jobs successful on that exact source |
+| Deployment | [dep-dc31g817lnhs73bvkm80](https://dashboard.render.com/web/srv-dc2qcjek1f9s738q5m80/deploys/dep-dc31g817lnhs73bvkm80): Live after the environment update |
+| Main auto-deploy | Earlier deploy `dep-dc31bp0473hc73bjpjvg` used trigger `new_commit` on the same source |
+| Provider / plan | Cloudflare Workers AI, `@cf/meta/llama-3.3-70b-instruct-fp8-fast`; active Workers Free observed |
+| Real generation | One request returned HTTP 200 and one complete recipe using saved inventory; response took 3.409 seconds |
+| Recipe and shopping | Persisted detail/history matched; exactly three missing ingredients were added; repeating the action created no duplicates |
+| Fridge | Identical before generation and after both shopping actions |
+| Result | 25 HTTP/behavior checks passed using one isolated synthetic account |
+
+[Source-pinned live record in #40](https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7147110202) · [Sanitized machine-readable evidence](tests/evidence/live-cloudflare/2026-11-25.json).
+
+The credentials were transferred directly into Render's secret environment; no token value is included here. Existing `DATABASE_URL` and `JWT_SECRET` were preserved. No paid plan, billing activation, credit purchase, new service/database or personal-fork deployment was performed. This evidence describes the application source above, not a later documentation commit. The synthetic records remain isolated test data. A new two-account live scenario, browser reload run and load test are not claimed by this 25-check record; corresponding CI checks and the fuller operator procedure below remain separately identified.
+
+## Finish Blueprint alignment after #70
+
+The live service's source branch and the Blueprint's own source branch are separate settings. At the recorded verification, the service followed `main` while the Blueprint still read the earlier feature branch with `autoSync=false`.
+
+1. Complete peer review and the owner's integration of [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70). Its only configuration change is `services[0].branch: main`; names, free plans, database isolation/wiring, JWT generation and `checksPass` remain unchanged.
+2. After that file is in `main`, point the **existing** Blueprint at `main` and keep auto-sync paused. Review the resulting plan against the existing `fridgely-web` and `fridgely-postgres` resources before any application. Do not sync the old feature source or accept a plan that creates replacements, resets data, rotates an existing JWT secret, opens database access or adds costs.
+3. Preserve the Cloudflare variables already stored on the service. They are intentionally absent from committed YAML; Render preserves existing environment variables omitted from a Blueprint. `generateValue` creates a JWT secret only when the key does not already exist. See the [environment-variable specification](https://render.com/docs/blueprint-spec#setting-environment-variables).
+4. Record any actual source/plan/deploy outcome in #40. Schema validation and a reviewed PR do not by themselves establish that a Blueprint sync occurred.
 
 ## Configure and deploy
 
@@ -15,7 +44,7 @@ The Docker build pins Node 24 / pnpm 11.25.0, frontend dependencies and Python r
 3. Configure the selected recipe provider in the web service's **Environment** settings and save/deploy. Follow the activation checks below.
 4. After Render reports **Live**, verify `/`, `/api/health`, `/api/openapi.json` and `/api/docs`. Record the deployed commit and deploy link in #40. A passing CI run uses controlled providers and does not establish live inference.
 
-Render's free service sleeps after 15 minutes without traffic and can take about a minute to wake. The free database expires 30 days after creation; the instance created on 20 November 2026 is scheduled to expire on **20 December 2026**. Export data or approve a suitable paid plan before that date if the team needs longer retention. No paid plan is selected here. Platform limits: [Render free instances](https://render.com/docs/free), [Blueprint specification](https://render.com/docs/blueprint-spec), [deployment checks](https://render.com/docs/deploys#integrating-with-ci).
+Render's free service sleeps after 15 minutes without traffic and can take about a minute to wake. The free database expires 30 days after creation; the instance created on 20 November 2026 is scheduled to expire on **20 December 2026**. Export data before that date if the team needs longer retention. This project uses free resources; no billing activation or paid upgrade is part of this runbook. Platform limits: [Render free instances](https://render.com/docs/free), [Blueprint specification](https://render.com/docs/blueprint-spec), [deployment checks](https://render.com/docs/deploys#integrating-with-ci).
 
 ## Recipe provider settings
 
