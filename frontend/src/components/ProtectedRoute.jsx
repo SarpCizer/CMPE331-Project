@@ -5,6 +5,8 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 export default function ProtectedRoute({ session }) {
   const location = useLocation();
   if (!session)
-    return <Navigate to="/sign-in" replace state={{ from: location.pathname }} />;
+    return (
+      <Navigate to="/sign-in" replace state={{ from: location.pathname }} />
+    );
   return <Outlet />;
 }

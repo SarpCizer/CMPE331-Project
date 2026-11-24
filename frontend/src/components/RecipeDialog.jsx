@@ -27,21 +27,26 @@ export default function RecipeDialog({
     <dialog
       ref={dialog}
       onCancel={onClose}
-      className="recipe-dialog"
+      className="max-h-[85vh] w-[min(680px,calc(100vw_-_32px))] overflow-auto rounded-[24px] border border-line bg-[#fcfdfb] p-[30px] text-ink backdrop:bg-[#17322180] backdrop:[backdrop-filter:blur(3px)] motion-safe:open:animate-appear mobile:p-[23px]"
       aria-labelledby="recipe-title"
     >
-      <div className="dialog-top">
-        <span className="eyebrow">A LITTLE INSPIRATION</span>
+      <div className="flex items-center justify-between gap-3">
+        <span className="eyebrow m-0">A LITTLE INSPIRATION</span>
         <button
-          className="icon-button"
+          className="flex rounded-[50%] bg-[#edf1e9] p-2 text-green"
           aria-label="Close recipe"
           onClick={onClose}
         >
           <Icon name="close" />
         </button>
       </div>
-      <h2 id="recipe-title">{recipe.title}</h2>
-      <p className="estimate">
+      <h2
+        id="recipe-title"
+        className="mt-[22px] text-[2rem] wrap-anywhere mobile:text-[1.75rem]"
+      >
+        {recipe.title}
+      </h2>
+      <p className="rounded-[10px] bg-[#edf2e7] p-3 text-[0.85rem] text-[#50644e]">
         Estimated {recipe.cookingMinutes} minutes · {recipe.caloriesPerServing}{" "}
         kcal per serving · {recipe.servings} servings
       </p>
@@ -50,31 +55,41 @@ export default function RecipeDialog({
         before cooking.
       </p>
       {error && (
-        <div className="message error" role="alert">
+        <div className="alert-error message" role="alert">
           {error}
         </div>
       )}
       {notice && (
-        <div className="message success" role="status">
+        <div className="alert-success message" role="status">
           {notice}
         </div>
       )}
       {busy && <p role="status">Saving your changes…</p>}
-      <h3>Ingredients</h3>
-      <ul className="recipe-ingredients">
+      <h3 className="mt-7">Ingredients</h3>
+      <ul className="flex list-none flex-wrap gap-2 p-0">
         {recipe.ingredients.map((name, index) => (
-          <li key={index}>{name}</li>
+          <li
+            key={index}
+            className="max-w-full rounded-lg border border-[#d8e2d2] px-[10px] py-[5px] text-[0.9rem] wrap-anywhere"
+          >
+            {name}
+          </li>
         ))}
       </ul>
-      <h3>Let's make it</h3>
-      <ol className="steps">
+      <h3 className="mt-7">Let's make it</h3>
+      <ol className="pl-6">
         {recipe.steps.map((step, index) => (
-          <li key={index}>{step}</li>
+          <li
+            key={index}
+            className="mb-[14px] pl-[7px] wrap-anywhere marker:font-[650] marker:text-[#658260]"
+          >
+            {step}
+          </li>
         ))}
       </ol>
-      <div className="dialog-actions">
+      <div className="mt-[30px] flex flex-wrap gap-3">
         <button
-          className="primary"
+          className="btn-primary mobile:w-full"
           disabled={busy}
           onClick={async () => {
             const result = await run(
@@ -92,7 +107,7 @@ export default function RecipeDialog({
           Add missing ingredients
         </button>
         <button
-          className="secondary"
+          className="btn-secondary mobile:w-full"
           disabled={busy || favoriteState.pending || !!favoriteState.error}
           onClick={() =>
             run(
@@ -109,7 +124,7 @@ export default function RecipeDialog({
           {saved ? "Remove favorite" : "Save favorite"}
         </button>
         {shoppingAdded && (
-          <Link className="text-link" to="/shopping" onClick={onClose}>
+          <Link className="link-text" to="/shopping" onClick={onClose}>
             View shopping list
           </Link>
         )}

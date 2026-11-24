@@ -5,6 +5,21 @@ import FieldError from "../components/FieldError";
 import Icon from "../components/Icon";
 import ProduceArt from "../components/ProduceArt";
 import { nameError } from "../utils/forms";
+import {
+  countBadge,
+  inlineForm,
+  inlineSubmit,
+  itemList,
+  itemRow,
+  itemSymbol,
+  removeButton,
+  sectionHeading,
+  sectionTitle,
+} from "../components/listStyles";
+
+const statCard =
+  "flex items-center gap-[13px] rounded-[15px] border border-line bg-white px-[22px] py-[19px] text-[0.8rem] text-[#6b7a6d] mobile:gap-[10px] mobile:px-[13px] mobile:py-4 mobile:text-[0.7rem]";
+const statIcon = "shrink-0 text-[#56765a] mobile:hidden";
 
 function Fridge({ items, run, api }) {
   const [name, setName] = useState(""),
@@ -32,53 +47,66 @@ function Fridge({ items, run, api }) {
   );
   return (
     <>
-      <section className="hero">
-        <div>
-          <span className="eyebrow">A KITCHEN FULL OF POSSIBILITIES</span>
-          <h2>
+      <section className="flex items-center justify-between gap-5 overflow-hidden rounded-[24px] bg-[#e4eee3] px-9 py-8 tablet:p-7 mobile:relative mobile:p-[25px]">
+        <div className="mobile:relative mobile:z-[1]">
+          <span className="eyebrow text-[0.65rem]">
+            A KITCHEN FULL OF POSSIBILITIES
+          </span>
+          <h2 className="mb-4 font-serif text-[2.65rem] font-normal tracking-[-0.045em] tablet:text-[2.25rem] mobile:text-[2.1rem]">
             Use what you have.
             <br />
-            <em>Love what you make.</em>
+            <em className="font-normal text-[#497353]">Love what you make.</em>
           </h2>
-          <p>Your next good meal might already be in the fridge.</p>
-          <Link className="primary link-button" to="/recipes">
+          <p className="mb-5 max-w-[370px] text-[0.9rem] mobile:max-w-[230px]">
+            Your next good meal might already be in the fridge.
+          </p>
+          <Link
+            className="btn-primary px-[17px] py-[10px] text-[0.8rem]"
+            to="/recipes"
+          >
             Find a recipe
           </Link>
         </div>
-        <ProduceArt />
+        <ProduceArt className="w-[210px] tablet:w-[155px] mobile:absolute mobile:-right-5 mobile:bottom-[5px] mobile:w-[140px] mobile:opacity-45" />
       </section>
-      <div className="stat-row">
-        <div>
-          <Icon name="fridge" />
-          <strong>{items.length}</strong>
+      <div className="grid grid-cols-2 gap-5 py-[25px] mobile:gap-[10px] mobile:py-[18px]">
+        <div className={statCard}>
+          <Icon name="fridge" className={statIcon} />
+          <strong className="text-[1.8rem] leading-[1.2] font-semibold text-ink mobile:text-[1.6rem]">
+            {items.length}
+          </strong>
           <span>
             {items.length === 1 ? "ingredient" : "ingredients"} in your fridge
           </span>
         </div>
-        <div>
-          <Icon name="leaf" />
+        <div className={statCard}>
+          <Icon name="leaf" className={statIcon} />
           <span>
             Less forgotten food.
             <br />
-            <strong className="small-strong">
+            <strong className="text-[0.85rem] leading-[1.2] font-[550] text-ink mobile:text-[0.75rem]">
               More everyday possibilities.
             </strong>
           </span>
         </div>
       </div>
       <section className="panel">
-        <div className="section-heading">
+        <div className={sectionHeading}>
           <div>
-            <h2>Your ingredients</h2>
-            <p>A small list with a lot of potential.</p>
+            <h2 className={sectionTitle}>Your ingredients</h2>
+            <p className="mb-0 text-[0.85rem]">
+              A small list with a lot of potential.
+            </p>
           </div>
-          <span className="count">
+          <span className={countBadge}>
             {items.length} {items.length === 1 ? "item" : "items"}
           </span>
         </div>
-        <form className="inline-form" noValidate onSubmit={add}>
-          <div className="grow">
-            <label htmlFor="ingredient">Add an ingredient</label>
+        <form className={inlineForm} noValidate onSubmit={add}>
+          <div className="min-w-0 flex-1 mobile:basis-full">
+            <label htmlFor="ingredient" className="text-[0.8rem]">
+              Add an ingredient
+            </label>
             <input
               id="ingredient"
               value={name}
@@ -89,25 +117,29 @@ function Fridge({ items, run, api }) {
               required
               maxLength="256"
               placeholder="Tomatoes, rice, a little inspiration…"
+              className="text-[0.9rem]"
               aria-invalid={!!error}
               aria-describedby={error ? "ingredient-error" : undefined}
             />
             <FieldError id="ingredient-error">{error}</FieldError>
           </div>
-          <button type="submit" className="primary">
-            <Icon name="plus" />
+          <button type="submit" className={inlineSubmit}>
+            <Icon name="plus" className="w-[18px]" />
             Add ingredient
           </button>
         </form>
         {items.length > 0 && (
-          <div className="search-field">
-            <label htmlFor="search">Search your fridge</label>
+          <div className="mt-[22px] max-w-[300px] mobile:max-w-none">
+            <label htmlFor="search" className="text-[0.8rem]">
+              Search your fridge
+            </label>
             <input
               id="search"
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Find an ingredient"
+              className="px-3 py-[10px] text-[0.9rem]"
             />
           </div>
         )}
@@ -121,15 +153,17 @@ function Fridge({ items, run, api }) {
               : "Add your first ingredient to start finding meals."}
           </Empty>
         ) : (
-          <ul className="ingredient-list">
+          <ul className={itemList}>
             {visible.map((item) => (
-              <li key={item.id}>
-                <span className="ingredient-symbol">
+              <li key={item.id} className={itemRow}>
+                <span className={itemSymbol}>
                   <Icon name="leaf" />
                 </span>
-                <div className="grow">
-                  <strong>{item.name}</strong>
-                  <span>
+                <div className="min-w-0 flex-1">
+                  <strong className="block text-[0.95rem] font-[550] wrap-anywhere">
+                    {item.name}
+                  </strong>
+                  <span className="block text-[0.8rem] text-[#607565]">
                     Added{" "}
                     {new Intl.DateTimeFormat("en", {
                       dateStyle: "medium",
@@ -137,7 +171,7 @@ function Fridge({ items, run, api }) {
                   </span>
                 </div>
                 <button
-                  className="quiet"
+                  className={removeButton}
                   aria-label={`Remove ${item.name}`}
                   onClick={() =>
                     run(

@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import FieldError from "../components/FieldError";
-import { focusInvalid, preferenceError, splitPreferences } from "../utils/forms";
+import {
+  focusInvalid,
+  preferenceError,
+  splitPreferences,
+} from "../utils/forms";
+
+const help = "mx-0 mt-2 mb-6 block";
 
 function Preferences({ value, run, api }) {
   const [dietary, setDietary] = useState(value.dietary.join(", ")),
@@ -34,11 +40,13 @@ function Preferences({ value, run, api }) {
     );
   }
   return (
-    <section className="panel preferences">
+    <section className="panel max-w-[750px]">
       <span className="eyebrow">MAKE IT YOURS</span>
-      <h2>A kitchen that knows you.</h2>
-      <p>Your saved preferences are included whenever you ask for recipes.</p>
-      <form noValidate onSubmit={submit}>
+      <h2 className="mobile:text-[1.6rem]">A kitchen that knows you.</h2>
+      <p className="max-w-[570px] text-[0.95rem]">
+        Your saved preferences are included whenever you ask for recipes.
+      </p>
+      <form className="mt-[30px]" noValidate onSubmit={submit}>
         <label htmlFor="dietary">Dietary preferences</label>
         <input
           id="dietary"
@@ -51,7 +59,9 @@ function Preferences({ value, run, api }) {
           aria-invalid={!!errors.dietary}
           aria-describedby={`dietary-help${errors.dietary ? " dietary-error" : ""}`}
         />
-        <small id="dietary-help">Separate preferences with commas.</small>
+        <small id="dietary-help" className={help}>
+          Separate preferences with commas.
+        </small>
         <FieldError id="dietary-error">{errors.dietary}</FieldError>
         <label htmlFor="allergens">Ingredients to exclude</label>
         <input
@@ -65,15 +75,15 @@ function Preferences({ value, run, api }) {
           aria-invalid={!!errors.allergens}
           aria-describedby={`allergens-help${errors.allergens ? " allergens-error" : ""}`}
         />
-        <small id="allergens-help">
+        <small id="allergens-help" className={help}>
           Use ingredient names, separated by commas. Review recipe ingredients
           before cooking.
         </small>
         <FieldError id="allergens-error">{errors.allergens}</FieldError>
-        <button type="submit" className="primary">
+        <button type="submit" className="btn-primary mb-4">
           Save preferences
         </button>
-        <p className="muted">
+        <p className="muted mb-0">
           Clear either field and save to remove its saved entries.
         </p>
       </form>

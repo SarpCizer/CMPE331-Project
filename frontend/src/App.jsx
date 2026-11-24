@@ -12,7 +12,8 @@ import Shopping from "./pages/Shopping";
 
 function SignIn({ kitchen }) {
   const { state } = useLocation();
-  const from = state?.from && state.from !== "/sign-in" ? state.from : "/fridge";
+  const from =
+    state?.from && state.from !== "/sign-in" ? state.from : "/fridge";
   if (kitchen.session) return <Navigate to={from} replace />;
   return (
     <Auth

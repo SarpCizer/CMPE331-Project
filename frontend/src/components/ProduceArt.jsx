@@ -1,6 +1,11 @@
-export default function ProduceArt() {
+// Decorative illustration; callers size and position it with `className`.
+export default function ProduceArt({ className = "" }) {
   return (
-    <svg className="produce-art" viewBox="0 0 230 180" aria-hidden="true">
+    <svg
+      className={`max-w-full shrink-0 ${className}`}
+      viewBox="0 0 230 180"
+      aria-hidden="true"
+    >
       <ellipse cx="123" cy="163" rx="83" ry="8" fill="#d2e2d4" />
       <path d="M153 80c-30-30-10-57 28-65 9 35 3 61-28 65" fill="#6e986b" />
       <path d="M153 80c-12-27-49-34-68-17 19 30 43 38 68 17" fill="#3f7656" />

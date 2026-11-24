@@ -117,8 +117,23 @@ export function useKitchen() {
     if (recipe && typeof recipe === "object") setSelected(recipe);
   }
   return {
-    session, data, generated, setGenerated, selected, setSelected, busy,
-    resources, error, setError, notice, setNotice, api, clearSession, signIn,
-    loadResources, run, openRecipe,
+    session,
+    data,
+    generated,
+    setGenerated,
+    selected,
+    setSelected,
+    busy,
+    resources,
+    error,
+    setError,
+    notice,
+    setNotice,
+    api,
+    clearSession,
+    signIn,
+    loadResources,
+    run,
+    openRecipe,
   };
 }

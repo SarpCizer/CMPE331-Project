@@ -33,7 +33,8 @@ function abortError() {
 
 function errorMessage(status, data) {
   if (status === 401) return "Your session ended. Please sign in again.";
-  if (status === 409) return "An account already uses this email. Try signing in.";
+  if (status === 409)
+    return "An account already uses this email. Try signing in.";
   if (status === 503)
     return "The service is temporarily unavailable. Please try again.";
   if (status >= 500 || status === 422)

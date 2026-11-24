@@ -4,18 +4,19 @@ import Icon from "../components/Icon";
 import RecipeCard from "../components/RecipeCard";
 
 export default function RecipesPage() {
-  const { data, api, run, busy, generated, setGenerated, openRecipe } = useOutletContext();
+  const { data, api, run, busy, generated, setGenerated, openRecipe } =
+    useOutletContext();
   return (
     <>
-      <section className="recipe-intro panel">
+      <section className="panel bg-[#eaf0e6]">
         <span className="eyebrow">A LITTLE INSPIRATION</span>
         <h2>Something good is already here.</h2>
-        <p>
-          Turn the {data.inventory.length} ingredients in your fridge
-          into your next meal, with your saved preferences included.
+        <p className="max-w-[580px] text-[0.95rem]">
+          Turn the {data.inventory.length} ingredients in your fridge into your
+          next meal, with your saved preferences included.
         </p>
         <button
-          className="primary"
+          className="btn-primary"
           disabled={!data.inventory.length}
           onClick={async () => {
             const result = await run(
@@ -32,7 +33,10 @@ export default function RecipesPage() {
           <Icon />
           {busy ? "Finding inspiration…" : "Generate recipes"}
         </button>
-        <Link className="text-link" to="/preferences">
+        <Link
+          className="link-text ml-[18px] inline-block text-[0.85rem] mobile:mt-[17px] mobile:ml-0 mobile:block"
+          to="/preferences"
+        >
           Edit your preferences
         </Link>
       </section>
@@ -45,12 +49,13 @@ export default function RecipesPage() {
           Generate a few ideas from the ingredients you already have.
         </Empty>
       ) : (
-        <div className="recipe-grid">
-          {generated.map((recipe) => (
+        <div className="mt-[25px] grid grid-cols-2 gap-[22px] mobile:grid-cols-[1fr]">
+          {generated.map((recipe, index) => (
             <RecipeCard
               recipe={recipe}
               key={recipe.id}
               onOpen={openRecipe}
+              warm={index % 2 === 1}
             />
           ))}
         </div>
