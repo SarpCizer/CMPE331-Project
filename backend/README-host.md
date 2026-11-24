@@ -26,10 +26,10 @@ not automatically load `.env`. Keep real values outside source control. SQLite
 is supported for local development; PostgreSQL is the shared deployment target.
 Migration is an explicit prior step, so startup cannot reset an existing database.
 
-Provide `OPENAI_API_KEY` to enable the existing real provider. Without it, the app
-still starts and serves account/inventory/collections; generation returns a
-sanitized retryable 503. No mock recipes are silently returned. No live-provider
-verification is implied by the controlled-provider tests.
+Set the [recipe provider and its server-side credentials](../docs/cloud-deployment.md#recipe-provider-settings)
+to enable live generation. Missing provider credentials produce a sanitized,
+retryable 503 for recipe generation. Account, inventory and collections remain
+available. The test suites use controlled providers.
 
 Both root-contract paths and `/api` paths reach the same application. The React
 client uses `/api` on the same origin. When `frontend/dist/index.html` exists (or

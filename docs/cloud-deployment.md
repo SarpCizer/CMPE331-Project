@@ -10,10 +10,16 @@ The Docker build pins Node 24 / pnpm 11.25.0, frontend dependencies and Python r
 
 1. Grant Render's GitHub integration access to the private `SarpCizer/CMPE331-Project` repository if Render requests it.
 2. Import the pushed `render.yaml` from `feature/berfin-cloud-candidate`, inspect the plan, adopt the existing database and apply the free web service plan. For an authorized private fork, copy this branch too, grant the Render app access to that repository and enable its GitHub Actions checks. Do not make the code public to bypass access.
-3. Add the team's valid `OPENAI_API_KEY` directly under the web service's **Environment** settings and save/deploy. Do not put a key in GitHub source, frontend variables or the test report. The optional `OPENAI_MODEL` setting defaults to the provider module's model.
+3. Configure the selected recipe provider in the web service's **Environment** settings and save/deploy. See the provider settings below.
 4. Monitor the deploy until **live**, then verify `/`, `/api/health`, `/api/openapi.json`, and `/api/docs`. Register two accounts, verify data isolation and reload persistence, then redeploy and verify stored data and authentication remain valid. Run a live recipe scenario once the provider key is configured.
 
 Render's free service sleeps after 15 minutes without traffic and can take about a minute to wake. The free database expires 30 days after creation; the instance created on 20 November 2026 is scheduled to expire on **20 December 2026**. Export data or approve a suitable paid plan before that date if the team needs longer retention. No paid plan is selected here. Platform limits: [Render free instances](https://render.com/docs/free), [Blueprint specification](https://render.com/docs/blueprint-spec), [deployment checks](https://render.com/docs/deploys#integrating-with-ci).
+
+## Recipe provider settings
+
+For a free deployment, use a Cloudflare Workers Free account. Open **Workers AI → Use REST API** to get the account ID and create a Workers AI API token limited to the selected account. In Render, set `RECIPE_PROVIDER=cloudflare`, `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_AI_TOKEN`. The adapter uses Llama 3.3 70B with JSON Mode. Workers Free includes 10,000 Neurons per day. Requests beyond the free allowance fail. Stay on Workers Free for this setup. [Token setup](https://developers.cloudflare.com/workers-ai/get-started/rest-api/) · [Free allowance](https://developers.cloudflare.com/workers-ai/platform/pricing/) · [Model](https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/)
+
+For the existing OpenAI provider, set `RECIPE_PROVIDER=openai` and `OPENAI_API_KEY`. `OPENAI_MODEL` is optional. Both providers read credentials on the server. Store tokens in Render Environment and use synthetic data for the first live recipe check. A missing credential or upstream quota failure returns a retryable recipe error while account and inventory routes remain available.
 
 ## Local equivalent
 
