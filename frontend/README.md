@@ -134,3 +134,19 @@ validation, slow/failed collection isolation, expired sessions during outages,
 committed-write/failed-refresh handling, modal feedback, safe provider errors and
 three-width accessibility checks. HTTP fault interception is limited to the
 specific outage being tested; successful requests use the real application/SQL.
+
+## Exact preference values
+
+`src/preferences.js` keeps persisted dietary/allergen entries reversible in the
+editable fields: commas separate entries, double quotes group a name containing
+commas or surrounding whitespace, and doubled quotes represent a literal quote.
+The multiline fields also preserve line breaks in an already saved quoted name.
+Unquoted simple names retain the existing trimming behavior. Exact saved values,
+order and repeated entries survive reload/save; clearing a field sends an empty
+array. Invalid quoting is associated with its field and sends no write.
+
+`preferences-fidelity.spec.js` checks this boundary through real authenticated
+API requests and browser saves, including editing one list without changing the
+other. Retain the helper and these regressions when extracting pages/components
+or changing the HTTP/style/router libraries. The API and database schema are
+unchanged. Refs #16, #20, #35, #62.

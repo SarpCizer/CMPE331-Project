@@ -7,7 +7,7 @@ Refs #16, #39, #41-#44. Test the actual FastAPI/SQLAlchemy application and built
 | Full-stack/database | Registration, salted hashes, token claims/expiry, owned inventory/preferences, constraints and old-data migration; no failures in the recorded run | Python JUnit, coverage, TDD sequence |
 | Recipe/collections integration | Real account/fridge/preferences passed through teammate ports; whole batches and committed history; no mutation on failure | Backend integration and 27 acceptance cases |
 | HTTP security | Every protected method without/malformed credentials, forged tokens and foreign IDs; denied requests preserve state | 12 HTTP cases and JWT unit cases |
-| Frontend | Registration/sign-in/preferences; inventory, recipe details, shopping, favorites/history, reload and account switching | 8 actual-browser cases, screenshots |
+| Frontend | Registration/sign-in/preferences; exact preference strings/order/repeats; inventory, recipe details, shopping, favorites/history, reload and account switching | 20 actual-browser cases at verified checkpoint273a983, screenshots; see current PR run for later sources |
 | Accessibility/responsiveness | 360/768/1440 px, no horizontal overflow; labelled controls, WCAG A/AA automation, keyboard core flows | Browser results and embedded figures |
 | Penetration | SQL payload stays literal, owner mass assignment rejected, file disclosure denied, stored XSS inert | Four scoped probes and limitations |
 | Persistence | Two processes and two users/five collections; production container restart retains SQL data and signed sessions | SQLite/PostgreSQL process cases and container JSON |

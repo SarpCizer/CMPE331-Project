@@ -1,0 +1,63 @@
+test_non_repository_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_non_repository_is_rejected_before_writing_output) ... FAIL
+test_output_cannot_overwrite_tracked_source (test_package_source.SourceArchiveTests.test_output_cannot_overwrite_tracked_source) ... FAIL
+test_regular_git_blobs_only_never_follow_tracked_symlinks (test_package_source.SourceArchiveTests.test_regular_git_blobs_only_never_follow_tracked_symlinks) ... FAIL
+test_release_filter_keeps_sources_and_excludes_local_or_generated_data (test_package_source.SourceArchiveTests.test_release_filter_keeps_sources_and_excludes_local_or_generated_data) ... ok
+test_requested_revision_survives_dirty_checkout_and_different_head (test_package_source.SourceArchiveTests.test_requested_revision_survives_dirty_checkout_and_different_head) ... FAIL
+test_same_revision_has_identical_digest_and_normalized_metadata (test_package_source.SourceArchiveTests.test_same_revision_has_identical_digest_and_normalized_metadata) ... FAIL
+test_unknown_revision_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_unknown_revision_is_rejected_before_writing_output) ... FAIL
+
+======================================================================
+FAIL: test_non_repository_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_non_repository_is_rejected_before_writing_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 110, in test_non_repository_is_rejected_before_writing_output
+    with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: SystemExit not raised
+
+======================================================================
+FAIL: test_output_cannot_overwrite_tracked_source (test_package_source.SourceArchiveTests.test_output_cannot_overwrite_tracked_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 125, in test_output_cannot_overwrite_tracked_source
+    with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: SystemExit not raised
+
+======================================================================
+FAIL: test_regular_git_blobs_only_never_follow_tracked_symlinks (test_package_source.SourceArchiveTests.test_regular_git_blobs_only_never_follow_tracked_symlinks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 120, in test_regular_git_blobs_only_never_follow_tracked_symlinks
+    self.assertNotIn("Fridgely/linked.py", archive.namelist())
+AssertionError: 'Fridgely/linked.py' unexpectedly found in ['Fridgely/README.md', 'Fridgely/app.py', 'Fridgely/first-revision.txt', 'Fridgely/linked.py', 'Fridgely/run.sh', 'Fridgely/SUBMISSION-MANIFEST.json']
+
+======================================================================
+FAIL: test_requested_revision_survives_dirty_checkout_and_different_head (test_package_source.SourceArchiveTests.test_requested_revision_survives_dirty_checkout_and_different_head)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 72, in test_requested_revision_survives_dirty_checkout_and_different_head
+    self.assertEqual(archive.read("Fridgely/app.py"), b"print('committed version one')\n")
+AssertionError: b"print('uncommitted edit')\n" != b"print('committed version one')\n"
+
+======================================================================
+FAIL: test_same_revision_has_identical_digest_and_normalized_metadata (test_package_source.SourceArchiveTests.test_same_revision_has_identical_digest_and_normalized_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 91, in test_same_revision_has_identical_digest_and_normalized_metadata
+    self.assertEqual(first.read_bytes(), second.read_bytes())
+AssertionError: b'PK\[28 chars]x00\x00\x00!P\x95$\xfb\xe3\x1a\x00\x00\x00\x18[3071 chars]\x00' != b'PK\[28 chars]x00\x83\x18\xc2X\x95$\xfb\xe3\x1a\x00\x00\x00\[3101 chars]\x00'
+
+======================================================================
+FAIL: test_unknown_revision_is_rejected_before_writing_output (test_package_source.SourceArchiveTests.test_unknown_revision_is_rejected_before_writing_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/berfin/Documents/Codex/2026-11-20/i/work/review53/scripts/release/test_package_source.py", line 102, in test_unknown_revision_is_rejected_before_writing_output
+    with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: SystemExit not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.613s
+
+FAILED (failures=6)

@@ -41,7 +41,9 @@ Never print or commit the connection string.
 Migrations run explicitly before startup; importing the package creates no schema
 or default user. Revision `0001_owned_schema` creates accounts, preferences,
 inventory, recipes/ordered children and collections. It is intended for a new
-Fridgely database. An already-populated legacy ZIP database is not migrated or
+Fridgely database. Revision `0002_ordered_preferences` then migrates the initial
+JSON arrays to ordered dietary/allergen rows without changing their API values.
+An already-populated unrelated legacy ZIP database is not migrated or
 reset: use a separate database and plan an explicit reviewed import if needed.
 
 The shared migration preserves the existing feature table/column names. It adds
@@ -50,13 +52,15 @@ The same physical SQL schema supports the existing feature models without
 modifying their separate SQLAlchemy metadata. SQLite foreign-key enforcement is
 enabled on every host connection; PostgreSQL enforces these constraints natively.
 
-JSON preference arrays preserve order and repeated values in one atomic profile
-row. This replaces the design report's proposed child-row representation while
-keeping its API semantics. FastAPI/SQLAlchemy is retained to integrate the
+Ordered `dietary_preferences` and `allergen_exclusions` rows are keyed by owner
+and position. They preserve exact saved strings, ordering and repeated values;
+both lists are replaced in one transaction. The migrated profile has no JSON
+shadow columns. See [the current database contract](../docs/database.md).
+FastAPI/SQLAlchemy is retained to integrate the
 implemented teammate modules, rather than introducing a second Express service.
 
-The tests cover invalid/duplicate registration, distinct salted hashes, wrong
-credentials, claim/signature/expiry validation, atomic preferences, owner
+The tests cover invalid/duplicate registration and distinct salted hashes.
+They verify rejected passwords, required JWT claims, signatures and expiry, atomic preferences, owner
 isolation, SQL metacharacters, foreign keys, repeat migration and reopening the
 same database through a fresh application host. The PostgreSQL integration job
 in the test PR supplements the SQLite runs; SQLite results alone do not establish

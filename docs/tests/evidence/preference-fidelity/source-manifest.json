@@ -1,0 +1,16 @@
+{
+  "test_baseline": "929776ccc51d914084ebb49d5997942c51c64b58",
+  "test_first_commit": "20eb89aaeb52578d01c38826db4b1ad3c0108389",
+  "local_host_runtime": "d9842e2b1f6b654bbb8120e40126d51eb244acf3",
+  "red_failures": 2,
+  "green_browser_passes": 20,
+  "controlled_provider": true,
+  "local_database": "SQLite",
+  "supplementary_roundtrip_cases": 81,
+  "sha256": {
+    "frontend/src/main.jsx": "24e4d618c76e5bb8b86cd44018c105e5b735fd235b53c752e9c57a32aaccba67",
+    "frontend/src/preferences.js": "d04d96d7a9dae61da3ba971b04ef6aca6487803c7b39b6dd1b7f30565874436c",
+    "frontend/src/styles.css": "8ee5e49f90a2487944a569735b29c77443ef30da4cab8a4517013cdd74996fc5",
+    "frontend/tests/preferences-fidelity.spec.js": "fa6cf344dbc36ff1c0e803f260497eb6d5c4da411c278f6665999a21e8bccaac"
+  }
+}

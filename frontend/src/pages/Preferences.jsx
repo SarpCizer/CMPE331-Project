@@ -1,31 +1,28 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import FieldError from "../components/FieldError";
-import {
-  focusInvalid,
-  preferenceError,
-  splitPreferences,
-} from "../utils/forms";
+import { formatPreferences } from "../preferences";
+import { focusInvalid, preferenceField } from "../utils/forms";
 
 const help = "mx-0 mt-2 mb-6 block";
 
 function Preferences({ value, run, api }) {
-  const [dietary, setDietary] = useState(value.dietary.join(", ")),
-    [allergens, setAllergens] = useState(value.allergens.join(", ")),
+  const [dietary, setDietary] = useState(formatPreferences(value.dietary)),
+    [allergens, setAllergens] = useState(formatPreferences(value.allergens)),
     [errors, setErrors] = useState({});
   useEffect(() => {
-    setDietary(value.dietary.join(", "));
-    setAllergens(value.allergens.join(", "));
+    setDietary(formatPreferences(value.dietary));
+    setAllergens(formatPreferences(value.allergens));
   }, [value]);
   function submit(event) {
     event.preventDefault();
-    const body = {
-      dietary: splitPreferences(dietary),
-      allergens: splitPreferences(allergens),
+    const fields = {
+      dietary: preferenceField(dietary),
+      allergens: preferenceField(allergens),
     };
     const invalid = Object.fromEntries(
-      Object.entries(body)
-        .map(([key, values]) => [key, preferenceError(values)])
+      Object.entries(fields)
+        .map(([key, field]) => [key, field.error])
         .filter(([, message]) => message),
     );
     setErrors(invalid);
@@ -33,6 +30,10 @@ function Preferences({ value, run, api }) {
       focusInvalid(event.currentTarget, invalid);
       return;
     }
+    const body = {
+      dietary: fields.dietary.values,
+      allergens: fields.allergens.values,
+    };
     run(
       () => api("/profile/preferences", { method: "PUT", body }),
       "Preferences saved.",
@@ -48,8 +49,9 @@ function Preferences({ value, run, api }) {
       </p>
       <form className="mt-[30px]" noValidate onSubmit={submit}>
         <label htmlFor="dietary">Dietary preferences</label>
-        <input
+        <textarea
           id="dietary"
+          rows="2"
           value={dietary}
           onChange={(e) => {
             setDietary(e.target.value);
@@ -60,12 +62,14 @@ function Preferences({ value, run, api }) {
           aria-describedby={`dietary-help${errors.dietary ? " dietary-error" : ""}`}
         />
         <small id="dietary-help" className={help}>
-          Separate preferences with commas.
+          Separate preferences with commas. Quote a name containing commas; use
+          two double quotes for a quote inside a name.
         </small>
         <FieldError id="dietary-error">{errors.dietary}</FieldError>
         <label htmlFor="allergens">Ingredients to exclude</label>
-        <input
+        <textarea
           id="allergens"
+          rows="2"
           value={allergens}
           onChange={(e) => {
             setAllergens(e.target.value);
@@ -76,7 +80,8 @@ function Preferences({ value, run, api }) {
           aria-describedby={`allergens-help${errors.allergens ? " allergens-error" : ""}`}
         />
         <small id="allergens-help" className={help}>
-          Use ingredient names, separated by commas. Review recipe ingredients
+          Separate names with commas. Quote a name containing commas; use two
+          double quotes for a quote inside a name. Review recipe ingredients
           before cooking.
         </small>
         <FieldError id="allergens-error">{errors.allergens}</FieldError>

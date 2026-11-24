@@ -119,12 +119,17 @@ class CollectionsService:
 
     def open_recipe(self, owner: str, recipe_id: str) -> RecipeDTO:
         identifier(owner), identifier(recipe_id)
-        at = self.clock()
-        if not isinstance(at, datetime) or at.tzinfo is None or at.utcoffset() is None:
-            raise CollectionError(503, "Clock integration must return an aware UTC datetime")
-        at = at.astimezone(timezone.utc)
         def record(session, repo):
             recipe = self._recipe(session, owner, recipe_id)
+            # Resolve ownership first: an unavailable clock cannot mask a 404 or
+            # be invoked at all for a missing/foreign recipe (issues #30/#34).
+            try:
+                at = self.clock()
+                if not isinstance(at, datetime) or at.tzinfo is None or at.utcoffset() is None:
+                    raise ValueError("Clock must return an aware datetime")
+                at = at.astimezone(timezone.utc)
+            except Exception:
+                raise CollectionError(503, "View timestamp temporarily unavailable") from None
             repo.record_view(owner, recipe_id, at)
             return recipe
         return self._transaction(record)
