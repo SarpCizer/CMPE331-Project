@@ -136,6 +136,19 @@ class SourceArchiveTests(unittest.TestCase):
             self.build(name=str(self.repo / "app.py"))
         self.assertEqual((self.repo / "app.py").read_bytes(), before)
 
+    def test_checksum_cannot_follow_a_symlink_to_tracked_source(self):
+        source = self.repo / "README.md"
+        before = source.read_bytes()
+        checksum = self.directory / "source.zip.sha256"
+        try:
+            checksum.symlink_to(source)
+        except (OSError, NotImplementedError):
+            self.skipTest("Creating local symlinks requires platform support")
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            self.build()
+        self.assertEqual(source.read_bytes(), before)
+        self.assertFalse((self.directory / "source.zip").exists())
+
     def test_release_filter_keeps_sources_and_excludes_local_or_generated_data(self):
         for name in ["node_modules/library.js", ".env.production", "stored.db",
                      "build/output.py", "docs/tests/evidence/raw.txt", "docs/tests/report.pdf"]:
