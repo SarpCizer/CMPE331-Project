@@ -2,6 +2,8 @@
 
 This module implements US-07, the data contract for US-08, and US-09. It uses the same FastAPI, SQLAlchemy, verified account type and recipe response schema as the collections module on `backend_work`. The existing recipe detail route in collections owns view history.
 
+See [Ayşe's AI-assisted integration review](../docs/ai-contributions/ayse-recipe-review.md) for the tested candidate, recipe-to-shopping regression results, and the link to the team's AI workflow documentation.
+
 ## Connect to the shared backend
 
 Install HTTPX alongside the backend's runtime dependencies. The integration test lock file on `backend_work` already includes HTTPX. Create and close the shared `httpx.AsyncClient(timeout=28.0)` in the host application's lifespan. Set `OPENAI_API_KEY` in the server environment. `OPENAI_MODEL` is optional and defaults to `gpt-4o-mini`.
