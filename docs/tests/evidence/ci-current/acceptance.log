@@ -1,0 +1,35 @@
+✔ US-01-T01 register without email verification (964.705772ms)
+✔ US-01-T02 reject duplicate email and invalid registration without creating an account (1104.297907ms)
+✔ US-02-T01 accept correct credentials and reject incorrect credentials (1097.27911ms)
+✔ US-03-T01 persist and clear preferences (953.651364ms)
+✔ US-04-T01 add an ingredient with addition timestamp (908.187111ms)
+✔ US-04-T02 reject a blank ingredient (907.52368ms)
+✔ US-05-T01 list own ingredients and preserve original dates (998.406274ms)
+✔ US-06-T01 delete only the selected ingredient (906.911066ms)
+✔ US-07-T01 send fridge and current preferences to provider without deducting inventory (921.455257ms)
+✔ US-07-T02 reject a batch containing a declared allergen conflict (939.884365ms)
+✔ US-07-T03 block recipe generation for an empty fridge (914.878443ms)
+✔ US-08-T01 return complete details using the application-assigned recipe ID (922.973221ms)
+✔ US-08-T02 reject empty cooking steps (923.407405ms)
+✔ US-08-T03 reject missing calories (921.604785ms)
+✔ US-08-T04 reject zero cooking time (944.182312ms)
+✔ US-08-T05 reject negative calories (930.04298ms)
+✔ US-08-T06 reject zero servings (927.334243ms)
+✔ US-08-T07 reject blank ingredient names (934.538438ms)
+✔ US-09-T01 return retryable provider error and preserve successful state snapshots (988.738107ms)
+✔ US-10-T01 add only missing ingredients and preserve item IDs on repeated actions (951.118939ms)
+✔ US-11-T01 manually add list and remove shopping items (937.669726ms)
+✔ US-12-T01 save favorites idempotently without inventory changes (939.145354ms)
+✔ US-13-T01 remove a favorite while retaining viewed history (954.656779ms)
+✔ US-14-T01 record views and update history in newest-first order (1131.166891ms)
+✔ US-15-T01 deny requests with no token or a malformed token (723.309337ms)
+✔ US-15-T02 isolate personal data and deny access to another users objects (1177.06054ms)
+✔ US-15-T03 reject an authentic token after its expiry (913.87038ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25883.612549

@@ -1,0 +1,11 @@
+{
+  "ci_run_id": 44944497368,
+  "ci_revision": "25c111aa5a8d678b60c17745289675821b62f91d",
+  "ci_dir": "evidence/ci-frontend",
+  "ci_status": "PASS",
+  "sonar_dir": "quality/current",
+  "sonar_revision": "25c111aa5a8d678b60c17745289675821b62f91d",
+  "sonar_run_id": 44944497368,
+  "local_browser": "evidence/frontend-completion/local-green-junit.xml",
+  "artifact_ref": "feature/berfin-cloud-candidate"
+}

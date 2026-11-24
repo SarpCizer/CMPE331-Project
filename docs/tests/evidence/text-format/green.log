@@ -1,0 +1,7 @@
+# GREEN: tests/text-format.spec.js after the fix (source 0a9584a + this change), Chrome, tr-TR locale.
+# Full browser suite on the same source: 20 passed (18 existing + 2 new). Mapped frontend coverage: lines 96.66%, branches 93.68%, functions 92.42%.
+Running 2 tests using 1 worker
+  ✓  1 tests/text-format.spec.js:31:1 › recipe introduction uses the singular for one ingredient (2.3s)
+  ✓  2 tests/text-format.spec.js:41:1 › recently viewed dates use the same English format as the fridge (2.5s)
+  2 passed (6.2s)
+Terminated

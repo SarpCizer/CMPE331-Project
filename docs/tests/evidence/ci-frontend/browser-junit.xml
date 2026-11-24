@@ -1,0 +1,42 @@
+<testsuites id="" name="" tests="18" failures="0" skipped="0" errors="0" time="55.745679">
+<testsuite name="completion.spec.js" timestamp="2026-11-21T20:09:50.581Z" hostname="" tests="10" failures="0" skipped="0" time="30.197" errors="0">
+<testcase name="invalid fields explain the problem at the input without sending writes" classname="completion.spec.js" time="2.272">
+</testcase>
+<testcase name="a failed collection does not discard inventory or turn a committed write into failure" classname="completion.spec.js" time="1.897">
+</testcase>
+<testcase name="a slow collection does not block unrelated screens" classname="completion.spec.js" time="1.303">
+</testcase>
+<testcase name="a committed write is acknowledged even when its subsequent list refresh fails" classname="completion.spec.js" time="1.664">
+</testcase>
+<testcase name="an expired session wins over a simultaneous collection outage" classname="completion.spec.js" time="1.211">
+</testcase>
+<testcase name="recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list" classname="completion.spec.js" time="2.21">
+</testcase>
+<testcase name="failed generation keeps previous results and hides provider diagnostics" classname="completion.spec.js" time="1.494">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 360px" classname="completion.spec.js" time="5.868">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 768px" classname="completion.spec.js" time="6.064">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 1440px" classname="completion.spec.js" time="6.214">
+</testcase>
+</testsuite>
+<testsuite name="kitchen.spec.js" timestamp="2026-11-21T20:09:50.581Z" hostname="" tests="8" failures="0" skipped="0" time="21.905" errors="0">
+<testcase name="public API documentation loads the actual schema and bearer authorization" classname="kitchen.spec.js" time="1.562">
+</testcase>
+<testcase name="real account, saved preferences, recipe details and collections survive reload and user switching" classname="kitchen.spec.js" time="3.833">
+</testcase>
+<testcase name="empty fridge and provider failure remain honest and retryable" classname="kitchen.spec.js" time="1.399">
+</testcase>
+<testcase name="core screens fit 360px and retain labelled controls" classname="kitchen.spec.js" time="1.517">
+</testcase>
+<testcase name="core screens fit 768px and retain labelled controls" classname="kitchen.spec.js" time="1.744">
+</testcase>
+<testcase name="core screens fit 1440px and retain labelled controls" classname="kitchen.spec.js" time="5.428">
+</testcase>
+<testcase name="keyboard skip link focuses the active main region" classname="kitchen.spec.js" time="0.99">
+</testcase>
+<testcase name="core kitchen actions work with keyboard-only input" classname="kitchen.spec.js" time="5.432">
+</testcase>
+</testsuite>
+</testsuites>

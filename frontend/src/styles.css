@@ -1,0 +1,197 @@
+/*
+ * Tailwind CSS entry for the Fridgely web client.
+ *
+ * Tailwind's Preflight reset is intentionally not imported: the existing,
+ * tested layout relies on browser defaults for headings, paragraphs, lists,
+ * fieldsets and dialogs. Theme tokens and utilities are imported as layers so
+ * utilities always win over the small base and component layers below.
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Breakpoints used by the layout (max-width queries, as in the design). */
+@custom-variant tablet (@media (max-width: 1050px));
+@custom-variant mobile (@media (max-width: 760px));
+@custom-variant wide (@media (min-width: 1450px));
+/* Apply hover styles on every device, as the original stylesheet did. */
+@custom-variant hover (&:hover);
+
+@theme {
+  --color-green: #153e2e;
+  --color-ink: #243c2c;
+  --color-muted: #56685a;
+  --color-canvas: #f6f8f3;
+  --color-line: #e3e9df;
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: Georgia, serif;
+  --animate-appear: appear 0.18s ease-out;
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a,
+  input,
+  textarea {
+    touch-action: manipulation;
+  }
+  button {
+    cursor: pointer;
+    border: 0;
+  }
+  button:disabled,
+  fieldset:disabled button {
+    cursor: wait;
+    opacity: 0.6;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid #bd6239;
+    outline-offset: 3px;
+  }
+  a {
+    color: inherit;
+  }
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+  h1,
+  h2 {
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+  h1 {
+    font-size: 2.3rem;
+    margin-bottom: 0;
+  }
+  h2 {
+    font-size: 1.65rem;
+  }
+  h3 {
+    font-size: 1.15rem;
+    line-height: 1.3;
+  }
+  p {
+    color: var(--color-muted);
+  }
+  small {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  input,
+  textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #cdd6ce;
+    background: #fff;
+    border-radius: 11px;
+    padding: 12px 14px;
+    color: var(--color-ink);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #778279;
+  }
+  textarea {
+    resize: vertical;
+  }
+  form label:not(:first-child) {
+    margin-top: 22px;
+  }
+  input[aria-invalid="true"],
+  textarea[aria-invalid="true"] {
+    border-color: #923d2a;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    button,
+    a {
+      transition:
+        background 0.15s,
+        color 0.15s;
+    }
+  }
+}
+
+/* Shared building blocks reused across several screens. */
+@layer components {
+  .btn-primary,
+  .btn-secondary,
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-2 rounded-[11px] px-[18px] py-3 text-[0.9rem] leading-[1.4] font-semibold no-underline;
+  }
+  .btn-primary {
+    @apply bg-green text-white hover:bg-[#24563e];
+  }
+  .btn-secondary {
+    @apply border border-[#d7e1d8] bg-[#edf2ed] text-green;
+  }
+  .btn-quiet {
+    @apply bg-transparent px-3 py-2 text-[#68776b] hover:bg-[#f5e6df] hover:text-[#9d452c];
+  }
+  .btn-text,
+  .link-text {
+    @apply bg-transparent p-0 font-[650] text-green underline-offset-4;
+  }
+  .btn-text {
+    @apply underline;
+  }
+  .eyebrow {
+    @apply mb-[14px] block text-[0.75rem] font-bold tracking-[0.14em] text-[#51715b];
+  }
+  .panel {
+    @apply rounded-[20px] border border-line bg-white p-7 mobile:rounded-[17px] mobile:px-[18px] mobile:py-[22px];
+  }
+  .muted {
+    @apply text-[0.9rem] text-muted;
+  }
+  .alert-error {
+    @apply rounded-[10px] border border-[#efd1c6] bg-[#fff1ec] p-3 text-[0.95rem] text-[#923d2a];
+  }
+  .alert-success {
+    @apply border border-[#c9decf] bg-[#e6f1e8] text-[#285537];
+  }
+  .message {
+    @apply mb-[22px] flex items-center justify-between gap-[14px] rounded-[12px] px-[18px] py-[14px] wrap-anywhere mobile:flex-col mobile:items-start;
+  }
+  .field-error {
+    @apply mx-0 mt-2 mb-4 text-[0.875rem] wrap-anywhere text-[#923d2a];
+  }
+}

@@ -1,0 +1,9 @@
+[run]
+relative_files = True
+branch = True
+source = backend/src
+omit =
+    */fridgely_app/acceptance.py
+
+[report]
+show_missing = True

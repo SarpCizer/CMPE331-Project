@@ -1,0 +1,831 @@
+{
+  "issues": [
+    {
+      "key": "c2e30f31-424a-4d34-acdc-367fccdac80f",
+      "rule": "python:S8786",
+      "severity": "MAJOR",
+      "component": "fridgely:backend/src/fridgely_app/core.py",
+      "project": "fridgely",
+      "line": 34,
+      "hash": "cc0475965083967736c66538491a80b8",
+      "textRange": {
+        "startLine": 34,
+        "endLine": 34,
+        "startOffset": 30,
+        "endOffset": 54
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "49c760f7-3669-4249-8055-a07894a2fd2f",
+      "rule": "javascript:S9011",
+      "severity": "MAJOR",
+      "component": "fridgely:frontend/src/main.jsx",
+      "project": "fridgely",
+      "line": 243,
+      "hash": "23ecbc60c0d4e09a4e195385b7060648",
+      "textRange": {
+        "startLine": 243,
+        "endLine": 245,
+        "startOffset": 12,
+        "endOffset": 21
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Add an explicit \"type\" attribute to this button.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "",
+      "tags": [
+        "vue",
+        "react"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "98396daa-5498-451d-8646-3a01555b747e",
+      "rule": "javascript:S9011",
+      "severity": "MAJOR",
+      "component": "fridgely:frontend/src/main.jsx",
+      "project": "fridgely",
+      "line": 339,
+      "hash": "e2372618c83e2de6a30dfb53da4dbe85",
+      "textRange": {
+        "startLine": 339,
+        "endLine": 342,
+        "startOffset": 10,
+        "endOffset": 19
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Add an explicit \"type\" attribute to this button.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "",
+      "tags": [
+        "vue",
+        "react"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "cecccb11-0c2a-43cb-91b3-901574c32427",
+      "rule": "javascript:S9011",
+      "severity": "MAJOR",
+      "component": "fridgely:frontend/src/main.jsx",
+      "project": "fridgely",
+      "line": 563,
+      "hash": "81017034804b84faf61dae480a6db486",
+      "textRange": {
+        "startLine": 563,
+        "endLine": 563,
+        "startOffset": 8,
+        "endOffset": 61
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Add an explicit \"type\" attribute to this button.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "",
+      "tags": [
+        "vue",
+        "react"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "1565f6f9-6cac-4fa9-9fd0-51cc0be9db4d",
+      "rule": "javascript:S9011",
+      "severity": "MAJOR",
+      "component": "fridgely:frontend/src/main.jsx",
+      "project": "fridgely",
+      "line": 609,
+      "hash": "e2372618c83e2de6a30dfb53da4dbe85",
+      "textRange": {
+        "startLine": 609,
+        "endLine": 612,
+        "startOffset": 8,
+        "endOffset": 17
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Add an explicit \"type\" attribute to this button.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "",
+      "tags": [
+        "vue",
+        "react"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "BUG",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "LOGICAL",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "251861c9-5aa0-4a8b-9fd9-9b028d1cb759",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 49,
+      "hash": "9129ee2e77747abd7e02a95bde7370e2",
+      "textRange": {
+        "startLine": 49,
+        "endLine": 49,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "b18fa065-d50a-4c66-adf6-cf735f9ccc28",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 54,
+      "hash": "36ff920a0f8f99a9eb24b8cf1da59bc7",
+      "textRange": {
+        "startLine": 54,
+        "endLine": 54,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "3c2dc269-d311-4ea7-a982-f519e3c2bf92",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 55,
+      "hash": "359de4db6c2118131fb84286b4396208",
+      "textRange": {
+        "startLine": 55,
+        "endLine": 55,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "22fb6c83-cc05-4f58-b7c0-1bfe6666d689",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 56,
+      "hash": "50011fbaa9486fc28ea6053042618e7a",
+      "textRange": {
+        "startLine": 56,
+        "endLine": 56,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "be2e215d-a592-4add-9258-ff92c5625ce0",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 85,
+      "hash": "2f19c91296b955a6bc7876f5d3e9be3b",
+      "textRange": {
+        "startLine": 85,
+        "endLine": 85,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "79017a2d-859d-4b69-9261-1b68400e2601",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 92,
+      "hash": "92f3de3c0651e9ebf92a01c4c51f6cba",
+      "textRange": {
+        "startLine": 92,
+        "endLine": 92,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "31a537ab-b3a0-4624-b0ab-9b3e94bfc215",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 93,
+      "hash": "54ecbaa48667058581cb32c8a5991b96",
+      "textRange": {
+        "startLine": 93,
+        "endLine": 93,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "84663382-aa98-49d8-90e5-11d0cbc2d223",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 108,
+      "hash": "e0273903fd9b374de7c0ed358b96c4dd",
+      "textRange": {
+        "startLine": 108,
+        "endLine": 108,
+        "startOffset": 60,
+        "endOffset": 66
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "d4d62c37-e9b0-4e4f-b119-49a6546ff141",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 118,
+      "hash": "b3655d0adb83a4b810c0f3f6a410afbc",
+      "textRange": {
+        "startLine": 118,
+        "endLine": 118,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "be103fa3-68ae-4ac0-9ef6-52d8c0317f9e",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 125,
+      "hash": "8d414037831634165e99f17095cd4ebc",
+      "textRange": {
+        "startLine": 125,
+        "endLine": 125,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "9b4ee0b3-988a-4efa-827f-59fd39306463",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 138,
+      "hash": "951328a2a9a099676272af567102ab40",
+      "textRange": {
+        "startLine": 138,
+        "endLine": 138,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "21ec8d2d-44dd-4aa5-afdc-f1b3542cefec",
+      "rule": "javascript:S2970",
+      "severity": "BLOCKER",
+      "component": "fridgely:tests/fullstack/accounts-isolation.http.test.mjs",
+      "project": "fridgely",
+      "line": 145,
+      "hash": "e3cc50c9f99936ba7d35bf1e54399668",
+      "textRange": {
+        "startLine": 145,
+        "endLine": 145,
+        "startOffset": 8,
+        "endOffset": 14
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete this assertion; 'expect' doesn't assert anything by itself.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "node",
+        "chai",
+        "tests",
+        "playwright",
+        "bun",
+        "vitest",
+        "jest"
+      ],
+      "creationDate": "2026-11-20T18:42:41+0000",
+      "updateDate": "2026-11-20T18:42:41+0000",
+      "type": "CODE_SMELL",
+      "scope": "TEST",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TESTED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    }
+  ],
+  "total": 17,
+  "revision": "94c00cf8053c0e14ca043b10819f80a858d5cce3"
+}

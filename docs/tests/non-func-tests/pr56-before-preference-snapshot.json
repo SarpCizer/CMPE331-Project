@@ -1,0 +1,87 @@
+{
+  "started_utc": "2026-11-23T18:13:53.955267+00:00",
+  "revision": "55186222bb0c7f88d7e21ba88d83e91e37caa9b5",
+  "environment": "GitHub-Actions-Ubuntu-PostgreSQL17-one-worker",
+  "client": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "python": "3.12.16",
+    "cpu_count": 2
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 301.207992377,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 35108,
+    "errors": 6,
+    "error_rate": 0.0001709012190953629,
+    "p95_ms": 508.01234799996564,
+    "max_ms": 2367.7880419999155,
+    "mean_ms": 175.47604781958498,
+    "statuses": {
+      "200": 35102,
+      "0": 6
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 8777,
+      "errors": 4,
+      "error_rate": 0.000455736584254301,
+      "p95_ms": 528.6346350000031,
+      "max_ms": 2140.283280999995,
+      "mean_ms": 192.87970874114166,
+      "statuses": {
+        "200": 8773,
+        "0": 4
+      }
+    },
+    "profile": {
+      "requests": 8777,
+      "errors": 1,
+      "error_rate": 0.00011393414606357525,
+      "p95_ms": 512.581823000005,
+      "max_ms": 1596.105931000011,
+      "mean_ms": 178.7765573680064,
+      "statuses": {
+        "200": 8776,
+        "0": 1
+      }
+    },
+    "shopping": {
+      "requests": 8777,
+      "errors": 1,
+      "error_rate": 0.00011393414606357525,
+      "p95_ms": 512.2671410000521,
+      "max_ms": 2367.7880419999155,
+      "mean_ms": 173.29308950769044,
+      "statuses": {
+        "200": 8776,
+        "0": 1
+      }
+    },
+    "favorites": {
+      "requests": 8777,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 469.8289779999527,
+      "max_ms": 2185.7166550000215,
+      "mean_ms": 156.95483566150133,
+      "statuses": {
+        "200": 8777
+      }
+    }
+  },
+  "passed": false,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}

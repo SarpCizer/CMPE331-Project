@@ -1,0 +1,85 @@
+{
+  "started_utc": "2026-11-20T18:15:13.204353+00:00",
+  "revision": "cc63b804e68c6dd99a885f6fdbae74b6c59a250d",
+  "environment": "GitHub-Actions-Ubuntu-PostgreSQL17-one-worker",
+  "client": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "python": "3.12.16",
+    "cpu_count": 2
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 301.162781077,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 51868,
+    "errors": 1,
+    "error_rate": 1.92797100331611e-05,
+    "p95_ms": 127.56903100000727,
+    "max_ms": 925.1434560000007,
+    "mean_ms": 39.43617351995469,
+    "statuses": {
+      "200": 51867,
+      "0": 1
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 12967,
+      "errors": 1,
+      "error_rate": 7.71188401326444e-05,
+      "p95_ms": 131.217667000044,
+      "max_ms": 548.419593999995,
+      "mean_ms": 41.520937713966184,
+      "statuses": {
+        "200": 12966,
+        "0": 1
+      }
+    },
+    "profile": {
+      "requests": 12967,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 120.22389399999156,
+      "max_ms": 925.1434560000007,
+      "mean_ms": 37.56602822480164,
+      "statuses": {
+        "200": 12967
+      }
+    },
+    "shopping": {
+      "requests": 12967,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 132.95482699999184,
+      "max_ms": 800.4181860000017,
+      "mean_ms": 41.763105801419506,
+      "statuses": {
+        "200": 12967
+      }
+    },
+    "favorites": {
+      "requests": 12967,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 124.03626400003986,
+      "max_ms": 824.7617899999966,
+      "mean_ms": 36.89462233963144,
+      "statuses": {
+        "200": 12967
+      }
+    }
+  },
+  "passed": true,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}

@@ -1,0 +1,331 @@
+name: Fridgely integrated verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: fridgely-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Repository secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Scan full reachable history with redacted output
+        run: |
+          mkdir -p test-results
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo \
+            --gitleaks-ignore-path /repo/.gitleaksignore --redact --no-banner \
+            --report-format json --report-path /repo/test-results/gitleaks.json
+      - name: Prove a synthetic credential makes the scanner fail
+        run: |
+          canary_dir="$(mktemp -d)"
+          python -c 'import secrets,sys; from pathlib import Path; Path(sys.argv[1],"probe.txt").write_text("credential = ghp_"+secrets.token_hex(18))' "$canary_dir"
+          if docker run --rm -v "$canary_dir:/canary" ghcr.io/gitleaks/gitleaks:v8.30.1 dir /canary --redact --no-banner --report-format json --report-path /canary/redacted.json; then
+            echo "Secret detector failed to reject its isolated synthetic canary"
+            exit 1
+          else
+            python -c 'import json,sys; from pathlib import Path; rows=json.loads(Path(sys.argv[1],"redacted.json").read_text()); assert len(rows)>0; Path("test-results/secret-gate-canary.json").write_text(json.dumps({"passed":True,"synthetic_detection_count":len(rows),"real_credentials_used":False}))' "$canary_dir"
+          fi
+          rm -rf "$canary_dir"
+      - name: Export redacted scan result
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: secret-scan-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            test-results/gitleaks.json
+            test-results/secret-gate-canary.json
+          retention-days: 30
+
+  source-archive:
+    name: Immutable source archive and reproducibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Exercise dirty-checkout, revision and ZIP metadata regressions
+        run: python -B -m unittest discover -s scripts/release -p test_package_source.py -v
+      - name: Package the exact checked-out commit twice and compare bytes
+        run: |
+          archive_revision="$(git rev-parse HEAD)"
+          archive_first="$RUNNER_TEMP/release/Fridgely-source-0.1.0.zip"
+          archive_second="$RUNNER_TEMP/release/repeated-source.zip"
+          python scripts/release/package_source.py --revision "$archive_revision" --output "$archive_first"
+          python scripts/release/package_source.py --revision "$archive_revision" --output "$archive_second"
+          cmp "$archive_first" "$archive_second"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: source-archive-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/release/Fridgely-source-0.1.0.zip
+            ${{ runner.temp }}/release/Fridgely-source-0.1.0.zip.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  container:
+    name: Cloud image and PostgreSQL smoke test
+    needs: source-scope
+    if: needs.source-scope.outputs.reuse != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: fridgely_container
+          POSTGRES_USER: fridgely_test
+          POSTGRES_PASSWORD: isolated-container-ci-only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U fridgely_test -d fridgely_container"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Build production image
+        run: docker build --tag fridgely:ci .
+      - name: Start production host against PostgreSQL
+        run: |
+          signing_key="$(python -c 'import secrets; print(secrets.token_hex(32))')"
+          echo "::add-mask::$signing_key"
+          docker run --detach --network host --name fridgely-cloud-test \
+            -e DATABASE_URL=postgresql://fridgely_test:isolated-container-ci-only@127.0.0.1:5432/fridgely_container \
+            -e JWT_SECRET="$signing_key" -e PORT=8000 fridgely:ci
+      - name: Verify API, Swagger, ownership and persistence after container restart
+        run: python tests/cloud/smoke.py --base-url http://127.0.0.1:8000 --restart-container fridgely-cloud-test --output test-results/container-smoke.json
+      - name: Export container result
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: container-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results/container-smoke.json
+          if-no-files-found: warn
+
+  source-scope:
+    name: Verify tested source identity
+    runs-on: ubuntu-latest
+    outputs:
+      reuse: ${{ steps.scope.outputs.reuse }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Compare application and test sources with successful verification
+        id: scope
+        run: |
+          if git diff --quiet 775e8b7a949b2910bb6818145c9066df610a0d01 HEAD -- backend frontend src tests package.json .coveragerc Dockerfile .dockerignore scripts/cloud; then
+            echo "reuse=true" >> "$GITHUB_OUTPUT"
+            echo "Application, dependency and test sources match the successful 106-test PostgreSQL and cloud-image run. Reusing its immutable artifacts."
+          else
+            echo "reuse=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  full-stack:
+    name: API, PostgreSQL, browser and load tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: source-scope
+    if: needs.source-scope.outputs.reuse != 'true'
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: fridgely_test
+          POSTGRES_USER: fridgely_test
+          POSTGRES_PASSWORD: isolated-ci-test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fridgely_test -d fridgely_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://fridgely_test:isolated-ci-test-only@127.0.0.1:5432/fridgely_test
+      API_BASE_URL: http://127.0.0.1:8000
+      TESTED_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements-app.lock
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install -r backend/requirements-app.lock
+          python -m pip install --no-deps -e backend
+          npm install --global pnpm@11.25.0
+          pnpm --dir frontend install --frozen-lockfile
+      - name: Backend tests, real PostgreSQL restart and coverage
+        run: |
+          mkdir -p test-results
+          python -m pytest backend/tests --cov=backend/src --cov-branch --cov-report=xml:test-results/coverage.xml --cov-report=json:test-results/backend-coverage.json --junitxml=test-results/backend-junit.xml -q | tee test-results/backend.log
+      - name: Functional acceptance cases through the real host
+        run: node --test tests/functional/requirements.test.mjs | tee test-results/acceptance.log
+      - name: Build web app and start isolated integrated host
+        run: |
+          pnpm --dir frontend build
+          python backend/tests/serve_web_test.py > test-results/server.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/health; then break; fi
+            sleep 1
+          done
+          curl --fail http://127.0.0.1:8000/health
+      - name: Real HTTP authentication and user isolation
+        run: node --test tests/fullstack/accounts-isolation.http.test.mjs | tee test-results/http-security.log
+      - name: Browser flows, responsive layout, accessibility and frontend coverage
+        run: |
+          pnpm --dir frontend exec playwright install --with-deps chromium
+          pnpm --dir frontend test:e2e | tee test-results/browser.log
+      - name: Targeted SQL injection, mass assignment, file disclosure and stored XSS probes
+        run: node tests/security/penetration.mjs | tee test-results/penetration.log
+      - name: Five-minute non-AI load scenario
+        run: |
+          python tests/performance/non_ai_http.py --revision "$TESTED_REVISION" --environment GitHub-Actions-Ubuntu-PostgreSQL17-one-worker --output test-results/postgresql-load.json | tee test-results/load.log
+      - name: Dependency security checks
+        run: |
+          python -m pip_audit -r backend/requirements-app.lock -f json -o test-results/python-dependencies.json
+          pnpm --dir frontend audit --json > test-results/frontend-dependencies.json
+      - name: Upload actual verification artifacts
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: integrated-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: error
+
+  coverage-policy:
+    name: Enforce source coverage policy
+    needs: [source-scope, full-stack]
+    if: always() && (needs.full-stack.result == 'success' || needs.source-scope.outputs.reuse == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v8.0.2
+        if: needs.source-scope.outputs.reuse != 'true'
+        with:
+          name: integrated-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results
+      - uses: actions/download-artifact@v8.0.2
+        if: needs.source-scope.outputs.reuse == 'true'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
+          path: test-results
+      - name: Enforce the actual backend and frontend measurements
+        run: python scripts/ci/check_coverage.py
+      - name: Prove a coverage regression is rejected
+        run: |
+          probe_dir="$(mktemp -d)"
+          python -c 'import json,sys; from pathlib import Path; d=json.loads(Path("test-results/backend-coverage.json").read_text());d["totals"]["percent_statements_covered"]=0;Path(sys.argv[1],"low.json").write_text(json.dumps(d))' "$probe_dir"
+          if python scripts/ci/check_coverage.py --backend "$probe_dir/low.json" --output "$probe_dir/result.json"; then
+            echo "Coverage policy did not reject the synthetic regression"
+            exit 1
+          fi
+          python -c 'import json,sys; from pathlib import Path; assert json.loads(Path(sys.argv[1],"result.json").read_text())["passed"] is False;Path("test-results/coverage-gate-canary.json").write_text(json.dumps({"passed":True,"synthetic_regression_rejected":True}))' "$probe_dir"
+          rm -rf "$probe_dir"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: coverage-policy-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            test-results/coverage-gate.json
+            test-results/coverage-gate-canary.json
+          retention-days: 30
+
+  sonarqube:
+    name: SonarQube analysis and evidence
+    needs: [source-scope, full-stack]
+    if: always() && (needs.full-stack.result == 'success' || needs.source-scope.outputs.reuse == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SONAR_HOST_URL: http://127.0.0.1:9000
+      TESTED_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v8.0.2
+        if: needs.source-scope.outputs.reuse != 'true'
+        with:
+          name: integrated-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results
+      - name: Reuse artifacts only for identical application and test sources
+        if: needs.source-scope.outputs.reuse == 'true'
+        uses: actions/download-artifact@v8.0.2
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44932416317
+          name: integrated-evidence-775e8b7a949b2910bb6818145c9066df610a0d01
+          path: test-results
+      - name: Record test and analysis revisions
+        run: |
+          mkdir -p test-results/sonarqube
+          python -c 'import json,os; from pathlib import Path; Path("test-results/sonarqube/source-identity.json").write_text(json.dumps({"analysis_revision":os.environ["TESTED_REVISION"],"test_revision":"775e8b7a949b2910bb6818145c9066df610a0d01" if "${{ needs.source-scope.outputs.reuse }}" == "true" else os.environ["TESTED_REVISION"],"test_artifacts_reused":"${{ needs.source-scope.outputs.reuse }}" == "true"},indent=2))'
+      - name: Start isolated loopback-only SonarQube
+        run: |
+          sudo sysctl -w vm.max_map_count=524288
+          docker run --detach --name fridgely-sonar --publish 127.0.0.1:9000:9000 sonarqube:community
+          for attempt in $(seq 1 120); do
+            if curl --silent http://127.0.0.1:9000/api/system/status | grep -q '"status":"UP"'; then break; fi
+            sleep 2
+          done
+          python -m pip install requests==2.34.2
+          python scripts/quality/sonarqube.py init
+      - name: Scan exact reviewed sources and measured coverage
+        run: |
+          mkdir -p .scannerwork
+          docker run --rm --network host --workdir /usr/src --user "$(id -u):$(id -g)" -e SONAR_TOKEN -e SONAR_HOST_URL -e SONAR_USER_HOME=/tmp/sonar-cache -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli:latest -Dsonar.projectBaseDir=/usr/src -Dsonar.working.directory=/usr/src/.scannerwork -Dsonar.projectVersion="$TESTED_REVISION" -Dsonar.scm.disabled=true
+          python scripts/quality/sonarqube.py export
+      - name: Upload real SonarQube results
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: sonarqube-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: test-results/sonarqube/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Remove ephemeral analysis server
+        if: always()
+        run: docker rm --force fridgely-sonar
