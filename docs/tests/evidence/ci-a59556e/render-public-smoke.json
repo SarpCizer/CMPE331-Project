@@ -1,0 +1,38 @@
+{
+  "base_url": "https://fridgely-web.onrender.com",
+  "source_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+  "deploy_id": "dep-dc2uq60473hc73bfhqs0",
+  "deploy_status_verified": "live",
+  "deploy_trigger": "new_commit",
+  "checked_utc": "2026-11-24T20:06:00.037619+00:00",
+  "read_only_https_checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/openapi.json",
+      "status": 200
+    },
+    {
+      "path": "/api/docs",
+      "status": 200
+    },
+    {
+      "path": "/assets/index-CFMoNYzq.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/index-BasseLlv.css",
+      "status": 200
+    }
+  ],
+  "live_provider_tested": false,
+  "provider_requests_made": 0,
+  "credentials_used": false,
+  "passed": true
+}

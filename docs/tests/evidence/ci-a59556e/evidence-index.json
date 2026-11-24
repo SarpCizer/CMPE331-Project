@@ -1,0 +1,155 @@
+{
+  "source_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+  "ci_run_id": 45474025963,
+  "artifact_archives": [
+    {
+      "name": "integrated-evidence",
+      "id": 14958753641,
+      "downloaded_sha256_verified": "f1020a6a052b2f5d6f38d426834d018641c30e2382e1ff45b9c5164328c4ac9d"
+    },
+    {
+      "name": "sonarqube-evidence",
+      "id": 14958938251,
+      "downloaded_sha256_verified": "5095ce06ddab84b1654c523273c921efc23834c13908ac2d2898fc3a7017df5a"
+    },
+    {
+      "name": "coverage-policy",
+      "id": 14959645737,
+      "downloaded_sha256_verified": "550d06799442df715295afcaaf58fc557801917c9f52ff45fb3361940d7db002"
+    },
+    {
+      "name": "secret-scan",
+      "id": 14956749207,
+      "downloaded_sha256_verified": "300be327087587924766eb95de7132ec0a3755f96184d25d0fae058c4124f1ce"
+    },
+    {
+      "name": "container-evidence",
+      "id": 14958088913,
+      "downloaded_sha256_verified": "3c775518775078097caa99aba083e84eb43d8f3f93a69828dbcb82241ad4a162"
+    },
+    {
+      "name": "source-archive",
+      "id": 14957713875,
+      "downloaded_sha256_verified": "46432693df53cbb88ce85f4120a4036dd421b4474a3bec80f88eed72fbdb4988"
+    }
+  ],
+  "files": {
+    "container-evidence/container-smoke.json": {
+      "bytes": 2614,
+      "sha256": "a696bddf1ccb1067c943bb755a7655fbdb1d688ccbe9833cf2075d01583ed4a3"
+    },
+    "coverage-policy/coverage-gate-canary.json": {
+      "bytes": 55,
+      "sha256": "5ea1451c64e1d597de88ad11bcc355e55c0cbecce51f01856781e42297879e77"
+    },
+    "coverage-policy/coverage-gate.json": {
+      "bytes": 508,
+      "sha256": "3d9e5fb5cae75444e2ded7e3a7faab9c66cb3d29899ee3e982d9b293e4db488a"
+    },
+    "integrated-evidence/acceptance.log": {
+      "bytes": 2253,
+      "sha256": "25870ffaad7f231bb60d6d38032b10de895fbfb241cb50b1f352343c6299d5d4"
+    },
+    "integrated-evidence/backend-coverage.json": {
+      "bytes": 154660,
+      "sha256": "fe05627e966a2dd5bb9ae8ed54befff3343b6944413d2a70ee8546354b02525e"
+    },
+    "integrated-evidence/backend-junit.xml": {
+      "bytes": 20207,
+      "sha256": "90d731f985da72fe16daa88918377aae5abb17cf52d0f5a823f55dee2284f18f"
+    },
+    "integrated-evidence/browser-junit.xml": {
+      "bytes": 3850,
+      "sha256": "4cf2706cfd64fe40e4ad51e97ff2c1081457be3db25c1c84d61e24d05a3cdc49"
+    },
+    "integrated-evidence/coverage.xml": {
+      "bytes": 46667,
+      "sha256": "8486711d0717ddae8508b4fa51cdaffe5993772ec7482e8df797ed93ad742aaa"
+    },
+    "integrated-evidence/frontend-coverage/coverage-summary.json": {
+      "bytes": 8750,
+      "sha256": "3dc2435a6c06bf1e37842c08035d8c587b28a32d43639c12dc84fb80eb7ba7b9"
+    },
+    "integrated-evidence/frontend-dependencies.json": {
+      "bytes": 279,
+      "sha256": "5d7b214a9e8076f5becf314750b523083b82de52509ccc4e7dbd92989e2a8c9d"
+    },
+    "integrated-evidence/http-security.log": {
+      "bytes": 1064,
+      "sha256": "54d3e85fb87a765f2b94f3116cb8ed4a93929f47278597d48d3c5dd0aad0ee18"
+    },
+    "integrated-evidence/penetration.json": {
+      "bytes": 943,
+      "sha256": "123e10fc2bd8049197f219bc8b6c2dd6aa901987ed3cd5d211dc65aee0bd6349"
+    },
+    "integrated-evidence/postgresql-load.json": {
+      "bytes": 2020,
+      "sha256": "5931eeea6d02455117601d5ed9099e5ce498005f00fd0b88bd10bd696750916b"
+    },
+    "integrated-evidence/provider-timeout.json": {
+      "bytes": 159,
+      "sha256": "ab5ad570fddbb250ab28bd135ea1aa45fad1db06036af062bea27c7f0a9240db"
+    },
+    "integrated-evidence/python-dependencies.json": {
+      "bytes": 3654,
+      "sha256": "1548628e02620057fd305650adae7fb70d45b44aca6eaaf425ac8bc6dc069c29"
+    },
+    "integrated-evidence/screens/fridge-1440.png": {
+      "bytes": 112846,
+      "sha256": "773326a48fae019c595a29ca53975591287118ace903bb4a3138355f8a8a02df"
+    },
+    "integrated-evidence/screens/fridge-360.png": {
+      "bytes": 90906,
+      "sha256": "b0b7a964628249e943254283de3b274df7902fc1e1f0578476a0fa48b5e7910f"
+    },
+    "integrated-evidence/screens/fridge-768.png": {
+      "bytes": 101672,
+      "sha256": "6bb538a82dd7ff7f0aeb0ba598be666b05fd8becb2b1df4d43109897c5ac1316"
+    },
+    "render-public-smoke.json": {
+      "bytes": 825,
+      "sha256": "54106f45eed33a6cb2f63589a07f7e274e09fa02d89f0848ad31de38089ec324"
+    },
+    "secret-scan/gitleaks.json": {
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "secret-scan/secret-gate-canary.json": {
+      "bytes": 80,
+      "sha256": "44c5ed3f3a5f51569cf530818bfc34e2d9d17dbd0250bebeef7a979f7ee644e9"
+    },
+    "sonarqube-evidence/compute-task.json": {
+      "bytes": 577,
+      "sha256": "679e5e4671ce1ea581ce29ae6fd33f35a4cabfbcb268173f938a68e9398f00ce"
+    },
+    "sonarqube-evidence/issues.json": {
+      "bytes": 91,
+      "sha256": "ac63c3b05738fcf9943a089b54834d0cfed75cb3e4a8b171845b746f9eec9118"
+    },
+    "sonarqube-evidence/metrics.json": {
+      "bytes": 1004,
+      "sha256": "2183973ef6ffca122eeca9f27b9a6d70fe1ec19213d24eec5073eea0148ae87e"
+    },
+    "sonarqube-evidence/quality-gate.json": {
+      "bytes": 133,
+      "sha256": "56d23cce8f9b6d906f8145b9da086ae4a4b92d16a3c883d2f769d1d002e273eb"
+    },
+    "sonarqube-evidence/security-hotspots.json": {
+      "bytes": 152,
+      "sha256": "54d8ae054cf7cdd8aecc705fa4e693c0b3743db57fda8aa3be576f2fcf24a93d"
+    },
+    "sonarqube-evidence/server.json": {
+      "bytes": 107,
+      "sha256": "f9052ba30a2c28275dfccce0ca999708bd478a51f183c7f039b7c29277dc81a3"
+    },
+    "sonarqube-evidence/source-identity.json": {
+      "bytes": 166,
+      "sha256": "b7779028c2b030e591586459ef5a7a64c87f0ab583057e9eb010095ee04063fb"
+    },
+    "summary.json": {
+      "bytes": 2230,
+      "sha256": "a47d869b8f4a5f6b180223dbbd7169ec9e5f1238a11017c94a4a746843ecd2f6"
+    }
+  },
+  "provenance": "Artifacts downloaded from GitHub Actions and archive SHA-256 verified. Selected raw results retained; complete browser V8 and logs remain in the run. Render public smoke is a separate observed deployment check. summary.json is derived from the raw results."
+}

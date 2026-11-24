@@ -1,0 +1,54 @@
+<testsuites id="" name="" tests="22" failures="0" skipped="0" errors="0" time="63.914429">
+<testsuite name="completion.spec.js" timestamp="2026-11-24T19:51:21.807Z" hostname="" tests="10" failures="0" skipped="0" time="32.281" errors="0">
+<testcase name="invalid fields explain the problem at the input without sending writes" classname="completion.spec.js" time="2.637">
+</testcase>
+<testcase name="a failed collection does not discard inventory or turn a committed write into failure" classname="completion.spec.js" time="1.677">
+</testcase>
+<testcase name="a slow collection does not block unrelated screens" classname="completion.spec.js" time="1.515">
+</testcase>
+<testcase name="a committed write is acknowledged even when its subsequent list refresh fails" classname="completion.spec.js" time="1.254">
+</testcase>
+<testcase name="an expired session wins over a simultaneous collection outage" classname="completion.spec.js" time="1.772">
+</testcase>
+<testcase name="recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list" classname="completion.spec.js" time="2.677">
+</testcase>
+<testcase name="failed generation keeps previous results and hides provider diagnostics" classname="completion.spec.js" time="2.017">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 360px" classname="completion.spec.js" time="5.917">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 768px" classname="completion.spec.js" time="5.975">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 1440px" classname="completion.spec.js" time="6.84">
+</testcase>
+</testsuite>
+<testsuite name="kitchen.spec.js" timestamp="2026-11-24T19:51:21.807Z" hostname="" tests="8" failures="0" skipped="0" time="23.11" errors="0">
+<testcase name="public API documentation loads the actual schema and bearer authorization" classname="kitchen.spec.js" time="1.632">
+</testcase>
+<testcase name="real account, saved preferences, recipe details and collections survive reload and user switching" classname="kitchen.spec.js" time="4.102">
+</testcase>
+<testcase name="empty fridge and provider failure remain honest and retryable" classname="kitchen.spec.js" time="1.498">
+</testcase>
+<testcase name="core screens fit 360px and retain labelled controls" classname="kitchen.spec.js" time="1.649">
+</testcase>
+<testcase name="core screens fit 768px and retain labelled controls" classname="kitchen.spec.js" time="1.711">
+</testcase>
+<testcase name="core screens fit 1440px and retain labelled controls" classname="kitchen.spec.js" time="6.145">
+</testcase>
+<testcase name="keyboard skip link focuses the active main region" classname="kitchen.spec.js" time="1.109">
+</testcase>
+<testcase name="core kitchen actions work with keyboard-only input" classname="kitchen.spec.js" time="5.264">
+</testcase>
+</testsuite>
+<testsuite name="preferences-fidelity.spec.js" timestamp="2026-11-24T19:51:21.807Z" hostname="" tests="2" failures="0" skipped="0" time="2.589" errors="0">
+<testcase name="saving API preferences without edits preserves exact strings, order and repeats" classname="preferences-fidelity.spec.js" time="1.365">
+</testcase>
+<testcase name="quoted preference edits preserve names and invalid quoting never sends a write" classname="preferences-fidelity.spec.js" time="1.224">
+</testcase>
+</testsuite>
+<testsuite name="text-format.spec.js" timestamp="2026-11-24T19:51:21.807Z" hostname="" tests="2" failures="0" skipped="0" time="3.745" errors="0">
+<testcase name="recipe introduction uses the singular for one ingredient" classname="text-format.spec.js" time="1.599">
+</testcase>
+<testcase name="recently viewed dates use the same English format as the fridge" classname="text-format.spec.js" time="2.146">
+</testcase>
+</testsuite>
+</testsuites>
