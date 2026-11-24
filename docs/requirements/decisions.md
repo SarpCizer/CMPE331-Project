@@ -26,7 +26,7 @@ Refs #16, #21. The rows below record actual implementation choices; team confirm
 | Choice | Responsible role | Decision and rationale |
 | --- | --- | --- |
 | Backend / database | Full-stack/database | FastAPI + SQLAlchemy + Alembic, PostgreSQL 17; retain the actual implemented teammate modules instead of replacing them with the earlier proposed Express implementation. |
-| Browser | Full-stack/frontend | React 19/Vite, native fetch and repository CSS tokens; preserve the tested UI without introducing Axios/Tailwind solely to match a superseded design library list. Their functional roles are implemented by the existing client/styles. |
+| Browser | Frontend | React 19/Vite with React Router (protected routes), an Axios client with a token interceptor and Tailwind CSS, as listed in the charter, #35 and the design report. Implemented on `feature/safa-frontend-charter` without changing tested behaviour (all browser tests pass; 140 screenshot comparisons match the previous UI). Revised on 24 November; replaces the 21 November proposal to keep native fetch and plain CSS. |
 | JWT | Full-stack/auth | HS256, persistent >=32-byte server secret, issuer/audience/account validation, one-hour expiry; checks use the same injected server clock. |
 | AI / hosting | AI and DevOps, integrated by full-stack | OpenAI Responses provider behind an injected port; Render Docker web service + managed PostgreSQL. Actual cloud activation and provider credential remain separately verified release steps. |
 | A-01 | Full-stack/database + AI | Implement account-owned accepted recipe snapshots; no global shared catalog. |
