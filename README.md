@@ -76,6 +76,7 @@ requires the team's server-side provider credential.
 - [Approved stories, API contract and quality requirements](docs/requirements/README.md)
 - [Implemented database and transaction boundaries](docs/database.md)
 - [Recorded implementation decisions for team review](docs/requirements/decisions.md)
+- [Milestone status and final-delivery checklist](docs/milestone-handoff.md)
 - [Existing requirements report and WBS/PERT/Gantt plans](docs/requirements-specification.md)
 - [Analysis review PR #5](https://github.com/SarpCizer/CMPE331-Project/pull/5)
   and [design review PR #6](https://github.com/SarpCizer/CMPE331-Project/pull/6)

@@ -27,3 +27,11 @@ The assistant used the PDF skill to prepare and visually inspect the test report
 | Split the single-file frontend into pages/components and added React Router with protected routes (#35). Claude helped move the existing code into separate files. | 2d3f9f3 | The code was moved rather than rewritten; 18/18 browser tests passed before and after. |
 | Migrated the frontend styling from plain CSS to Tailwind CSS (#35, charter). Claude helped translate the stylesheet rules into Tailwind classes. | 5e87d9f | 18/18 browser tests; 140 screenshots at five widths compared pixel by pixel with the previous UI (only anti-aliasing noise of at most 2/255 at rounded corners); coverage 96.65% lines. |
 | Fixed the "1 ingredients" text and locale-dependent history dates test-first. Claude helped write the regression tests. | red 0a9584a, green fef3a7c | Both new browser tests failed before the fix and pass after it; full suite 20/20; logs in `docs/tests/evidence/text-format/`. |
+
+## İrem Demircan
+
+| Contribution | PR / source | Validation |
+| --- | --- | --- |
+| Claude helped draft the backlog issues, as reported by İrem. | #17–#48, linked from #16 | Codex cross-checked issue metadata, dependencies and open PRs. The backlog snapshot was superseded by the current integration stack. |
+| Codex helped identify and cover inventory regression gaps. | #58, 6c2aa58 | 27 baseline functional tests and 28 after the coverage change; 23 account/database and host integration tests passed locally with an isolated provider. |
+| Codex reproduced archive defects and prepared review feedback for the final deliverable. | #53 | A harmless untracked file reached the archive, and two identical-input builds yielded distinct ZIP bytes. Corrective review feedback is recorded on the PR. |
