@@ -22,7 +22,7 @@ sequenceDiagram
   participant UI as React client
   participant API as Authenticated FastAPI host
   participant DB as PostgreSQL
-  participant AI as OpenAI Responses API
+  participant AI as Configured recipe provider
   UI->>API: POST /api/recipes/generate + bearer JWT
   API->>API: Verify signature, claims, expiry and account
   API->>DB: Read owned inventory and saved preferences
@@ -30,7 +30,7 @@ sequenceDiagram
   alt Empty fridge
     API-->>UI: 400, no provider call
   else Input available
-    API->>AI: Instructions + ingredient/dietary/allergen JSON + strict schema
+    API->>AI: Instructions + ingredient/dietary/allergen JSON + response schema
     alt Timeout or provider unavailable
       API-->>UI: Retryable sanitized 503, no persistence
     else Candidate batch
@@ -46,6 +46,6 @@ sequenceDiagram
   end
 ```
 
-The actual instructions and JSON schema are in `backend/src/fridgely_recipes/provider.py`; do not maintain a second divergent prompt. The server sends the current ingredient names and both exact preference lists, requests structured output with a 2400-token maximum and `store:false`, and defaults to `gpt-4o-mini` unless `OPENAI_MODEL` is set. `OPENAI_API_KEY` is server-only. The host applies a 28-second generation budget with a shorter connection timeout.
+The shared instructions and schema are in `backend/src/fridgely_recipes/provider.py`. Both providers receive the current ingredient names and exact preference lists with a 2400-token output limit. The OpenAI adapter uses Responses with `store:false`. The Cloudflare adapter uses Workers AI JSON Mode for Llama 3.3 70B. The host applies a 28-second generation budget with a shorter connection timeout. [Server configuration](cloud-deployment.md#recipe-provider-settings)
 
 Validation checks the complete batch before storage. Declared exclusion comparison is trimmed/casefolded name matching, not a synonym taxonomy, allergy certification or medical advice. No recipe operation deducts inventory. Controlled providers belong only to isolated tests. Missing production credentials yield the actual retryable error; no fixture replaces the live service.

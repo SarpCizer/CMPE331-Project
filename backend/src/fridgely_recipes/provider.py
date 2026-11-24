@@ -1,11 +1,14 @@
 import json
 import os
+from urllib.parse import quote
 
 import httpx
 
-from .service import GenerationInput
+from .service import GenerationInput, RecipeProvider
 
 RESPONSES_URL = "https://api.openai.com/v1/responses"
+CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4"
+CLOUDFLARE_RECIPE_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
 INSTRUCTIONS = (
     "Generate one to three practical Fridgely recipes with the fridge ingredients where possible. "
@@ -48,6 +51,23 @@ RESPONSE_FORMAT = {
 }
 
 
+def recipe_input(data: GenerationInput) -> str:
+    return json.dumps({
+        "ingredients": data.ingredients,
+        "dietary": data.dietary,
+        "allergens": data.allergens,
+    }, ensure_ascii=False)
+
+
+def recipe_batch(value: object) -> object:
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            return None
+    return value.get("recipes") if isinstance(value, dict) else None
+
+
 def read_candidates(payload: object) -> object:
     if not isinstance(payload, dict) or payload.get("status") != "completed":
         return None
@@ -70,11 +90,7 @@ def read_candidates(payload: object) -> object:
                     return None
                 text.append(part["text"])
 
-    try:
-        batch = json.loads("".join(text))
-    except ValueError:
-        return None
-    return batch.get("recipes") if isinstance(batch, dict) else None
+    return recipe_batch("".join(text))
 
 
 class OpenAIRecipeProvider:
@@ -92,11 +108,7 @@ class OpenAIRecipeProvider:
             json={
                 "model": self.model,
                 "instructions": INSTRUCTIONS,
-                "input": json.dumps({
-                    "ingredients": data.ingredients,
-                    "dietary": data.dietary,
-                    "allergens": data.allergens,
-                }, ensure_ascii=False),
+                "input": recipe_input(data),
                 "text": {"format": RESPONSE_FORMAT},
                 "max_output_tokens": 2400,
                 "store": False,
@@ -110,3 +122,57 @@ class OpenAIRecipeProvider:
         if isinstance(payload, dict) and payload.get("status") == "failed":
             raise RuntimeError("OpenAI recipe generation failed.")
         return read_candidates(payload)
+
+
+class CloudflareRecipeProvider:
+    def __init__(self, client: httpx.AsyncClient, *, account_id: str, api_token: str):
+        self.client = client
+        self.api_token = api_token
+        account = quote(account_id, safe="")
+        self.url = f"{CLOUDFLARE_API_URL}/accounts/{account}/ai/run/{CLOUDFLARE_RECIPE_MODEL}"
+
+    async def generate(self, data: GenerationInput) -> object:
+        response = await self.client.post(
+            self.url,
+            headers={"Authorization": f"Bearer {self.api_token}"},
+            json={
+                "messages": [
+                    {"role": "system", "content": INSTRUCTIONS},
+                    {"role": "user", "content": recipe_input(data)},
+                ],
+                "response_format": {"type": "json_schema", "json_schema": RESPONSE_FORMAT["schema"]},
+                "max_tokens": 2400,
+            },
+        )
+        response.raise_for_status()
+        try:
+            payload = response.json()
+        except ValueError:
+            return None
+        if not isinstance(payload, dict):
+            return None
+        if payload.get("success") is False:
+            raise RuntimeError("Cloudflare recipe generation failed.")
+        result = payload.get("result")
+        if payload.get("success") is not True or not isinstance(result, dict):
+            return None
+        return recipe_batch(result.get("response"))
+
+
+class UnavailableProvider:
+    async def generate(self, _data):
+        raise RuntimeError("Recipe provider is not configured.")
+
+
+def configured_recipe_provider(client: httpx.AsyncClient) -> RecipeProvider:
+    provider = os.getenv("RECIPE_PROVIDER", "openai").strip().casefold()
+    if provider == "cloudflare":
+        account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID", "").strip()
+        token = os.getenv("CLOUDFLARE_AI_TOKEN", "").strip()
+        if account_id and token:
+            return CloudflareRecipeProvider(client, account_id=account_id, api_token=token)
+    elif provider == "openai":
+        key = os.getenv("OPENAI_API_KEY", "").strip()
+        if key:
+            return OpenAIRecipeProvider(client, api_key=key)
+    return UnavailableProvider()

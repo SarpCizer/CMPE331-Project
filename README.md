@@ -30,9 +30,9 @@ python -m fridgely_app migrate
 python -m uvicorn fridgely_app.host:create_app --factory --port 8000
 ```
 
-Open `http://127.0.0.1:8000`. Provide `OPENAI_API_KEY` for live recipe generation;
-without it the app returns an explicit retryable provider error. Personal lists
-continue to work. Do not copy the old ZIP database or execute its reset schema.
+Open `http://127.0.0.1:8000`. Configure a server-side recipe provider for live
+generation. The setup supports [Cloudflare Workers AI Free or OpenAI](docs/cloud-deployment.md#recipe-provider-settings).
+Personal lists continue to work when recipe generation is unavailable.
 
 ## Verify
 
@@ -64,11 +64,9 @@ backend module history is preserved. No automatic main-branch merge or productio
 deployment from main is configured. The separate cloud feature branch configures
 the Render teaching deployment; see its reviewable Blueprint and deployment record.
 
-The public cloud URL is **pending Render GitHub repository access**. The connected
-Render account currently cannot read this private repository; a PostgreSQL instance
-is provisioned, but no live web service is claimed. The localhost URL above is
-accessible only on the machine running the host. Live generation additionally
-requires the team's server-side provider credential.
+The team's Render deployment status and source revision are tracked in
+[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Live recipe generation
+requires the selected provider's server-side credentials.
 
 ## Documentation and team
 
