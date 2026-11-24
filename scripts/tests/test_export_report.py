@@ -19,7 +19,8 @@ class ReportEvidenceTests(unittest.TestCase):
         shutil.copytree(ROOT / "docs/tests", self.root / "docs/tests")
         target = self.root / "scripts/tests"
         target.mkdir(parents=True)
-        shutil.copy2(ROOT / "scripts/tests/export_report.py", target)
+        for name in ("export_report.py", "export_verified_report.py"):
+            shutil.copy2(ROOT / "scripts/tests" / name, target)
 
     def export(self, destination):
         return subprocess.run(
