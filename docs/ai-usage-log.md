@@ -35,3 +35,7 @@ The assistant used the PDF skill to prepare and visually inspect the test report
 | Claude helped draft the backlog issues, as reported by İrem. | #17–#48, linked from #16 | Codex cross-checked issue metadata, dependencies and open PRs. The backlog snapshot was superseded by the current integration stack. |
 | Codex helped identify and cover inventory regression gaps. | #58, 6c2aa58 | 27 baseline functional tests and 28 after the coverage change; 23 account/database and host integration tests passed locally with an isolated provider. |
 | Codex reproduced archive defects and prepared review feedback for the final deliverable. | #53 | A harmless untracked file reached the archive, and two identical-input builds yielded distinct ZIP bytes. Corrective review feedback is recorded on the PR. |
+
+## Ayşe Döne
+
+Codex helped compare the recipe and shopping contracts, replay the ingredient validation regression, and implement and test the Cloudflare Workers AI adapter. The source revisions, results, and live verification status are recorded in the [recipe integration review](ai-contributions/ayse-recipe-review.md). Refs #45, #63, #65.
