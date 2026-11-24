@@ -58,15 +58,20 @@ of a workflow file.
 
 ## Review structure
 
-Work is proposed through separate dependent branches: accounts/database, feature
-composition, web integration, CI verification and the test report. Existing
-backend module history is preserved. No automatic main-branch merge or production
-deployment from main is configured. The separate cloud feature branch configures
-the Render teaching deployment; see its reviewable Blueprint and deployment record.
+The integrated application and Cloudflare provider have been merged into `main`.
+Follow-up work uses focused branches and independent PR review. Existing backend
+module history and the approved submission source/report pair remain traceable.
 
-The team's Render deployment status and source revision are tracked in
-[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Live recipe generation
-requires the selected provider's server-side credentials.
+The existing [Render application](https://fridgely-web.onrender.com) is configured
+to follow `main` after successful CI checks, as recorded in
+[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Check that issue and
+the Render deploy record for the actual deployed commit. The repository Blueprint
+still names the earlier feature branch; [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70)
+tracks that alignment. Keep Blueprint sync paused until its reviewed plan agrees
+with the existing service.
+
+Live recipe generation additionally requires account verification, a scoped
+provider token and the [provider activation checks](docs/cloud-deployment.md#activate-and-verify-cloudflare).
 
 ## Documentation and team
 
