@@ -2,6 +2,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import os
+import secrets
 import pytest
 from fastapi.testclient import TestClient
 
@@ -21,7 +22,7 @@ def kitchen(tmp_path, request):
     engine = make_engine(url)
     migrate(engine)
     engine.dispose()
-    app = create_app(database_url=url, jwt_secret='synthetic-cooking-test-secret-32-characters')
+    app = create_app(database_url=url, jwt_secret=secrets.token_urlsafe(48))
     with TestClient(app) as client:
         def account(email):
             credentials = {'email': email, 'password': 'Synthetic-password-123!'}
