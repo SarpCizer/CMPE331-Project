@@ -37,7 +37,7 @@ function Fridge({ items, run, api }) {
         ? "Enter a valid positive quantity (whole numbers for count units)." : "");
     setError(invalid);
     if (invalid) {
-      event.currentTarget.querySelector("input").focus();
+      event.currentTarget.querySelector(editing ? "#quantity" : "#ingredient").focus();
       return;
     }
     if (

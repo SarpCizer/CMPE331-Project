@@ -43,13 +43,13 @@ def test_real_accounts_supply_owned_inventory_and_latest_preferences(host):
     client=host.client
     alice=user(client,'alice@example.test')
     bob=user(client,'bob@example.test')
-    assert client.post('/inventory',headers=alice,json={'name':'rice'}).status_code == 201
+    assert client.post('/inventory',headers=alice,json={'name':'rice','quantity':0.5,'unit':'kg'}).status_code == 201
     preferences={'dietary':['vegan'],'allergens':['peanut']}
     assert client.put('/profile/preferences',headers=alice,json=preferences).status_code == 200
     generated=client.post('/recipes/generate',headers=alice,json={})
     assert generated.status_code == 200
     recipe,=generated.json()
-    assert host.state.calls == [{'ingredients':('rice',),'dietary':('vegan',),'allergens':('peanut',)}]
+    assert host.state.calls == [{'ingredients':('rice',),'dietary':('vegan',),'allergens':('peanut',),'amounts':(('rice',0.5,'kg'),)}]
     assert client.get(f'/recipes/{recipe["id"]}',headers=bob).status_code == 404
     assert client.get(f'/recipes/{recipe["id"]}',headers=alice).json() == recipe
     assert client.post('/favorites',headers=alice,json={'recipeId':recipe['id']}).status_code == 200
@@ -58,7 +58,7 @@ def test_real_accounts_supply_owned_inventory_and_latest_preferences(host):
     latest={'dietary':['vegetarian'],'allergens':['walnut']}
     assert client.put('/profile/preferences',headers=alice,json=latest).status_code == 200
     assert client.post('/recipes/generate',headers=alice,json={}).status_code == 200
-    assert host.state.calls[-1] == {'ingredients':('rice',),'dietary':('vegetarian',),'allergens':('walnut',)}
+    assert host.state.calls[-1] == {'ingredients':('rice',),'dietary':('vegetarian',),'allergens':('walnut',),'amounts':(('rice',0.5,'kg'),)}
     paths=['/inventory','/profile/preferences','/shopping-items','/favorites','/history']
     before=[client.get(path,headers=alice).json() for path in paths]
     host.state.fail=True

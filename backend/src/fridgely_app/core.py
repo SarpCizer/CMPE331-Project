@@ -98,7 +98,7 @@ def inventory_payload(row):
 def inventory_amounts(session, owner):
     rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == owner)
         .order_by(InventoryEntry.added_at, InventoryEntry.id))
-    return tuple((row.name, row.quantity, row.unit) for row in rows)
+    return tuple((row.name, row.quantity, row.unit) for row in rows if row.quantity is not None)
 
 
 def inventory_names(session, owner):
