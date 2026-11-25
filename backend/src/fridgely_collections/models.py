@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, Index, String, UniqueConstraint
+from sqlalchemy import CheckConstraint, DateTime, Float, Index, String, UniqueConstraint
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -19,6 +19,8 @@ class ShoppingItem(CollectionsBase):
     owner_id: Mapped[str] = mapped_column(String(128), nullable=False)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     name_key: Mapped[str] = mapped_column(String(512), nullable=False)
+    quantity: Mapped[float | None] = mapped_column(Float, nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(8), nullable=True)
 
 
 class Favorite(CollectionsBase):

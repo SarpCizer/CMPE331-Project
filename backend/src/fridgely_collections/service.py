@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from .errors import CollectionError, not_found
 from .ports import CoreData, OwnedRecipe
 from .repository import CollectionRepository
-from .schemas import HistoryDTO, RecipeDTO, identifier, ingredient_name
+from .schemas import HistoryDTO, RecipeDTO, ShoppingCommand, identifier, ingredient_name
 
 T = TypeVar("T")
 
@@ -60,10 +60,14 @@ class CollectionsService:
             raise not_found()
         return recipe
 
-    def add_item(self, owner: str, name: str):
+    def add_item(self, owner: str, name: str, quantity=None, unit=None):
         identifier(owner)
         display, key = ingredient_name(name)
-        return self._transaction(lambda session, repo: repo.add_item(owner, display, key))
+        try:
+            amount = ShoppingCommand(name=display, quantity=quantity, unit=unit)
+        except ValidationError:
+            raise CollectionError(400, 'Invalid shopping quantity') from None
+        return self._transaction(lambda session, repo: repo.add_item(owner, display, key, amount.quantity, amount.unit))
 
     def items(self, owner: str):
         identifier(owner)

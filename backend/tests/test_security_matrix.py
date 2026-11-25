@@ -29,6 +29,7 @@ ROUTES = [
         {"inventoryId": "{inventory}", "quantity": 1, "unit": "pcs"}]}),
     ("GET", "/shopping-items", None), ("POST", "/shopping-items", {"name": "intrusion"}),
     ("DELETE", "/shopping-items/{shopping}", None),
+    ("POST", "/shopping-items/{shopping}/purchase", {"quantity": 2, "unit": "pcs"}),
     ("POST", "/favorites", {"recipeId": "{recipe}"}),
     ("GET", "/favorites", None), ("DELETE", "/favorites/{recipe}", None),
     ("GET", "/history", None),

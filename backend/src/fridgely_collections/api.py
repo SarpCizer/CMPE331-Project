@@ -67,7 +67,7 @@ def build_collections(*, session_factory: Callable[[], Session], core: CoreData,
     @router.post("/shopping-items", response_model=ShoppingItemDTO, status_code=201,
                  responses={200: {"model": ShoppingItemDTO}})
     def add_item(command: ShoppingCommand, response: Response, account: str = Depends(owner)):
-        item, created = service.add_item(account, command.name)
+        item, created = service.add_item(account, command.name, command.quantity, command.unit)
         response.status_code = 201 if created else 200
         return item
 

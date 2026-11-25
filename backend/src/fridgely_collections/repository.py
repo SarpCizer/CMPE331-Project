@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import case, delete, select
+from sqlalchemy import case, delete, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
@@ -23,20 +23,24 @@ class CollectionRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def add_item(self, owner: str, name: str, key: str) -> tuple[ShoppingItemDTO, bool]:
+    def add_item(self, owner: str, name: str, key: str, quantity=None, unit=None) -> tuple[ShoppingItemDTO, bool]:
         stmt = dialect_insert(self.session, ShoppingItem).values(
-            id=uuid4().hex, owner_id=owner, name=name, name_key=key)
+            id=uuid4().hex, owner_id=owner, name=name, name_key=key, quantity=quantity, unit=unit)
         created = self.session.execute(stmt.on_conflict_do_nothing(
             index_elements=[ShoppingItem.owner_id, ShoppingItem.name_key]
         ).returning(ShoppingItem.id)).scalar_one_or_none() is not None
+        if not created and quantity is not None:
+            self.session.execute(update(ShoppingItem).where(
+                ShoppingItem.owner_id == owner, ShoppingItem.name_key == key
+            ).values(quantity=quantity, unit=unit))
         row = self.session.scalars(select(ShoppingItem).where(
             ShoppingItem.owner_id == owner, ShoppingItem.name_key == key)).one()
-        return ShoppingItemDTO(id=row.id, name=row.name), created
+        return ShoppingItemDTO(id=row.id, name=row.name, quantity=row.quantity, unit=row.unit), created
 
     def items(self, owner: str) -> list[ShoppingItemDTO]:
         rows = self.session.scalars(select(ShoppingItem).where(
             ShoppingItem.owner_id == owner).order_by(ShoppingItem.id)).all()
-        return [ShoppingItemDTO(id=row.id, name=row.name) for row in rows]
+        return [ShoppingItemDTO(id=row.id, name=row.name, quantity=row.quantity, unit=row.unit) for row in rows]
 
     def delete_item(self, owner: str, item_id: str) -> bool:
         return self.session.execute(delete(ShoppingItem).where(

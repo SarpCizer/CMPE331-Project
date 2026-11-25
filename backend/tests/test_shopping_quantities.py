@@ -1,3 +1,5 @@
+import os
+from uuid import uuid4
 import pytest
 from sqlalchemy import text
 from fridgely_app.database import make_engine, migrate
@@ -49,8 +51,24 @@ def test_recipe_missing_addition_preserves_explicit_shopping_amount(kitchen):
     assert kitchen.stock() == []
 
 
-def test_upgrade_preserves_legacy_rows_and_owner_identity(tmp_path):
-    engine = make_engine(f"sqlite:///{tmp_path / 'legacy-shopping.db'}")
+@pytest.mark.parametrize('database', ['sqlite', 'postgresql'])
+def test_upgrade_preserves_legacy_rows_and_owner_identity(tmp_path, database):
+    url = f"sqlite:///{tmp_path / 'legacy-shopping.db'}" if database == 'sqlite' else os.getenv('TEST_DATABASE_URL')
+    if not url:
+        pytest.skip('TEST_DATABASE_URL is required for PostgreSQL legacy shopping upgrade')
+    engine = make_engine(url)
+    cleanup = None
+    schema = 'shopping_upgrade_' + uuid4().hex
+    if database == 'postgresql':
+        from sqlalchemy import event
+        cleanup = make_engine(url)
+        with cleanup.begin() as connection:
+            connection.execute(text(f'CREATE SCHEMA "{schema}"'))
+        @event.listens_for(engine, 'connect')
+        def isolate(connection, _record):
+            cursor = connection.cursor()
+            cursor.execute(f'SET search_path TO "{schema}"')
+            cursor.close()
     try:
         migrate(engine, '0005_cooking_confirmations')
         with engine.begin() as connection:
@@ -62,6 +80,10 @@ def test_upgrade_preserves_legacy_rows_and_owner_identity(tmp_path):
             assert tuple(connection.execute(text('SELECT id,owner_id,name,name_key,quantity,unit FROM shopping_items')).one()) == ('item','legacy','Milk','milk',None,None)
     finally:
         engine.dispose()
+        if cleanup is not None:
+            with cleanup.begin() as connection:
+                connection.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
+            cleanup.dispose()
 
 
 def purchase(kitchen, item, quantity=2, unit='pcs', headers=None):
@@ -138,3 +160,55 @@ def test_simultaneous_purchase_never_refills_twice(kitchen):
     assert all(r.status_code in {200, 503} for r in responses)
     assert purchase(kitchen, item).status_code == 200
     assert kitchen.stock()[0]['quantity'] == 2
+
+
+def test_purchase_overflow_and_invalid_command_leave_both_collections_unchanged(kitchen):
+    kitchen.add('egg', 1000000)
+    item = add(kitchen, name='egg', quantity=2, unit='pcs').json()
+    before = kitchen.stock()
+    assert purchase(kitchen, item).status_code == 409
+    for body in [{}, {'quantity': 0, 'unit': 'pcs'}, {'quantity': True, 'unit': 'pcs'},
+                 {'quantity': 1.5, 'unit': 'pcs'}, {'quantity': 1, 'unit': 'cup'},
+                 {'quantity': 1, 'unit': 'pcs', 'owner_id': 'other'}]:
+        response = kitchen.client.post('/api/shopping-items/' + item['id'] + '/purchase',
+            headers=kitchen.alice, json=body)
+        assert response.status_code == 400
+    assert kitchen.stock() == before
+    assert kitchen.client.get('/api/shopping-items', headers=kitchen.alice).json() == [item]
+
+
+@pytest.mark.parametrize('value', ['NaN', 'Infinity', '-Infinity'])
+def test_nonfinite_shopping_amount_is_rejected(kitchen, value):
+    response = kitchen.client.post('/api/shopping-items', headers={**kitchen.alice, 'Content-Type': 'application/json'},
+        content='{"name":"egg","quantity":' + value + ',"unit":"pcs"}')
+    assert response.status_code == 400
+    assert kitchen.client.get('/api/shopping-items', headers=kitchen.alice).json() == []
+
+
+@pytest.mark.parametrize('transient', [True, False])
+def test_purchase_database_lock_retries_or_fails_without_partial_writes(kitchen, transient):
+    import sqlite3
+    from sqlalchemy import event
+    from sqlalchemy.exc import OperationalError
+    item = add(kitchen, name='egg').json()
+    attempts = []
+    def locked(_connection, _cursor, statement, _parameters, _context, _executemany):
+        if statement.startswith('INSERT INTO purchase_confirmations') and (not attempts or not transient):
+            attempts.append(True)
+            original = sqlite3.OperationalError('Controlled database lock')
+            original.sqlite_errorcode = 5
+            raise OperationalError('Controlled transaction retry', {}, original)
+    engine = kitchen.client.app.state.engine
+    event.listen(engine, 'before_cursor_execute', locked)
+    try:
+        response = purchase(kitchen, item)
+    finally:
+        event.remove(engine, 'before_cursor_execute', locked)
+    if transient:
+        assert response.status_code == 200
+        assert kitchen.stock()[0]['quantity'] == 2
+        assert purchase(kitchen, item).json()['replayed'] is True
+    else:
+        assert response.status_code == 503
+        assert kitchen.stock() == []
+        assert kitchen.client.get('/api/shopping-items', headers=kitchen.alice).json() == [item]

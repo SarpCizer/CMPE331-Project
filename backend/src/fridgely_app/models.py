@@ -8,6 +8,14 @@ class CoreBase(DeclarativeBase):
     pass
 
 
+class PurchaseConfirmation(CoreBase):
+    __tablename__ = 'purchase_confirmations'
+    owner_id: Mapped[str] = mapped_column(ForeignKey('accounts.id', ondelete='CASCADE'), primary_key=True)
+    item_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    payload_hash: Mapped[str] = mapped_column(String(64))
+    inventory_id: Mapped[str] = mapped_column(String(128))
+
+
 class CookingConfirmation(CoreBase):
     __tablename__ = 'cooking_confirmations'
     owner_id: Mapped[str] = mapped_column(ForeignKey('accounts.id', ondelete='CASCADE'), primary_key=True)
