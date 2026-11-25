@@ -2,7 +2,7 @@ services:
   - type: web
     name: fridgely-web
     runtime: docker
-    branch: feature/berfin-cloud-candidate
+    branch: main
     region: frankfurt
     plan: free
     dockerfilePath: ./Dockerfile
