@@ -14,8 +14,33 @@ Committing the original Sonar issue export also triggered 15 generic-key matches
 
 These jobs make a failing test, insufficient measured coverage or detected secret fail the PR check. Repository-owner branch protection must require successful checks; a workflow file alone cannot prevent a permitted direct push.
 
+## SonarQube failure policy
+
+The exporter must finish with an `OK` server gate and no failed or ignored
+conditions. ERROR, NONE and unknown gate states fail the job after retaining the
+raw exports. An empty server `conditions` array is recorded explicitly and is
+not counted as a server threshold evaluation.
+
+The exporter also enforces three concrete source-metric checks: `bugs`,
+`vulnerabilities` and `security_hotspots` must each be present, numeric and zero.
+Missing or invalid measurements fail. `quality-policy.json` records each check,
+the server gate, whether server conditions were evaluated and the final result.
+This conservative policy blocks reported hotspots; zero reported hotspots does
+not certify a manual hotspot review or replace the scoped penetration tests.
+The separate per-language coverage thresholds above still apply.
+
+Nine export-boundary regressions exercise failure and success, including an
+empty server gate with a nonzero security metric. They run in the Sonar job and
+retain `gate-regressions.log`. The test-first sequence and security matrix are
+linked from [Kerem's QA handoff](tests/kerem-qa-handoff.md).
+
 ## Reuse and release limits
 
 Expensive test artifacts are reused only after `git diff` verifies the covered production, dependency, test and image inputs exactly match a named successful source revision. The recorded source/test/analysis revisions and immutable artifact identify this reuse. Changed covered inputs run the full suite again. Documentation-only changes do not become evidence of new application behavior.
 
-Render's Blueprint uses checks-pass deployment for its explicitly selected feature branch while review is pending. Moving release deployment to main is an authorized team action after the merge plan and owner settings are accepted; this task does not perform a main merge. Render GitHub access and a live provider credential still have to exist before cloud/live-provider success can be recorded.
+The original Render service and Blueprint now select main. The verified automatic
+deployment and bounded live Cloudflare results are recorded in
+[the deployment guide](cloud-deployment.md) and closed issue #40. CI load tests
+remain isolated PostgreSQL measurements, distinct from those live smoke results.
+See issue #22 for the still-unverified repository-owner protection setting and
+issue #48 for source selection, release artifacts and course submission.

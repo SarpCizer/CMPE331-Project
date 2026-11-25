@@ -1,7 +1,19 @@
 # Requirements test status
 
-Review revision verified on 11 October 2026 with Node v24.19.0.
+Updated 25 November 2026. All **28 functional acceptance cases pass** locally
+through the real FastAPI/SQL host and a controlled recipe provider, on the QA
+branch based on main `ebd8a5a`. The 15 stories and 48 criteria are mapped in
+[the criterion CSV](../docs/tests/coverage/traceability.csv).
 
-Executed 27 cases: 0 passed, 27 failed, 0 skipped, 0 cancelled. Exit code 1 is expected. All failures are assertion failures receiving 501 from the unimplemented application boundary; no test is skipped and no implementation behavior has been added. Most dependent cases still stop at registration until prerequisites exist. The missing-token case now checks protected access directly and reports 501 instead of 401.
+The original 11 October result (27 failures from the 501 application boundary)
+is historical RED evidence. It is not the current application status and does
+not establish tests-first development for every later feature.
 
-Review fixes: assert setup/read statuses; detach snapshots; use application-assigned recipe IDs; independently test six malformed recipe conditions; test expiry using an issued JWT and the injected clock; extend cross-user checks to preferences and favorite deletion. Non-functional/browser/storage/signature checks remain pending implementation.
+[The source-matched report](../docs/tests/software-test-report.md) records
+application `a59556e`, CI 45474025963, its measured coverage, browser/security/load
+results and genuine TDD sequences. Report PR #67 was independently approved and
+merged into main on 25 November at `da81cc3`; its approved PDF bytes are preserved.
+
+[Kerem's QA handoff](../docs/tests/kerem-qa-handoff.md) separates the new security
+and Sonar gate checks, historical source evidence, live deployment, remaining
+owner settings and course submission. Local PostgreSQL skips are not passes.

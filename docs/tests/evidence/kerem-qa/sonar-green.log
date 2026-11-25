@@ -1,0 +1,14 @@
+test_absent_gate_fails_export (test_sonarqube.QualityGateTests.test_absent_gate_fails_export) ... ok
+test_empty_server_gate_records_independent_security_checks (test_sonarqube.QualityGateTests.test_empty_server_gate_records_independent_security_checks) ... ok
+test_failed_condition_cannot_hide_behind_overall_ok (test_sonarqube.QualityGateTests.test_failed_condition_cannot_hide_behind_overall_ok) ... ok
+test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) ... ok
+test_missing_security_measure_fails_export (test_sonarqube.QualityGateTests.test_missing_security_measure_fails_export) ... ok
+test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) ... ok
+test_passing_server_conditions_and_security_measures_pass (test_sonarqube.QualityGateTests.test_passing_server_conditions_and_security_measures_pass) ... ok
+test_reported_failed_gate_fails_export (test_sonarqube.QualityGateTests.test_reported_failed_gate_fails_export) ... ok
+test_unknown_gate_fails_export (test_sonarqube.QualityGateTests.test_unknown_gate_fails_export) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.140s
+
+OK

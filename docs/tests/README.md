@@ -4,6 +4,12 @@ This folder contains the requirement traceability, executed results, non-functio
 measurements, code-quality evidence and review report for the integrated application.
 Read `software-test-report.md` or its PDF first. Screenshots are embedded in the PDF.
 
+For current assignment and integration status, read
+[Kerem's QA handoff](kerem-qa-handoff.md). The independently approved report #67
+is merged; its unchanged PDF/Markdown retain the tested `a59556e` application
+snapshot. Later source, live Cloudflare and new security-gate checks keep their
+own evidence identities. The checkpoints below are historical records.
+
 ## Evidence layout
 
 - `coverage/`: the 48-criterion CSV and story summary, Python coverage and mapped
@@ -53,15 +59,16 @@ and executes SonarQube on an ephemeral loopback-only server. Its exported JSON i
 the durable analysis evidence. The temporary server URL is not a persistent
 dashboard and no analysis credential is committed.
 
-## Review and submission
+## Review and submission history
 
-Features remain in their separate dependent PRs. The report branch is `test_work`.
+At the earlier checkpoint, features were in separate dependent PRs and the report branch was `test_work`.
 Yeşim's verified reviewer handle is `yesimyigitbasi`. The user's supplied updated
 email sets the PR deadline to 25 November 2026 and approved PDF submission to
 29 November; the internal preparation target is 22 November. PR approval and
-course-platform submission are not inferred from test execution. Main is unchanged.
+course-platform submission are not inferred from test execution. Current main
+integration and remaining owner actions are recorded in the QA handoff above.
 
-## Verification checkpoints and current follow-up
+## Historical verification checkpoints
 
 The last complete integrated checkpoint is source273a983, [run45241264964](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45241264964):113 PostgreSQL/backend,27 acceptance,20 browser,12 HTTP and4 penetration cases; all seven jobs pass, including image/restart, archive, coverage, secret scan and Sonar (zero issues). The 50-user/5-minute run records42,336 requests, p95336.34ms and2 connection failures (0.004724%); both unchanged thresholds pass. This is a CI environment result, not a public-cloud measurement.
 
