@@ -19,7 +19,10 @@ def _amount(text):
     if not match:
         return None
     quantity = Decimal(match[1])
-    dimension, scale = _UNITS[(match[2] or 'pcs').lower()]
+    unit = _UNITS.get((match[2] or 'pcs').lower())
+    if unit is None:
+        return None
+    dimension, scale = unit
     if quantity <= 0 or (dimension in {'pcs', 'pack', 'bunch'} and quantity != quantity.to_integral_value()):
         return None
     return dimension, quantity * scale
@@ -57,4 +60,4 @@ def inventory_for_recipe(session, owner, recipe):
         needed = sum((amount[1] for amount in amounts), Decimal(0))
         if total < needed:
             available.discard(name)
-    return sorted(available)
+    return [stock[name][0].name for name in sorted(available)]
