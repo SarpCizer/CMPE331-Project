@@ -21,7 +21,7 @@ const statCard =
   "flex items-center gap-[13px] rounded-[15px] border border-line bg-white px-[22px] py-[19px] text-[0.8rem] text-[#6b7a6d] mobile:gap-[10px] mobile:px-[13px] mobile:py-4 mobile:text-[0.7rem]";
 const statIcon = "shrink-0 text-[#56765a] mobile:hidden";
 
-function Fridge({ items, run, api }) {
+function Fridge({ items, shopping, run, api }) {
   const [name, setName] = useState(""),
     [quantity, setQuantity] = useState("1"),
     [unit, setUnit] = useState("pcs"),
@@ -33,9 +33,9 @@ function Fridge({ items, run, api }) {
     event.preventDefault();
     const amount = Number(quantity);
     const invalidName = editing ? "" : nameError(name, "an ingredient");
-    const invalidQuantity = !Number.isFinite(amount) || amount <= 0 || amount > 1000000 ||
+    const invalidQuantity = quantity.trim() === '' || !Number.isFinite(amount) || (editing ? amount < 0 : amount <= 0) || amount > 1000000 ||
        (["pcs","pack","bunch"].includes(unit) && !Number.isInteger(amount))
-        ? "Enter a valid positive quantity (whole numbers for count units)." : "";
+        ? "Enter a valid positive quantity when adding (zero allowed when editing; whole numbers for count units)." : "";
     setError(invalidName);
     setQuantityError(invalidQuantity);
     if (invalidName || invalidQuantity) {
@@ -140,7 +140,7 @@ function Fridge({ items, run, api }) {
           </div>
           <div className="w-[100px] mobile:flex-1">
             <label htmlFor="quantity" className="text-[0.8rem]">Quantity</label>
-            <input id="quantity" type="number" min="0.000001" max="1000000" step="any"
+            <input id="quantity" type="number" min={editing ? "0" : "0.000001"} max="1000000" step="any"
               value={quantity} onChange={(e) => { setQuantity(e.target.value); setQuantityError(""); }} required
               aria-invalid={!!quantityError}
               aria-describedby={quantityError ? "quantity-error" : undefined} />
@@ -187,15 +187,16 @@ function Fridge({ items, run, api }) {
         ) : (
           <ul className={itemList}>
             {visible.map((item) => (
-              <li key={item.id} className={itemRow}>
+              <li key={item.id} className={`${itemRow} ${item.quantity === 0 ? 'flex-wrap border-red-300 bg-red-50 text-red-800' : ''}`}>
                 <span className={itemSymbol}>
                   <Icon name="leaf" />
                 </span>
                 <div className="min-w-0 flex-1">
                   <strong className="block text-[0.95rem] font-[550] wrap-anywhere">
                     {item.name}
-                    {item.quantity != null && <span className="ml-2 text-[#607565]">· {item.quantity} {item.unit}</span>}
+                    {item.quantity != null && <span className={`ml-2 ${item.quantity === 0 ? 'text-red-800' : 'text-[#607565]'}`}>· {item.quantity} {item.unit}</span>}
                   </strong>
+                  {item.quantity === 0 && <strong className="block text-red-800">Out of stock</strong>}
                   <span className="block text-[0.8rem] text-[#607565]">
                     Added{" "}
                     {new Intl.DateTimeFormat("en", {
@@ -203,6 +204,13 @@ function Fridge({ items, run, api }) {
                     }).format(new Date(item.addedAt))}
                   </span>
                 </div>
+                {item.quantity === 0 && <button type="button" className="btn-secondary mobile:w-full"
+                  aria-label={`Add ${item.name} to shopping list`}
+                  disabled={shopping.some(entry => entry.name.trim().toLowerCase() === item.name.trim().toLowerCase())}
+                  onClick={() => run(() => api('/shopping-items', { method: 'POST', body: { name: item.name } }),
+                    'Ingredient added to shopping.', ['shopping'])}>
+                  {shopping.some(entry => entry.name.trim().toLowerCase() === item.name.trim().toLowerCase()) ? 'On shopping list' : 'Add to shopping list'}
+                </button>}
                 <button type="button" className={removeButton} aria-label={`Edit quantity for ${item.name}`}
                   onClick={() => {
                     setEditing(item.id); setName(item.name);
@@ -233,5 +241,5 @@ function Fridge({ items, run, api }) {
 
 export default function FridgePage() {
   const { data, api, run } = useOutletContext();
-  return <Fridge items={data.inventory} api={api} run={run} />;
+  return <Fridge items={data.inventory} shopping={data.shopping} api={api} run={run} />;
 }

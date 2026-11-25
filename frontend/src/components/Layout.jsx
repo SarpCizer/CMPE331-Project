@@ -171,6 +171,8 @@ export default function Layout({ kitchen }) {
       {selected && (
         <RecipeDialog
           recipe={selected}
+          inventory={data.inventory}
+          refreshInventory={() => loadResources(api, ['inventory'])}
           favorites={data.favorites}
           favoriteState={resources.favorites}
           retryFavorites={() => loadResources(api, ["favorites"])}

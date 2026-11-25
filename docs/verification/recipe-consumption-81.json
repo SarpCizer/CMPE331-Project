@@ -1,0 +1,34 @@
+{
+  "issue": 81,
+  "base": "6e336764688ad52adeb866a36fa5a8e6458c951e",
+  "red_commit": "7cfd1f449cfb47f1cc459d1995bc782821780407",
+  "red": {
+    "cooking_failed": 9,
+    "cooking_passed": 3,
+    "metric_failed": 6,
+    "metric_passed": 1
+  },
+  "green_local": {
+    "backend_passed": 362,
+    "explicit_postgresql_skips": 217,
+    "browser_passed": 30,
+    "acceptance_passed": 29,
+    "production_build": "PASS",
+    "frontend_coverage": {
+      "lines": 100,
+      "branches": 94.33,
+      "functions": 94.31
+    }
+  },
+  "scope": "Isolated SQLite/HTTP/browser with controlled provider. Exact-head CI must verify PostgreSQL, full coverage policy, Sonar, cloud image. No live-provider call, paid setting, secret change or old report/PDF/tag update. User explicitly approved cooking and metric measurements; Codex assisted Berfin.",
+  "reload_retry_correction": {
+    "review": 6061489000,
+    "reviewer": "aysedn",
+    "preceding_head": "00e6b5934ae3ddf8f8f45de00ca6581d7774614f",
+    "red_commit": "55caa72517a34cf9fc58d2c3fd262fee93285015",
+    "observed_red_browser_failures": 1,
+    "green_focused_browser": 6,
+    "green_full_browser": 30,
+    "behavior": "Persist entire original request body; reconcile it before stock validation after reload, even if one original entry is now zero. Unknown outcomes retain the body; definitive stock/validation errors permit a fresh confirmation."
+  }
+}

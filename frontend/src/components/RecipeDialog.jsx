@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import ResourceError from "./ResourceError";
+import CookRecipe from "./CookRecipe";
 
 export default function RecipeDialog({
   recipe,
+  inventory = [],
+  refreshInventory,
   onClose,
   run,
   api,
@@ -17,6 +20,8 @@ export default function RecipeDialog({
 }) {
   const dialog = useRef(null);
   const [shoppingAdded, setShoppingAdded] = useState(false);
+  const [cooking, setCooking] = useState(false);
+  const [cooked, setCooked] = useState(false);
   useEffect(() => {
     const element = dialog.current;
     element.showModal();
@@ -93,7 +98,12 @@ export default function RecipeDialog({
           </li>
         ))}
       </ol>
+      {cooking && <CookRecipe recipe={recipe} inventory={inventory} api={api} run={run} busy={busy} refreshInventory={refreshInventory}
+        onCancel={() => setCooking(false)} onComplete={() => { setCooking(false); setCooked(true); }} />}
+      {cooked && <p role="status">Cooking recorded. Your fridge has been updated.</p>}
       <div className="mt-[30px] flex flex-wrap gap-3">
+        <button type="button" className="btn-primary" disabled={busy || cooking || cooked}
+          onClick={() => setCooking(true)}>I cooked this</button>
         <button
           className="btn-primary mobile:w-full"
           disabled={busy}

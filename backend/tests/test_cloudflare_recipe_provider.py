@@ -14,7 +14,7 @@ from fridgely_recipes.storage import Recipe, RecipeIngredient, SqlRecipeStore
 RECIPE = {
     "title": "Tomato rice",
     "ingredients": ["rice", "tomato"],
-    "ingredientAmounts": ["1 cup", "2 medium"],
+    "ingredientAmounts": ["150 g", "2 pcs"],
     "steps": ["Cook the rice", "Add the tomato"],
     "cookingMinutes": 20,
     "caloriesPerServing": 325,
@@ -156,13 +156,13 @@ def test_migration_preserves_recipes_saved_without_amounts(tmp_path):
     (lambda: httpx.Response(200, json={"success": False, "errors": ["private quota detail"]}), 503),
     (lambda: cloudflare_result("private malformed detail"), 502),
     (lambda: cloudflare_result({"recipes": [RECIPE, {
-        **RECIPE, "ingredients": ["peanut"], "ingredientAmounts": ["1 tbsp"],
+        **RECIPE, "ingredients": ["peanut"], "ingredientAmounts": ["15 g"],
     }]}), 422),
     (lambda: cloudflare_result({"recipes": [RECIPE, {
         key: value for key, value in RECIPE.items() if key != "ingredientAmounts"
     }]}), 502),
-    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["1 cup"]}]}), 502),
-    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["1 cup", " "]}]}), 502),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["150 g"]}]}), 502),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["150 g", " "]}]}), 502),
 ])
 def test_cloudflare_failures_leave_no_partial_recipe(cloudflare_host, response_factory, expected):
     state = cloudflare_host
