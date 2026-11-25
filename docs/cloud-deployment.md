@@ -4,7 +4,11 @@ The deployable unit is one Docker web service containing the built React app, se
 
 `render.yaml` declares free resources in Frankfurt, a database reference for `DATABASE_URL`, a platform-generated `JWT_SECRET`, and readiness checks at `/api/health`. The existing `fridgely-web` service uses the original `SarpCizer/CMPE331-Project` repository and now follows **main**, with auto-deploy set to **After CI Checks Pass**, as recorded in [#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Its public URL is [https://fridgely-web.onrender.com](https://fridgely-web.onrender.com).
 
-At the recorded live verification, the committed Blueprint and its own source setting still selected `feature/berfin-cloud-candidate`; [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70) provides the YAML correction to `main`. Follow the [post-merge alignment steps](#finish-blueprint-alignment-after-70) for both settings. Keep Blueprint auto-sync paused until the selected source and reviewed sync plan agree with the existing service. Reuse the existing free `fridgely-postgres` database. Review a Blueprint plan before applying it, particularly any proposed resource creation, deletion or database change.
+The original service, committed Blueprint YAML and existing Blueprint all select
+`main`. The [alignment verification in #40](https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7152962475)
+recorded auto-sync paused and a reviewed plan with no changes. For future
+changes, review the plan against the existing free service and database before
+applying anything.
 
 The Docker build pins Node 24 / pnpm 11.25.0, frontend dependencies and Python runtime dependencies. The runtime runs as a non-root user. The start script explicitly applies the Alembic migration and then starts a single Uvicorn worker bound to `0.0.0.0:$PORT`. Importing the app does not run migrations. Concurrent Argon2 work is bounded to avoid unbounded password-hashing memory on the teaching instance. Database migrations are packaged in the installed wheel and apply successfully even when the source checkout is absent.
 
@@ -30,7 +34,10 @@ The credentials were transferred directly into Render's secret environment; no t
 
 ## Finish Blueprint alignment after #70
 
-The live service's source branch and the Blueprint's own source branch are separate settings. At the recorded verification, the service followed `main` while the Blueprint still read the earlier feature branch with `autoSync=false`.
+This is the historical procedure used to align #70. The live service and the
+Blueprint have separate source settings. Before alignment, the service followed
+`main` and the Blueprint read the earlier feature branch with `autoSync=false`.
+The completed alignment is linked above.
 
 1. Complete peer review and the owner's integration of [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70). Its only configuration change is `services[0].branch: main`; names, free plans, database isolation/wiring, JWT generation and `checksPass` remain unchanged.
 2. After that file is in `main`, point the **existing** Blueprint at `main` and keep auto-sync paused. Review the resulting plan against the existing `fridgely-web` and `fridgely-postgres` resources before any application. Do not sync the old feature source or accept a plan that creates replacements, resets data, rotates an existing JWT secret, opens database access or adds costs.

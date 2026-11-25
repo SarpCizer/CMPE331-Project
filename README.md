@@ -39,16 +39,29 @@ Personal lists continue to work when recipe generation is unavailable.
 ```bash
 python -m pytest backend/tests
 FRIDGELY_PYTHON=python node --test tests/functional/requirements.test.mjs
-API_BASE_URL=http://127.0.0.1:8000 node --test tests/fullstack/accounts-isolation.http.test.mjs
-pnpm --dir frontend test:e2e
-node tests/security/penetration.mjs
+```
+
+For HTTP and browser verification, build the frontend and run the disposable
+test host in a separate terminal:
+
+```bash
+FRIDGELY_TEST_PORT=8091 PYTHONPATH=backend/src python backend/tests/serve_web_test.py
+```
+
+With that host running:
+
+```bash
+API_BASE_URL=http://127.0.0.1:8091 node --test tests/fullstack/accounts-isolation.http.test.mjs
+pnpm --dir frontend exec playwright install chromium
+WEB_BASE_URL=http://127.0.0.1:8091 pnpm --dir frontend test:e2e
 ```
 
 See the [interactive API contract](docs/api.md), [cloud deployment](docs/cloud-deployment.md),
 [backend setup](backend/README-host.md), [database/account design](backend/README-accounts.md)
-and [web/browser tests](frontend/README.md). Tests use the real application and
-SQL persistence with a controlled external recipe provider. The production host
-contains no demo-account or mock-provider mode.
+and [web/browser tests](frontend/README.md#browser-tests). Start the disposable
+test host described there before running the HTTP or browser suites. Tests use
+the real application and SQL persistence with a controlled external recipe
+provider. The production host contains no demo-account or mock-provider mode.
 
 The integrated CI workflow exercises real PostgreSQL persistence, all acceptance
 cases, HTTP security, browser/accessibility checks, measured coverage, the
@@ -65,11 +78,10 @@ module history and the approved submission source/report pair remain traceable.
 The existing [Render application](https://fridgely-web.onrender.com) is configured
 to follow `main` after successful CI checks, as recorded in
 [#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Check that issue and
-the Render deploy record for the actual deployed commit. Blueprint source alignment
-is tracked by [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70); follow the
-[post-merge checks](docs/cloud-deployment.md#finish-blueprint-alignment-after-70)
-for both the YAML and the Blueprint's source branch. Keep Blueprint sync paused
-until its reviewed plan agrees with the existing service.
+the Render deploy record for the actual deployed commit. The original service,
+committed YAML and existing Blueprint all select `main`. The
+[Blueprint verification](https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7152962475)
+recorded auto-sync paused and a plan with no changes.
 
 Cloudflare Workers Free recipe generation was verified on deployed `ec9142e`
 on 25 November 2026: 25 live HTTP/behavior checks passed, missing ingredients
@@ -92,13 +104,12 @@ Provider setup and future changes follow the [activation checks](docs/cloud-depl
 - [AI tooling and runtime recipe pipeline](docs/ai-pipeline.md),
   [contribution log](docs/ai-usage-log.md), [observed incidents](docs/ai-mistakes.md)
   and [demo/presentation runbook](docs/demo-runbook.md)
-- [Source-only ZIP and final account/owner actions](docs/submission.md)
+- [Approved course ZIP, matching report and live demo source](docs/submission.md)
 - [Executed test report, PDF and evidence index](docs/tests/README.md)
 
 Charter roles: Berfin Gökgöz (full-stack/database), İrem Demircan (product owner and
 fridge backend), Sarp Çizer (shopping/favorites/history), Ayşe Döne (recipe AI),
 Mustafa Safa Bayrak (frontend), Kerem Sönmez (DevOps/QA). Current integration retains
 Sarp's and Ayşe's module histories; Berfin's PRs also supply the connected React UI
-and integrated checks. The team must confirm its contact, obtain independent reviews
-and ensure each member makes their own real contribution. No contribution or
-approval is fabricated for another member.
+and integrated checks. The six members' authored commits and independent reviews
+are linked from the [instructor checklist](https://github.com/SarpCizer/CMPE331-Project/issues/16).
