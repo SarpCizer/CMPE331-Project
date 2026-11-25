@@ -14,7 +14,7 @@ The React website calls the real FastAPI application at `/api`. The same applica
 | `/api/inventory/{item_id}` | PATCH an owned quantity/unit pair or DELETE an owned ingredient |
 | `/api/recipes/generate` | POST recipes based on the authenticated user's current fridge and preferences |
 | `/api/recipes/{recipe_id}` | GET an owned recipe and update viewing history |
-| `/api/recipes/{recipe_id}/shopping-items` | POST missing ingredients to the owned shopping list |
+| `/api/recipes/{recipe_id}/shopping-items` | POST absent or insufficient ingredients to the owned shopping list |
 | `/api/shopping-items` | GET / POST shopping items |
 | `/api/shopping-items/{item_id}` | DELETE an owned shopping item |
 | `/api/favorites`, `/api/favorites/{recipe_id}` | GET / POST favorites; DELETE an owned favorite |
@@ -34,7 +34,7 @@ The [selected recipe provider's credentials](cloud-deployment.md#recipe-provider
 
 Refs #77, #78. `POST /api/inventory` accepts `name` plus an optional `quantity`/`unit` pair. `PATCH /api/inventory/{item_id}` requires both fields and updates only the authenticated owner's entry; its name, ID and addition date stay unchanged. Quantity must be finite, greater than zero and at most 1,000,000. Units are `pcs`, `kg`, `g`, `L`, `ml`, `pack` and `bunch`; `pcs`, `pack` and `bunch` require whole numbers.
 
-Both fields are null when the amount is unknown, including existing entries upgraded by migration `0003_inventory_quantities`. No amount is invented during migration. Known amounts are included in the server-side AI input; recipe ingredient names and name-based missing-shopping matching retain their contract. Recipe generation/viewing and shopping/favorite actions never deduct or recalculate fridge quantities.
+Both fields are null when the amount is unknown, including existing entries upgraded by migration `0003_inventory_quantities`. No amount is invented during migration. Known amounts are included in the server-side AI input; recipe ingredient names retain their matching contract. Measurable shortages are also checked when adding missing shopping ingredients (see below). Recipe generation/viewing and shopping/favorite actions never deduct or recalculate fridge quantities.
 
 ## Confirm cooking and restock (user-approved extension #81)
 
@@ -47,3 +47,10 @@ Each item must belong to the authenticated user and match a recipe ingredient. T
 Zero entries retain IDs, names and addition timestamps, display red **Out of stock** text, and offer **Add to shopping list** via the existing deduplicated `/shopping-items` endpoint. They are excluded from recipe generation and from present-ingredient matching. Refilling restores their availability. This extension is explicitly requested by Berfin; original course reports/PDF and release tag are preserved.
 
 A pending cooking confirmation stores its complete original body before submission. After a lost/uncertain response and a reload, **Retry previous confirmation** resends that body before considering refreshed stock. A zero entry is never omitted from an outstanding retry. Starting a new cooking remains unavailable until the previous outcome is reconciled. A definitive validation/stock conflict permits reviewing a fresh confirmation; uncertain network/server failures keep the original pending operation.
+
+
+## Missing and insufficient shopping ingredients (#83)
+
+**Add missing ingredients** works from generated recipes, saved favorites and history. The server reads current owned stock, so a saved recipe needing `2 pcs` banana with `1 pcs` in the fridge adds banana to shopping. Entirely absent and zero-stock ingredients are also added; sufficient ingredients are excluded. Compatible g/kg and ml/L measurements and identical count units are summed across duplicate stock and recipe entries using decimal arithmetic. The comparison uses the saved recipe amounts for its displayed serving count, not edited cooking inputs.
+
+Legacy recipes without measurements, unknown fridge quantities and incompatible units retain name-based presence behavior; no cup/density/weight conversion is guessed. The list stores product names, not shortage quantities. Repeated additions do not duplicate a product. Shopping entries persist across reload and can be removed after purchase. Adding/removing shopping entries does not refill or deduct fridge stock: explicitly add or edit the purchased product in **My fridge**. No schema migration is needed.
