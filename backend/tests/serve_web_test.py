@@ -14,6 +14,10 @@ class FixtureProvider:
     async def generate(self,data):
         if 'provider-failure' in data.ingredients:
             raise RuntimeError('Controlled provider outage')
+        if 'banana' in data.ingredients:
+            return [{'title':'Banana shake','ingredients':['banana','milk','sugar'],
+                'ingredientAmounts':['2 pcs','200 ml','20 g'],'steps':['Blend.'],
+                'cookingMinutes':3,'caloriesPerServing':100,'servings':1}]
         if 'milk' in data.ingredients:
             return [{'title':'Warm milk','ingredients':['milk'],'ingredientAmounts':['200 ml'],
                 'steps':['Warm the milk.'],'cookingMinutes':3,'caloriesPerServing':100,'servings':1}]

@@ -81,7 +81,8 @@ class CollectionsService:
         def add(session, repo):
             recipe = self._recipe(session, owner, recipe_id)
             try:
-                names = self.core.inventory_names(session, owner)
+                reader = getattr(self.core, "inventory_for_recipe", None)
+                names = reader(session, owner, recipe) if callable(reader) else self.core.inventory_names(session, owner)
                 if not isinstance(names, Sequence) or isinstance(names, (str, bytes)):
                     raise TypeError("Inventory port must return a sequence of names")
                 fridge = {ingredient_name(name)[1] for name in names}
