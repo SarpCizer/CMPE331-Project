@@ -65,7 +65,10 @@ test("real account, saved preferences, recipe details and collections survive re
   page,
 }) => {
   const alice = await register(page);
+  await page.getByLabel("Quantity", { exact: true }).fill("0.5");
+  await page.getByLabel("Unit", { exact: true }).selectOption("kg");
   await add(page, "rice");
+  await expect(page.getByText("· 0.5 kg", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Preferences", exact: true }).click();
   await page.getByLabel("Dietary preferences").fill("vegan");
   await page.getByLabel("Ingredients to exclude").fill("peanut");
@@ -82,9 +85,9 @@ test("real account, saved preferences, recipe details and collections survive re
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("Estimated 25 minutes");
   await expect(dialog.getByRole("listitem")).toContainText([
-    "rice",
-    "tomato",
-    "onion",
+    "rice · 1 cup",
+    "tomato · 2 medium",
+    "onion · 1 small",
     "Cook the rice.",
     "Simmer tomato and onion.",
     "Combine and serve.",
