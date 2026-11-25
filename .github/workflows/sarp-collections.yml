@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           path: team
-          ref: 929776ccc51d914084ebb49d5997942c51c64b58
+          ref: b58f4f298091dad47486c6d29d49586de83c63ee
       - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
@@ -70,7 +70,7 @@ jobs:
           node-version: '24'
       - run: python -m pip install -r team/backend/requirements-app.lock
       - run: python -m pip install --no-deps -e team/backend
-      - name: Exercise the unchanged teammate host with Sarp's current module
+      - name: Exercise current teammate host with required shopping schema and current collections
         run: >-
           python sarp/backend/scripts/verify_team_compatibility.py
           --team-root team
