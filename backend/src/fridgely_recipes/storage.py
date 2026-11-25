@@ -40,6 +40,7 @@ class RecipeIngredient(RecipeBase):
     position: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(Text)
     name_key: Mapped[str] = mapped_column(Text)
+    amount: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class RecipeStep(RecipeBase):
@@ -69,7 +70,10 @@ class SqlRecipeStore:
                     calories_per_serving=recipe.caloriesPerServing,
                     servings=recipe.servings,
                     ingredients=[
-                        RecipeIngredient(position=i, name=name, name_key=name.casefold())
+                        RecipeIngredient(
+                            position=i, name=name, name_key=name.casefold(),
+                            amount=recipe.ingredientAmounts[i] if recipe.ingredientAmounts is not None else None,
+                        )
                         for i, name in enumerate(recipe.ingredients)
                     ],
                     steps=[RecipeStep(position=i, instruction=step) for i, step in enumerate(recipe.steps)],
@@ -85,10 +89,12 @@ class SqlRecipeStore:
         if row is None:
             return None
 
+        amounts = [ingredient.amount for ingredient in row.ingredients]
         recipe = RecipeDTO(
             id=row.id,
             title=row.title,
             ingredients=[ingredient.name for ingredient in row.ingredients],
+            ingredientAmounts=amounts if all(amount is not None for amount in amounts) else None,
             steps=[step.instruction for step in row.steps],
             cookingMinutes=row.cooking_minutes,
             caloriesPerServing=row.calories_per_serving,
