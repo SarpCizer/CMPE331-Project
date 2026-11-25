@@ -1,6 +1,10 @@
 # Non-functional requirements and test cases
 
-These are proposed measurable quality criteria for reviewer agreement. They are test cases to execute when the application, browser UI, database and deployment exist; they are not completed results.
+This page preserves the original non-functional test plan and its pre-implementation
+status. See the [reviewed test report](../tests/software-test-report.md) for
+executed results on the approved course source and the [test evidence
+index](../tests/README.md) for source-specific follow-up runs. [Issue #43](https://github.com/SarpCizer/CMPE331-Project/issues/43)
+records the agreed isolated CI/PostgreSQL environment for the load test.
 
 ## NFR-01 Authorization
 
@@ -10,7 +14,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-02 Credential and secret handling
 
@@ -20,7 +24,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-03 Response time
 
@@ -30,7 +34,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-04 AI timeout handling
 
@@ -40,7 +44,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-05 Responsive usability
 
@@ -50,7 +54,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-06 Accessible core controls
 
@@ -60,7 +64,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-07 Persistence
 
@@ -70,7 +74,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-08 AI output integrity
 
@@ -80,7 +84,7 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
 
 ## NFR-09 Deployment and reproducibility
 
@@ -90,4 +94,4 @@ These are proposed measurable quality criteria for reviewer agreement. They are 
 
 **Expected result:** The stated criterion is met; otherwise record a defect and rerun after a fix.
 
-**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Current status:** Not executed; implementation pending.
+**Owner:** Kerem Sönmez coordinates with the relevant feature owner. **Planning baseline:** Not yet executed.
