@@ -1,0 +1,94 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-14 DFD: record and read viewed history",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-14",
+    "US-08"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "R",
+      "kind": "process",
+      "label": "5.1\nPresent recipe details (reference)"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "5.2\nMaintain latest recipe views"
+    },
+    {
+      "id": "D4",
+      "kind": "store",
+      "label": "D4 Accepted recipes and children"
+    },
+    {
+      "id": "D7",
+      "kind": "store",
+      "label": "D7 Recipe views"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "R",
+      "label": "Detail query and access token"
+    },
+    {
+      "from": "D4",
+      "to": "R",
+      "label": "Owned complete recipe"
+    },
+    {
+      "from": "R",
+      "to": "P",
+      "label": "Opened owned recipe id and verified principal"
+    },
+    {
+      "from": "P",
+      "to": "D7",
+      "label": "Upserted owned view with server lastViewedAt"
+    },
+    {
+      "from": "D7",
+      "to": "P",
+      "label": "Owned most-recent view records"
+    },
+    {
+      "from": "P",
+      "to": "R",
+      "label": "Committed view result"
+    },
+    {
+      "from": "R",
+      "to": "U",
+      "label": "Complete recipe details or sanitized error"
+    },
+    {
+      "from": "U",
+      "to": "P",
+      "label": "History query and access token"
+    },
+    {
+      "from": "D4",
+      "to": "P",
+      "label": "Owned recipe records for history entries"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "Newest-first recipe/view-timestamp array or empty/error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Only a successful detail-open event produces view data. Generation or favoriting alone sends no history write.",
+    "Use one account/recipe view record; reopening refreshes lastViewedAt, not an additional record. Order by most recent view; recipe-id tie breaking is an explicitly proposed deterministic detail.",
+    "No inventory write occurs: recipe, shopping, favorite and history actions never deduct or restock fridge ingredients."
+  ]
+}

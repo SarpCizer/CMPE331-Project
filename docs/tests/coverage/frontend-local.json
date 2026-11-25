@@ -1,0 +1,4 @@
+{"total": {"lines":{"total":1248,"covered":1248,"skipped":0,"pct":100},"statements":{"total":1248,"covered":1248,"skipped":0,"pct":100},"functions":{"total":53,"covered":49,"skipped":0,"pct":92.45},"branches":{"total":245,"covered":226,"skipped":0,"pct":92.24},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":"Unknown"}}
+,"/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/src/api.js": {"lines":{"total":57,"covered":57,"skipped":0,"pct":100},"functions":{"total":2,"covered":2,"skipped":0,"pct":100},"statements":{"total":57,"covered":57,"skipped":0,"pct":100},"branches":{"total":23,"covered":21,"skipped":0,"pct":91.3}}
+,"/Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/src/main.jsx": {"lines":{"total":1191,"covered":1191,"skipped":0,"pct":100},"functions":{"total":51,"covered":47,"skipped":0,"pct":92.15},"statements":{"total":1191,"covered":1191,"skipped":0,"pct":100},"branches":{"total":222,"covered":205,"skipped":0,"pct":92.34}}
+}

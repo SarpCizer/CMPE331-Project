@@ -1,0 +1,19 @@
+{
+  "id": "81c88287-d9f1-42f1-b954-49c2b62234c9",
+  "type": "REPORT",
+  "componentId": "1f4a704e-00c1-4f27-a64e-c9b4db456285",
+  "componentKey": "fridgely",
+  "componentName": "Fridgely",
+  "componentQualifier": "TRK",
+  "analysisId": "9677d68c-3fed-4683-ad36-06a0312f9cea",
+  "status": "SUCCESS",
+  "submittedAt": "2026-11-20T19:17:22+0000",
+  "submitterLogin": "admin",
+  "startedAt": "2026-11-20T19:17:24+0000",
+  "executedAt": "2026-11-20T19:17:30+0000",
+  "executionTimeMs": 5781,
+  "hasScannerContext": true,
+  "warningCount": 0,
+  "warnings": [],
+  "infoMessages": []
+}

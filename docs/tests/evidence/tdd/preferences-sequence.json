@@ -1,0 +1,9 @@
+{
+  "requirement": "US-03, review #17",
+  "test_first_commit": "9450facbac4ed6538218a6002150895b17366925",
+  "preceding_production_commit": "36f4f59e5124166b8ee13d7604f147d827145c19",
+  "observed_red": "2 tests fail: required relational tables absent",
+  "implementation_commit": "775e8b7a949b2910bb6818145c9066df610a0d01",
+  "observed_local_green": "105 passed, 1 explicit PostgreSQL skip",
+  "scope": "actual SQL app; later concurrent-registration regression added; older work is not retroactively labelled TDD"
+}

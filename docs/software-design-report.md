@@ -1,5 +1,7 @@
 # Fridgely Software Design Report
 
+> **Historical design baseline (context added 25 November 2026).** This report and its unchanged PDF/13 UML figures record the 14 November design-stage proposal. The delivered application uses FastAPI rather than Express; runtime, security, persistence, provider and verification differences are documented in the [current implementation alignment addendum](design/current/implementation-alignment.md) ([PDF](design/current/implementation-alignment.pdf)). The 501 results below are the historical scaffold baseline, not current test results. The original review still needs independent re-review on PR #6.
+
 CMPE 331 Software Engineering Concepts · Fall 2026–2027
 
 14 November 2026 · Design review revision

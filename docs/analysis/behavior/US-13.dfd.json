@@ -1,0 +1,62 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-13 DFD: list and remove favorites",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-13"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "7.2\nRead or remove favorite"
+    },
+    {
+      "id": "D4",
+      "kind": "store",
+      "label": "D4 Accepted recipes and children"
+    },
+    {
+      "id": "D6",
+      "kind": "store",
+      "label": "D6 Favorite associations"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Favorite-list query or selected recipe id and token"
+    },
+    {
+      "from": "D6",
+      "to": "P",
+      "label": "Owned favorite associations"
+    },
+    {
+      "from": "D4",
+      "to": "P",
+      "label": "Owned complete recipe records"
+    },
+    {
+      "from": "P",
+      "to": "D6",
+      "label": "Selected owned favorite-association deletion data"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "200 recipe array/empty array; deletion 204; error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Remove only the favorite association. The accepted recipe and any existing D7 viewed-history record remain available; no D4/D7 deletion flow exists.",
+    "No inventory write occurs: recipe, shopping, favorite and history actions never deduct or restock fridge ingredients."
+  ]
+}

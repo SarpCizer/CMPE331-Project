@@ -1,0 +1,163 @@
+{
+  "started_at_utc": "2026-11-24T23:08:55.193559+00:00",
+  "source_sha": "ec9142ea855b7d947430b1753b2deb522962e4e8",
+  "render_deploy": "dep-dc31g817lnhs73bvkm80",
+  "base_url": "https://fridgely-web.onrender.com",
+  "provider": "cloudflare",
+  "workers_free_observed": true,
+  "provider_credentials_read_by_test": false,
+  "real_generation_requests": 1,
+  "checks": [
+    {
+      "name": "GET /api/health",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "POST /api/accounts",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "name": "POST /api/sessions",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "POST /api/inventory",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "name": "PUT /api/profile/preferences",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/inventory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "synthetic shopping list starts empty",
+      "passed": true
+    },
+    {
+      "name": "live recipe generation",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "real provider returned recipes",
+      "passed": true
+    },
+    {
+      "name": "complete recipe DTO",
+      "passed": true
+    },
+    {
+      "name": "fridge ingredient used",
+      "passed": true
+    },
+    {
+      "name": "GET /api/recipes/a0c6c457220f4259b80a060c3bda906c",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "persisted detail matches generated recipe",
+      "passed": true
+    },
+    {
+      "name": "selected recipe has missing ingredients to exercise shopping",
+      "passed": true
+    },
+    {
+      "name": "POST /api/recipes/a0c6c457220f4259b80a060c3bda906c/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "only missing ingredients added",
+      "passed": true,
+      "expected_missing_count": 3,
+      "actual_count": 3
+    },
+    {
+      "name": "POST /api/recipes/a0c6c457220f4259b80a060c3bda906c/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "repeat add creates no duplicates",
+      "passed": true
+    },
+    {
+      "name": "GET /api/inventory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "inventory unchanged after generation and shopping",
+      "passed": true
+    },
+    {
+      "name": "GET /api/history",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "generated recipe appears in owned history",
+      "passed": true
+    }
+  ],
+  "generation_seconds": 3.409,
+  "generation_status": 200,
+  "recipe_count": 1,
+  "selected_recipe": {
+    "id": "a0c6c457220f4259b80a060c3bda906c",
+    "title": "Vegan Rice Bowl",
+    "ingredients": [
+      "rice",
+      "water",
+      "salt",
+      "olive oil"
+    ],
+    "steps": [
+      "Rinse the rice",
+      "Boil water and add salt",
+      "Add rice to boiling water and cook",
+      "Heat olive oil in a pan",
+      "Serve rice in a bowl"
+    ],
+    "cookingMinutes": 20,
+    "caloriesPerServing": 110,
+    "servings": 1
+  },
+  "shopping_count": 3,
+  "inventory_unchanged": true,
+  "completed": true,
+  "finished_at_utc": "2026-11-24T23:09:03.581322+00:00",
+  "passed_checks": 25,
+  "record_type": "sanitized_observed_live_acceptance",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "verified_main_ci_run": 45503826185,
+  "original_local_record_sha256": "956f8d618bfb61fcdf22e7812e90f4cf7759b208667792bbb2078fa7b421f3a3",
+  "evidence_issue": "https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7147110202",
+  "scope_note": "One synthetic account, one real provider generation request and 25 HTTP/behavior checks. No new two-account live run, browser run or load test is claimed. Synthetic account email omitted; passwords, JWTs and provider credentials were never included in the original record."
+}

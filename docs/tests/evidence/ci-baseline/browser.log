@@ -1,0 +1,19 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 tests/kitchen.spec.js:33:1 › real account, saved preferences, recipe details and collections survive reload and user switching (4.4s)
+  ✓  2 tests/kitchen.spec.js:107:1 › empty fridge and provider failure remain honest and retryable (1.3s)
+  ✓  3 tests/kitchen.spec.js:135:3 › core screens fit 360px and retain labelled controls (1.4s)
+  ✓  4 tests/kitchen.spec.js:135:3 › core screens fit 768px and retain labelled controls (1.5s)
+  ✓  5 tests/kitchen.spec.js:135:3 › core screens fit 1440px and retain labelled controls (4.3s)
+  ✓  6 tests/kitchen.spec.js:175:1 › keyboard skip link focuses the active main region (863ms)
+
+  6 passed (15.7s)
+
+=============================== Coverage summary ===============================
+Statements   : 80.51% ( 814/1011 )
+Branches     : 87.68% ( 121/138 )
+Functions    : 70% ( 28/40 )
+Lines        : 80.51% ( 814/1011 )
+================================================================================
+Frontend coverage reports: /home/runner/work/CMPE331-Project/CMPE331-Project/test-results/frontend-coverage

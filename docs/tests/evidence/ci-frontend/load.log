@@ -1,0 +1,2 @@
+Seeded 50 real accounts and 5000 inventory entries.
+{"passed": true, "requests": 40336, "p95_ms": 371.46761799999695, "error_rate": 2.479174930583102e-05, "output": "test-results/postgresql-load.json"}

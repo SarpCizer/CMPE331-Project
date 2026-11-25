@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "environment": "isolated actual FastAPI/SQL host and production React build",
+  "source_revision": "775e8b7a949b2910bb6818145c9066df610a0d01",
+  "provider": "controlled external fixture; not exercised by these probes",
+  "results": [
+    {
+      "id": "PEN-01",
+      "scenario": "SQL injection payload retained literally; accounts remain usable",
+      "passed": true
+    },
+    {
+      "id": "PEN-02",
+      "scenario": "Mass assignment rejected without state mutation",
+      "passed": true
+    },
+    {
+      "id": "PEN-03",
+      "scenario": "Configuration, source and encoded file-traversal probes denied",
+      "passed": true
+    },
+    {
+      "id": "PEN-04",
+      "scenario": "Stored XSS rendered as inert text before and after reload",
+      "passed": true
+    }
+  ],
+  "limits": "Targeted automated penetration probes, not a complete third-party penetration assessment. No credentials or tokens exported."
+}

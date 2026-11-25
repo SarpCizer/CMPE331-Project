@@ -1,0 +1,43 @@
+{
+  "issue": 63,
+  "requirements": [
+    "US-07",
+    "US-09",
+    "US-10",
+    "US-15"
+  ],
+  "baseline": "273a9830764b3a81b19702fc5e8d8dc6df9d5028",
+  "red_commit": "6d704c1a294526432ec1850940579132f2fe7390",
+  "environment": "macOS Python 3.12; actual migrated SQLite/FastAPI; registration and signed JWT; controlled recipe provider",
+  "red": {
+    "total": 20,
+    "failed": 8,
+    "errors": 0,
+    "skipped": 10,
+    "passed": 2,
+    "expected_failure": "Eight invalid mixed-batch cases receive HTTP200 instead of sanitized HTTP502 before the correction; two valid boundary cases pass",
+    "postgresql_executed": false
+  },
+  "green_backend": {
+    "total": 133,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 12,
+    "passed": 121,
+    "postgresql_executed": false,
+    "skip_reason": "TEST_DATABASE_URL is absent locally; existing two PostgreSQL checks plus ten new PostgreSQL cases are explicitly skipped"
+  },
+  "production_service_sha256": "584cbd6e087d84bd361cfbc9b4e3ebddded806af26e70cdca1345093ae08f081",
+  "regression_source_sha256": "707a5898aac41a406bb3febca958946d9d6c887aeda0b3e871b4d21452d0b1c3",
+  "behaviors": [
+    "Whole-batch validation before any insert using shopping's existing ingredient_name rule",
+    "Overlong display, embedded newline/null and overlong Unicode casefold key rejected",
+    "Valid 256-character display and 512-character casefold boundaries preserved",
+    "Existing five personal collections and recipe/ingredient/step row counts unchanged on rejection",
+    "Valid shopping action remains idempotent and never deducts inventory"
+  ],
+  "ci": "Existing integrated workflow automatically runs both SQLite and PostgreSQL variants against a disposable PostgreSQL17 service; consult this GREEN commit's attached run before claiming its result",
+  "cloud_deployed": false,
+  "live_provider_tested": false,
+  "credentials_exported": false
+}

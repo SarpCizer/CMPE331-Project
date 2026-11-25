@@ -1,0 +1,34 @@
+$ playwright test && node scripts/coverage.mjs
+
+Running 18 tests using 1 worker
+
+(node:29610) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/completion.spec.js:41:1 › invalid fields explain the problem at the input without sending writes (1.4s)
+  ✓   2 tests/completion.spec.js:113:1 › a failed collection does not discard inventory or turn a committed write into failure (843ms)
+  ✓   3 tests/completion.spec.js:153:1 › a slow collection does not block unrelated screens (715ms)
+  ✓   4 tests/completion.spec.js:177:1 › a committed write is acknowledged even when its subsequent list refresh fails (566ms)
+  ✓   5 tests/completion.spec.js:214:1 › an expired session wins over a simultaneous collection outage (596ms)
+  ✓   6 tests/completion.spec.js:235:1 › recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list (1.1s)
+  ✓   7 tests/completion.spec.js:312:1 › failed generation keeps previous results and hides provider diagnostics (760ms)
+  ✓   8 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 360px (2.6s)
+  ✓   9 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 768px (2.5s)
+  ✓  10 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 1440px (2.5s)
+  ✓  11 tests/kitchen.spec.js:33:1 › public API documentation loads the actual schema and bearer authorization (619ms)
+  ✓  12 tests/kitchen.spec.js:64:1 › real account, saved preferences, recipe details and collections survive reload and user switching (1.8s)
+  ✓  13 tests/kitchen.spec.js:138:1 › empty fridge and provider failure remain honest and retryable (739ms)
+  ✓  14 tests/kitchen.spec.js:166:3 › core screens fit 360px and retain labelled controls (945ms)
+  ✓  15 tests/kitchen.spec.js:166:3 › core screens fit 768px and retain labelled controls (946ms)
+  ✓  16 tests/kitchen.spec.js:166:3 › core screens fit 1440px and retain labelled controls (2.4s)
+  ✓  17 tests/kitchen.spec.js:206:1 › keyboard skip link focuses the active main region (405ms)
+  ✓  18 tests/kitchen.spec.js:217:1 › core kitchen actions work with keyboard-only input (1.3s)
+
+  18 passed (24.6s)
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 1248/1248 )
+Branches     : 92.24% ( 226/245 )
+Functions    : 92.45% ( 49/53 )
+Lines        : 100% ( 1248/1248 )
+================================================================================
+Frontend coverage reports: /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/test-results/frontend-coverage

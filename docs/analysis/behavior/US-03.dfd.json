@@ -1,0 +1,52 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-03 DFD: save and read preferences",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-03"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "2.1\nReplace or read preference lists"
+    },
+    {
+      "id": "D2",
+      "kind": "store",
+      "label": "D2 Ordered preference lists"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Preference replacement or query and access token"
+    },
+    {
+      "from": "D2",
+      "to": "P",
+      "label": "Saved dietary and allergen lists in position order"
+    },
+    {
+      "from": "P",
+      "to": "D2",
+      "label": "Atomic replacement lists preserving values and order"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "Saved preference lists or sanitized error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Replace both arrays atomically; empty arrays clear prior entries. Returned saved arrays preserve submitted values, ordering and repeats. Normalized lookup keys must not rewrite the saved/API values.",
+    "US-07 reads the latest committed lists for its generation request and passes those saved values to the provider."
+  ]
+}

@@ -18,3 +18,23 @@ The charter establishes the feature scope. The following details make it testabl
 | D-12 | Team designates a project manager/contact; internal estimates are confirmed by the team | Charter lists development roles without naming a project manager |
 
 The test scaffold uses Node's standard test runner only as development tooling. A production implementation may be Express or FastAPI if it implements the reviewed contract through the test adapter. User-facing recipe estimates must not imply measured nutrition values or guaranteed allergen safety. Validation can reject declared ingredients; hidden ingredients and cross-contamination are outside what the app can verify.
+
+## Implemented choices submitted for team review (21 November 2026)
+
+Refs #16, #21. The rows below record actual implementation choices; team confirmation is still required in the PR and is not inferred from implementation.
+
+| Choice | Responsible role | Decision and rationale |
+| --- | --- | --- |
+| Backend / database | Full-stack/database | FastAPI + SQLAlchemy + Alembic, PostgreSQL 17; retain the actual implemented teammate modules instead of replacing them with the earlier proposed Express implementation. |
+| Browser | Frontend | React 19/Vite with React Router (protected routes), an Axios client with a token interceptor and Tailwind CSS, as listed in the charter, #35 and the design report. Implemented on `feature/safa-frontend-charter` without changing tested behaviour (all browser tests pass; 140 screenshot comparisons match the previous UI). Revised on 24 November; replaces the 21 November proposal to keep native fetch and plain CSS. |
+| JWT | Full-stack/auth | HS256, persistent >=32-byte server secret, issuer/audience/account validation, one-hour expiry; checks use the same injected server clock. |
+| AI / hosting | AI and DevOps, integrated by full-stack | OpenAI Responses provider behind an injected port; Render Docker web service + managed PostgreSQL. Actual cloud activation and provider credential remain separately verified release steps. |
+| A-01 | Full-stack/database + AI | Implement account-owned accepted recipe snapshots; no global shared catalog. |
+| A-02 | Full-stack/database | Ordered relational dietary/exclusion rows in #49, preserving exact strings, order and duplicates; derived keys are not unique. |
+| A-03 | Backend collections + database | Unique owner/shopping key and owner/recipe associations with composite foreign keys. |
+| A-04 | Backend collections | History ties use recipe ID ascending after timestamp descending; implemented repository ordering. |
+| A-05 | Full-stack + AI | Snapshot generation input at request start; PostgreSQL reader uses REPEATABLE READ. Later requests see later committed preferences. |
+| A-06 | Backend collections | Commit owned detail/history upsert before successful response. |
+| Vocabulary | AI + product owner | Trim/casefold exact declared-name matching; no unreviewed synonym dictionary or allergen-safety guarantee. |
+| Governance and dates | Team contact / product owner | Updated instructor email: test PR 25 November, approved PDF 29 November; review #16 lists artifacts for 29 November. Internal target remains earlier. Team must identify/confirm the contact and retain actual independent reviews. |
+

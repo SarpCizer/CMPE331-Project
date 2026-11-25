@@ -1,0 +1,31 @@
+
+Running 18 tests using 1 worker
+
+  ✓   1 tests/completion.spec.js:41:1 › invalid fields explain the problem at the input without sending writes (2.3s)
+  ✓   2 tests/completion.spec.js:113:1 › a failed collection does not discard inventory or turn a committed write into failure (1.9s)
+  ✓   3 tests/completion.spec.js:153:1 › a slow collection does not block unrelated screens (1.3s)
+  ✓   4 tests/completion.spec.js:177:1 › a committed write is acknowledged even when its subsequent list refresh fails (1.7s)
+  ✓   5 tests/completion.spec.js:214:1 › an expired session wins over a simultaneous collection outage (1.2s)
+  ✓   6 tests/completion.spec.js:235:1 › recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list (2.2s)
+  ✓   7 tests/completion.spec.js:312:1 › failed generation keeps previous results and hides provider diagnostics (1.5s)
+  ✓   8 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 360px (5.9s)
+  ✓   9 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 768px (6.1s)
+  ✓  10 tests/completion.spec.js:341:3 › validation and unavailable screens remain accessible at 1440px (6.2s)
+  ✓  11 tests/kitchen.spec.js:33:1 › public API documentation loads the actual schema and bearer authorization (1.6s)
+  ✓  12 tests/kitchen.spec.js:64:1 › real account, saved preferences, recipe details and collections survive reload and user switching (3.8s)
+  ✓  13 tests/kitchen.spec.js:138:1 › empty fridge and provider failure remain honest and retryable (1.4s)
+  ✓  14 tests/kitchen.spec.js:166:3 › core screens fit 360px and retain labelled controls (1.5s)
+  ✓  15 tests/kitchen.spec.js:166:3 › core screens fit 768px and retain labelled controls (1.7s)
+  ✓  16 tests/kitchen.spec.js:166:3 › core screens fit 1440px and retain labelled controls (5.4s)
+  ✓  17 tests/kitchen.spec.js:206:1 › keyboard skip link focuses the active main region (990ms)
+  ✓  18 tests/kitchen.spec.js:217:1 › core kitchen actions work with keyboard-only input (5.4s)
+
+  18 passed (55.7s)
+
+=============================== Coverage summary ===============================
+Statements   : 96.39% ( 1203/1248 )
+Branches     : 92.18% ( 224/243 )
+Functions    : 92.45% ( 49/53 )
+Lines        : 96.39% ( 1203/1248 )
+================================================================================
+Frontend coverage reports: /home/runner/work/CMPE331-Project/CMPE331-Project/test-results/frontend-coverage

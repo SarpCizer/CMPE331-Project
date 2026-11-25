@@ -1,0 +1,196 @@
+{
+  "started_at_utc": "2026-11-25T04:30:49.813252+00:00",
+  "source_sha": "c67165407e71ee584a8fcfdf2d0a925fd42a2a42",
+  "render_deploy": "dep-dc3682c9v7es73fm9mg0",
+  "base_url": "https://fridgely-web.onrender.com",
+  "provider": "cloudflare",
+  "workers_free_observed": true,
+  "provider_credentials_read_by_test": false,
+  "real_generation_requests": 1,
+  "checks": [
+    {
+      "name": "GET /api/health",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/openapi.json",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "published API contract exposes bearer auth",
+      "passed": true
+    },
+    {
+      "name": "GET /api/docs",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /assets/index-CFMoNYzq.js",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /assets/index-BasseLlv.css",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/inventory",
+      "passed": true,
+      "status": 401
+    },
+    {
+      "name": "GET /.env",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "name": "POST /api/accounts",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "name": "POST /api/sessions",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "POST /api/inventory",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "name": "PUT /api/profile/preferences",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/inventory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "synthetic shopping list starts empty",
+      "passed": true
+    },
+    {
+      "name": "live recipe generation",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "real provider returned recipes",
+      "passed": true
+    },
+    {
+      "name": "complete recipe DTO",
+      "passed": true
+    },
+    {
+      "name": "fridge ingredient used",
+      "passed": true
+    },
+    {
+      "name": "GET /api/recipes/202b644b25fe48f683a649a8ef52b31c",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "persisted detail matches generated recipe",
+      "passed": true
+    },
+    {
+      "name": "selected recipe has missing ingredients to exercise shopping",
+      "passed": true
+    },
+    {
+      "name": "POST /api/recipes/202b644b25fe48f683a649a8ef52b31c/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "only missing ingredients added",
+      "passed": true,
+      "expected_missing_count": 3,
+      "actual_count": 3
+    },
+    {
+      "name": "POST /api/recipes/202b644b25fe48f683a649a8ef52b31c/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "GET /api/shopping-items",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "repeat add creates no duplicates",
+      "passed": true
+    },
+    {
+      "name": "GET /api/inventory",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "inventory unchanged after generation and shopping",
+      "passed": true
+    },
+    {
+      "name": "GET /api/history",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "generated recipe appears in owned history",
+      "passed": true
+    }
+  ],
+  "synthetic_account_marker": "cloud-acceptance-20261125043050-8f5ba5@example.test",
+  "generation_seconds": 5.716,
+  "generation_status": 200,
+  "recipe_count": 1,
+  "selected_recipe": {
+    "id": "202b644b25fe48f683a649a8ef52b31c",
+    "title": "Vegan Rice Bowl",
+    "ingredients": [
+      "rice",
+      "water",
+      "salt",
+      "olive oil"
+    ],
+    "steps": [
+      "Rinse the rice",
+      "Boil water and add salt",
+      "Add rice to boiling water and cook",
+      "Drain excess water and add olive oil"
+    ],
+    "cookingMinutes": 20.0,
+    "caloriesPerServing": 110.0,
+    "servings": 1
+  },
+  "shopping_count": 3,
+  "inventory_unchanged": true,
+  "completed": true,
+  "finished_at_utc": "2026-11-25T04:31:02.011263+00:00",
+  "passed_checks": 33
+}

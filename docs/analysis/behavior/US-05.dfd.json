@@ -1,0 +1,47 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-05 DFD: list fridge contents",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-05"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "3.2\nRead owned inventory"
+    },
+    {
+      "id": "D3",
+      "kind": "store",
+      "label": "D3 Fridge inventory"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Inventory query and access token"
+    },
+    {
+      "from": "D3",
+      "to": "P",
+      "label": "Owned ingredient names and original addedAt"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "200 complete ingredient list or empty list/error"
+    }
+  ],
+  "rules": [
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "An empty array is a successful empty-fridge result and the UI shows a clear empty state.",
+    "A list read does not write inventory or change original addedAt; display labels are addition dates."
+  ]
+}

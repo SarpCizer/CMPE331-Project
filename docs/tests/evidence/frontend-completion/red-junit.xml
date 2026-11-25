@@ -1,0 +1,466 @@
+<testsuites id="" name="" tests="9" failures="9" skipped="0" errors="0" time="63.37714">
+<testsuite name="completion.spec.js" timestamp="2026-11-21T19:18:10.237Z" hostname="" tests="9" failures="9" skipped="0" time="51.692" errors="0">
+<testcase name="invalid fields explain the problem at the input without sending writes" classname="completion.spec.js" time="6.255">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-invalid-fields--568c0-nput-without-sending-writes/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-invalid-fields--568c0-nput-without-sending-writes/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-invalid-fields--568c0-nput-without-sending-writes/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toHaveAttribute(expected) failed" type="expect.toHaveAttribute">
+<![CDATA[  completion.spec.js:25:1 › invalid fields explain the problem at the input without sending writes ─
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Email address')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Email address') with timeout 5000ms
+      - waiting for getByLabel('Email address')
+        14 × locator resolved to <input id="email" required="" type="email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com"/>
+           - unexpected value "null"
+
+
+      31 |   await page.getByLabel("Password", { exact: true }).fill("short");
+      32 |   await page.getByRole("button", { name: "Create account", exact: true }).click();
+    > 33 |   await expect(page.getByLabel("Email address")).toHaveAttribute("aria-invalid", "true");
+         |                                                  ^
+      34 |   await expect(page.getByLabel("Email address")).toHaveAccessibleDescription(/valid email/i);
+      35 |   await expect(page.getByLabel("Password", { exact: true })).toHaveAccessibleDescription(/at least 8/i);
+      36 |   expect(writes).toBe(0);
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:33:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-invalid-fields--568c0-nput-without-sending-writes/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-invalid-fields--568c0-nput-without-sending-writes/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-invalid-fields--568c0-nput-without-sending-writes/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-invalid-fields--568c0-nput-without-sending-writes/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="a failed collection does not discard inventory or turn a committed write into failure" classname="completion.spec.js" time="6.094">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  completion.spec.js:64:1 › a failed collection does not discard inventory or turn a committed write into failure
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Remove rice', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Remove rice', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Remove rice', exact: true })
+
+
+      69 |     ? route.fulfill({ status: 503, json: { error: "Isolated collection outage" } }) : route.continue());
+      70 |   await page.reload();
+    > 71 |   await expect(page.getByRole("button", { name: "Remove rice", exact: true })).toBeVisible();
+         |                                                                                ^
+      72 |   await page.getByLabel("Add an ingredient", { exact: true }).fill("onion");
+      73 |   await page.getByRole("button", { name: "Add ingredient", exact: true }).click();
+      74 |   await expect(page.getByRole("button", { name: "Remove onion", exact: true })).toBeVisible();
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:71:80
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-a-failed-collec-1d68f-ommitted-write-into-failure/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="a slow collection does not block unrelated screens" classname="completion.spec.js" time="5.664">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  completion.spec.js:84:1 › a slow collection does not block unrelated screens ─────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Remove rice', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Remove rice', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Remove rice', exact: true })
+
+
+      90 |   try {
+      91 |     await page.reload({ waitUntil: "domcontentloaded" });
+    > 92 |     await expect(page.getByRole("button", { name: "Remove rice", exact: true })).toBeVisible({ timeout: 5000 });
+         |                                                                                  ^
+      93 |     await page.getByRole("link", { name: "Favorites", exact: true }).click();
+      94 |     await expect(page.getByRole("status")).toContainText("Loading favorites");
+      95 |   } finally { release(); }
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:92:82
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-a-slow-collecti-0a3de-not-block-unrelated-screens/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="an expired session wins over a simultaneous collection outage" classname="completion.spec.js" time="5.537">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeVisible() failed" type="expect.toBeVisible">
+<![CDATA[  completion.spec.js:99:1 › an expired session wins over a simultaneous collection outage ──────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Welcome back.' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Welcome back.' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Welcome back.' })
+
+
+      105 |   });
+      106 |   await page.reload();
+    > 107 |   await expect(page.getByRole("heading", { name: "Welcome back." })).toBeVisible();
+          |                                                                      ^
+      108 |   await expect(page.getByRole("alert")).toContainText("Your session ended");
+      109 |   expect(await page.evaluate(() => sessionStorage.getItem("fridgely.session"))).toBeNull();
+      110 | });
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:107:70
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-an-expired-sess-801ae-ultaneous-collection-outage/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list" classname="completion.spec.js" time="6.006">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toBeDisabled() failed" type="expect.toBeDisabled">
+<![CDATA[  completion.spec.js:112:1 › recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByRole('dialog').getByRole('button', { name: 'Save favorite', exact: true })
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" getByRole('dialog').getByRole('button', { name: 'Save favorite', exact: true }) with timeout 5000ms
+      - waiting for getByRole('dialog').getByRole('button', { name: 'Save favorite', exact: true })
+        14 × locator resolved to <button class="secondary">Save favorite</button>
+           - unexpected value "enabled"
+
+
+      127 |   await page.reload();
+      128 |   await expect(
+    > 129 |     page.getByRole("button", { name: "Remove rice", exact: true }),
+          |                                                                    ^
+      130 |   ).toBeVisible();
+      131 |   await page.getByLabel("Add an ingredient", { exact: true }).fill("onion");
+      132 |   await page
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:129:86
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-recipe-actions--1f754-the-resulting-shopping-list/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="failed generation keeps previous results and hides provider diagnostics" classname="completion.spec.js" time="6.029">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-failed-generati-821db--hides-provider-diagnostics/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-failed-generati-821db--hides-provider-diagnostics/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-failed-generati-821db--hides-provider-diagnostics/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).not.toContainText(expected) failed" type="expect.not.toContainText">
+<![CDATA[  completion.spec.js:147:1 › failed generation keeps previous results and hides provider diagnostics
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: not "PRIVATE_UPSTREAM_DIAGNOSTIC"
+    Received string: "PRIVATE_UPSTREAM_DIAGNOSTICRefresh data"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "not toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        14 × locator resolved to <div role="alert" class="message error">…</div>
+           - unexpected value "PRIVATE_UPSTREAM_DIAGNOSTICRefresh data"
+
+
+      153 | test("a slow collection does not block unrelated screens", async ({ page }) => {
+      154 |   await register(page);
+    > 155 |   await addRice(page);
+          |                       ^
+      156 |   let release;
+      157 |   const waiting = new Promise((resolve) => {
+      158 |     release = resolve;
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:155:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-failed-generati-821db--hides-provider-diagnostics/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-failed-generati-821db--hides-provider-diagnostics/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-failed-generati-821db--hides-provider-diagnostics/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-failed-generati-821db--hides-provider-diagnostics/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 360px" classname="completion.spec.js" time="5.367">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--93d97--remain-accessible-at-360px/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--93d97--remain-accessible-at-360px/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--93d97--remain-accessible-at-360px/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toHaveAttribute(expected) failed" type="expect.toHaveAttribute">
+<![CDATA[  completion.spec.js:164:3 › validation and unavailable screens remain accessible at 360px ─────────
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Email address')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Email address') with timeout 5000ms
+      - waiting for getByLabel('Email address')
+        14 × locator resolved to <input id="email" required="" type="email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com"/>
+           - unexpected value "null"
+
+
+      166 |     await expect(
+      167 |       page.getByRole("button", { name: "Remove rice", exact: true }),
+    > 168 |     ).toBeVisible({ timeout: 5000 });
+          |                                      ^
+      169 |     await page.getByRole("link", { name: "Favorites", exact: true }).click();
+      170 |     await expect(page.getByRole("status")).toContainText("Loading favorites");
+      171 |   } finally {
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:168:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--93d97--remain-accessible-at-360px/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-validation-and--93d97--remain-accessible-at-360px/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--93d97--remain-accessible-at-360px/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-validation-and--93d97--remain-accessible-at-360px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 768px" classname="completion.spec.js" time="5.357">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--12b41--remain-accessible-at-768px/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--12b41--remain-accessible-at-768px/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--12b41--remain-accessible-at-768px/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toHaveAttribute(expected) failed" type="expect.toHaveAttribute">
+<![CDATA[  completion.spec.js:164:3 › validation and unavailable screens remain accessible at 768px ─────────
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Email address')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Email address') with timeout 5000ms
+      - waiting for getByLabel('Email address')
+        14 × locator resolved to <input id="email" required="" type="email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com"/>
+           - unexpected value "null"
+
+
+      166 |     await expect(
+      167 |       page.getByRole("button", { name: "Remove rice", exact: true }),
+    > 168 |     ).toBeVisible({ timeout: 5000 });
+          |                                      ^
+      169 |     await page.getByRole("link", { name: "Favorites", exact: true }).click();
+      170 |     await expect(page.getByRole("status")).toContainText("Loading favorites");
+      171 |   } finally {
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:168:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--12b41--remain-accessible-at-768px/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-validation-and--12b41--remain-accessible-at-768px/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--12b41--remain-accessible-at-768px/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-validation-and--12b41--remain-accessible-at-768px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 1440px" classname="completion.spec.js" time="5.383">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/test-failed-1.png]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/error-context.md]]
+
+[[ATTACHMENT|../frontend/test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/trace.zip]]
+]]>
+</system-out>
+<failure message="expect(locator).toHaveAttribute(expected) failed" type="expect.toHaveAttribute">
+<![CDATA[  completion.spec.js:164:3 › validation and unavailable screens remain accessible at 1440px ────────
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Email address')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Email address') with timeout 5000ms
+      - waiting for getByLabel('Email address')
+        14 × locator resolved to <input id="email" required="" type="email" name="email" maxlength="254" autocomplete="email" placeholder="you@example.com"/>
+           - unexpected value "null"
+
+
+      166 |     await expect(
+      167 |       page.getByRole("button", { name: "Remove rice", exact: true }),
+    > 168 |     ).toBeVisible({ timeout: 5000 });
+          |                                      ^
+      169 |     await page.getByRole("link", { name: "Favorites", exact: true }).click();
+      170 |     await expect(page.getByRole("status")).toContainText("Loading favorites");
+      171 |   } finally {
+        at /Users/berfin/Documents/Codex/2026-11-20/i/work/repo/frontend/tests/completion.spec.js:168:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../test-results/completion-validation-and--1ce26-remain-accessible-at-1440px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

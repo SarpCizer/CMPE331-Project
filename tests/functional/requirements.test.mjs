@@ -55,8 +55,20 @@ test('US-05-T01 list own ingredients and preserve original dates', async t => {
   const c = await context(t), token = await c.user();
   assert.deepEqual(await c.read('/inventory', token), []);
   const item = await c.add(token, 'tomato'); c.setNow('2026-10-08T12:00:00.000Z');
-  const items = await c.read('/inventory', token);
+  // A day has passed: use a fresh real session when checking addition-date stability.
+  const items = await c.read('/inventory', await c.signIn());
   assert.deepEqual(items, [item]); assert.equal(items[0].addedAt, fixedNow);
+});
+
+test('US-05-T02 list repeated ingredient names as separate entries', async t => {
+  const c = await context(t), token = await c.user();
+  const first = await c.add(token, 'rice');
+  const second = await c.add(token, 'rice');
+  assert.notEqual(first.id, second.id);
+  const items = await c.read('/inventory', token);
+  assert.equal(items.length, 2);
+  assert.deepEqual(new Map(items.map(item => [item.id, item])),
+    new Map([[first.id, first], [second.id, second]]));
 });
 
 test('US-06-T01 delete only the selected ingredient', async t => {
@@ -153,11 +165,13 @@ test('US-10-T01 add only missing ingredients and preserve item IDs on repeated a
 
 test('US-11-T01 manually add list and remove shopping items', async t => {
   const c = await context(t), token = await c.user();
+  const ingredient = await c.add(token, 'onion');
   const item = await c.expect('POST', '/shopping-items', {name:'onion'}, token, 201);
   assert.deepEqual(await c.read('/shopping-items', token), [item]);
+  assert.deepEqual(await c.read('/inventory', token), [ingredient]);
   await c.expect('DELETE', `/shopping-items/${item.id}`, undefined, token, 204);
   assert.deepEqual(await c.read('/shopping-items', token), []);
-  assert.deepEqual(await c.read('/inventory', token), []);
+  assert.deepEqual(await c.read('/inventory', token), [ingredient]);
   await c.expect('POST', '/shopping-items', {name:' '}, token, 400);
   assert.deepEqual(await c.read('/shopping-items', token), []);
 });
@@ -171,24 +185,26 @@ test('US-12-T01 save favorites idempotently without inventory changes', async t 
 });
 
 test('US-13-T01 remove a favorite while retaining viewed history', async t => {
-  const c = await context(t), token = await c.user(); await c.add(token, 'rice');
+  const c = await context(t), token = await c.user(); const item = await c.add(token, 'rice');
   const [recipe] = await c.generate(token);
   assert.deepEqual(await c.read('/favorites', token), []);
   await c.read(`/recipes/${recipe.id}`, token);
+  assert.deepEqual(await c.read('/inventory', token), [item]);
   await c.expect('POST', '/favorites', {recipeId:recipe.id}, token);
   await c.expect('DELETE', `/favorites/${recipe.id}`, undefined, token, 204);
+  assert.deepEqual(await c.read('/inventory', token), [item]);
   assert.deepEqual(await c.read('/favorites', token), []);
   const history = await c.read('/history', token);
   assert.equal(history.length, 1); assert.equal(history[0].recipe.id, recipe.id);
 });
 
 test('US-14-T01 record views and update history in newest-first order', async t => {
-  const c = await context(t), token = await c.user(); const item = await c.add(token, 'rice');
+  const c = await context(t); let token = await c.user(); const item = await c.add(token, 'rice');
   const [first, second] = await c.generate(token);
   assert.deepEqual(await c.read('/history', token), []);
   await c.read(`/recipes/${first.id}`, token);
-  c.setNow('2026-10-07T13:00:00.000Z'); await c.read(`/recipes/${second.id}`, token);
-  c.setNow('2026-10-07T14:00:00.000Z'); await c.read(`/recipes/${first.id}`, token);
+  c.setNow('2026-10-07T13:00:00.000Z'); token = await c.signIn(); await c.read(`/recipes/${second.id}`, token);
+  c.setNow('2026-10-07T14:00:00.000Z'); token = await c.signIn(); await c.read(`/recipes/${first.id}`, token);
   const history = await c.read('/history', token);
   assert.deepEqual(history.map(x => x.recipe.id), [first.id, second.id]);
   assert.equal(history[0].lastViewedAt, '2026-10-07T14:00:00.000Z');
@@ -236,3 +252,4 @@ test('US-15-T03 reject an authentic token after its expiry', async t => {
     await c.expect('GET', path, undefined, token, 401);
   }
 });
+

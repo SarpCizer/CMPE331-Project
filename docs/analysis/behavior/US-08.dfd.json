@@ -1,0 +1,66 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "US-08 DFD: present recipe details",
+  "scope": "Use-case DFD view",
+  "requirements": [
+    "US-08",
+    "US-14"
+  ],
+  "nodes": [
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "P",
+      "kind": "process",
+      "label": "5.0\nPresent details and record view"
+    },
+    {
+      "id": "D4",
+      "kind": "store",
+      "label": "D4 Accepted recipes and children"
+    },
+    {
+      "id": "D7",
+      "kind": "store",
+      "label": "D7 Recipe views"
+    }
+  ],
+  "flows": [
+    {
+      "from": "U",
+      "to": "P",
+      "label": "Recipe id and access token"
+    },
+    {
+      "from": "D4",
+      "to": "P",
+      "label": "Owned complete recipe with ordered ingredients/steps"
+    },
+    {
+      "from": "P",
+      "to": "D7",
+      "label": "Owned recipe id and server view timestamp"
+    },
+    {
+      "from": "D7",
+      "to": "P",
+      "label": "Committed new or refreshed view record"
+    },
+    {
+      "from": "P",
+      "to": "U",
+      "label": "200 complete recipe details or access/not-found error"
+    }
+  ],
+  "rules": [
+    "This functional view combines detail presentation 5.1 and history maintenance 5.2 as aggregate process 5.0; US-14 shows their internal exchange.",
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Details include title, supplied ingredients, ordered steps, minutes, calories per serving and serving count. UI labels generated cooking time and calories as estimates.",
+    "Malformed provider output is rejected during generation in US-07/US-09, before any recipe can be read here.",
+    "A successful detail response includes the history upsert behavior specified by US-14.",
+    "No inventory write occurs: recipe, shopping, favorite and history actions never deduct or restock fridge ingredients."
+  ]
+}

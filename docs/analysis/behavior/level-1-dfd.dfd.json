@@ -1,0 +1,355 @@
+{
+  "notation": "Yourdon-DeMarco DFD",
+  "title": "Level 1 DFD: logical processes and persistent data",
+  "scope": "First-level decomposition of context process 0",
+  "requirements": [
+    "US-01",
+    "US-02",
+    "US-03",
+    "US-04",
+    "US-05",
+    "US-06",
+    "US-07",
+    "US-08",
+    "US-09",
+    "US-10",
+    "US-11",
+    "US-12",
+    "US-13",
+    "US-14",
+    "US-15"
+  ],
+  "nodes": [
+    {
+      "id": "V",
+      "kind": "external",
+      "label": "Visitor"
+    },
+    {
+      "id": "U",
+      "kind": "external",
+      "label": "Account holder"
+    },
+    {
+      "id": "AI",
+      "kind": "external",
+      "label": "Recipe AI service"
+    },
+    {
+      "id": "P1",
+      "kind": "process",
+      "label": "1.0\nManage identity"
+    },
+    {
+      "id": "P8",
+      "kind": "process",
+      "label": "8.0\nAuthorize access"
+    },
+    {
+      "id": "P2",
+      "kind": "process",
+      "label": "2.0\nStore preferences"
+    },
+    {
+      "id": "P3",
+      "kind": "process",
+      "label": "3.0\nMaintain fridge"
+    },
+    {
+      "id": "P4",
+      "kind": "process",
+      "label": "4.0\nGenerate recipes"
+    },
+    {
+      "id": "P5",
+      "kind": "process",
+      "label": "5.0\nDetails and history"
+    },
+    {
+      "id": "P6",
+      "kind": "process",
+      "label": "6.0\nMaintain shopping"
+    },
+    {
+      "id": "P7",
+      "kind": "process",
+      "label": "7.0\nMaintain favorites"
+    },
+    {
+      "id": "D1",
+      "kind": "store",
+      "label": "D1 Accounts"
+    },
+    {
+      "id": "D2",
+      "kind": "store",
+      "label": "D2 Preferences"
+    },
+    {
+      "id": "D3",
+      "kind": "store",
+      "label": "D3 Inventory"
+    },
+    {
+      "id": "D4",
+      "kind": "store",
+      "label": "D4 Recipes"
+    },
+    {
+      "id": "D5",
+      "kind": "store",
+      "label": "D5 Shopping"
+    },
+    {
+      "id": "D6",
+      "kind": "store",
+      "label": "D6 Favorites"
+    },
+    {
+      "id": "D7",
+      "kind": "store",
+      "label": "D7 Views"
+    }
+  ],
+  "flows": [
+    {
+      "from": "V",
+      "to": "P1",
+      "label": "Credentials",
+      "interface": "AUTH_IN"
+    },
+    {
+      "from": "P1",
+      "to": "V",
+      "label": "Account or token result",
+      "interface": "AUTH_OUT"
+    },
+    {
+      "from": "P1",
+      "to": "D1",
+      "label": "New account data"
+    },
+    {
+      "from": "D1",
+      "to": "P1",
+      "label": "Credential records"
+    },
+    {
+      "from": "U",
+      "to": "P8",
+      "label": "Request and token",
+      "interface": "PERSONAL_IN"
+    },
+    {
+      "from": "D1",
+      "to": "P8",
+      "label": "Identity data"
+    },
+    {
+      "from": "P8",
+      "to": "U",
+      "label": "Access error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P2",
+      "label": "Principal + preference request"
+    },
+    {
+      "from": "P2",
+      "to": "U",
+      "label": "Preference result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P3",
+      "label": "Principal + fridge request"
+    },
+    {
+      "from": "P3",
+      "to": "U",
+      "label": "Fridge result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P4",
+      "label": "Principal + generation request"
+    },
+    {
+      "from": "P4",
+      "to": "U",
+      "label": "Generation result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P5",
+      "label": "Principal + detail or history request"
+    },
+    {
+      "from": "P5",
+      "to": "U",
+      "label": "Detail or history result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P6",
+      "label": "Principal + shopping request"
+    },
+    {
+      "from": "P6",
+      "to": "U",
+      "label": "Shopping result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "P8",
+      "to": "P7",
+      "label": "Principal + favorite request"
+    },
+    {
+      "from": "P7",
+      "to": "U",
+      "label": "Favorite result/error",
+      "interface": "PERSONAL_OUT"
+    },
+    {
+      "from": "D2",
+      "to": "P2",
+      "label": "Saved lists"
+    },
+    {
+      "from": "P2",
+      "to": "D2",
+      "label": "Replacement lists"
+    },
+    {
+      "from": "D3",
+      "to": "P3",
+      "label": "Inventory records"
+    },
+    {
+      "from": "P3",
+      "to": "D3",
+      "label": "Manual changes"
+    },
+    {
+      "from": "D4",
+      "to": "P4",
+      "label": "Committed recipes"
+    },
+    {
+      "from": "P4",
+      "to": "D4",
+      "label": "Valid recipe batch"
+    },
+    {
+      "from": "D7",
+      "to": "P5",
+      "label": "View records"
+    },
+    {
+      "from": "P5",
+      "to": "D7",
+      "label": "View timestamps"
+    },
+    {
+      "from": "D5",
+      "to": "P6",
+      "label": "Shopping records"
+    },
+    {
+      "from": "P6",
+      "to": "D5",
+      "label": "Unique item changes"
+    },
+    {
+      "from": "D6",
+      "to": "P7",
+      "label": "Favorite records"
+    },
+    {
+      "from": "P7",
+      "to": "D6",
+      "label": "Association changes"
+    },
+    {
+      "from": "D2",
+      "to": "P4",
+      "label": "Preference lists"
+    },
+    {
+      "from": "D3",
+      "to": "P4",
+      "label": "Inventory names"
+    },
+    {
+      "from": "P4",
+      "to": "AI",
+      "label": "Ingredients and preferences",
+      "interface": "AI_IN"
+    },
+    {
+      "from": "AI",
+      "to": "P4",
+      "label": "Candidates or failure",
+      "interface": "AI_OUT"
+    },
+    {
+      "from": "D4",
+      "to": "P5",
+      "label": "Complete recipes"
+    },
+    {
+      "from": "D4",
+      "to": "P6",
+      "label": "Recipe names"
+    },
+    {
+      "from": "D3",
+      "to": "P6",
+      "label": "Inventory names"
+    },
+    {
+      "from": "D4",
+      "to": "P7",
+      "label": "Complete recipes"
+    },
+    {
+      "from": "D3",
+      "to": "P8",
+      "label": "Reference owners"
+    },
+    {
+      "from": "D4",
+      "to": "P8",
+      "label": "Reference owners"
+    },
+    {
+      "from": "D5",
+      "to": "P8",
+      "label": "Reference owners"
+    },
+    {
+      "from": "D6",
+      "to": "P8",
+      "label": "Reference owners"
+    },
+    {
+      "from": "D7",
+      "to": "P8",
+      "label": "Reference owners"
+    }
+  ],
+  "rules": [
+    "This decomposes process 0. Parent external interface groups balance with the context DFD; PERSONAL_OUT is refined into access errors and feature-specific data/error results.",
+    "Eight logical processes are responsibilities, not a selected service or deployment architecture. The per-story diagrams detail the data transformations and allowed writes.",
+    "D2 maps to both preference relations; D4 maps to recipe, ingredient and step relations. D1 and D3-D7 map to their corresponding E-R entities.",
+    "All protected input is authenticated and owner-scoped under process 8.0 (US-15). Every referenced object ID, including recipeId in a request body, is checked against the verified account before a read/write. Client owner IDs are rejected or ignored.",
+    "Process 8.0 and each feature enforce owner-qualified access. Referenced IDs in path and body are both covered. The stores supply existence/ownership data, not client-chosen ownership."
+  ]
+}
