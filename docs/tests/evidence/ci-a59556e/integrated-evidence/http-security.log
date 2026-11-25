@@ -1,0 +1,20 @@
+✔ B-AUTH-01 registration returns public account fields and enables sign-in (349.850441ms)
+✔ B-AUTH-02 normalized duplicate email is rejected (385.600876ms)
+✔ B-AUTH-03 invalid registration does not reserve the email (122.777571ms)
+✔ B-AUTH-04 wrong and unknown credentials return no token (472.540662ms)
+✔ B-AUTH-05 issued JWT has finite expiry and a signature (227.982393ms)
+✔ B-PREF-01 save and explicitly clear both preference lists (272.699497ms)
+✔ B-PREF-02 invalid lists do not partially change preferences (251.663458ms)
+✔ B-SEC-01 every protected method rejects missing and malformed tokens (66.387691ms)
+✔ B-SEC-02 a modified JWT payload is rejected (231.427641ms)
+✔ B-SEC-05 unsigned JWT algorithm cannot bypass verification (230.682342ms)
+✔ B-SEC-03 two users cannot list or delete each other inventory (491.352394ms)
+✔ B-SEC-04 profile and shopping remain isolated, including supplied owner IDs (545.659011ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3723.555889

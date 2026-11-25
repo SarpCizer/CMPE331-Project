@@ -1,0 +1,93 @@
+{
+  "source": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+  "run": 45474025963,
+  "backend": {
+    "tests": 133,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "tests": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "acceptance": {
+    "tests": 28,
+    "pass": 28,
+    "fail": 0,
+    "skipped": 0
+  },
+  "http": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "skipped": 0
+  },
+  "coverage": {
+    "passed": true,
+    "actual_percent": {
+      "backend_statements": 91.71539961013646,
+      "backend_branches": 76.06382978723404,
+      "frontend_lines": 97.1,
+      "frontend_branches": 94.03,
+      "frontend_functions": 94.36
+    },
+    "minimum_percent": {
+      "backend_statements": 90,
+      "backend_branches": 70,
+      "frontend_lines": 90,
+      "frontend_branches": 85,
+      "frontend_functions": 85
+    },
+    "scope": "backend production source and mapped frontend/src; statement coverage is separate from branches"
+  },
+  "load": {
+    "revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+    "overall": {
+      "requests": 47400,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 204.05557599997337,
+      "max_ms": 1647.5131109999666,
+      "mean_ms": 66.04898010921964,
+      "statuses": {
+        "200": 47400
+      }
+    },
+    "passed": true,
+    "thresholds": {
+      "p95_ms_max": 500,
+      "error_rate_exclusive_max": 0.01
+    }
+  },
+  "penetration": {
+    "passed": true,
+    "cases": 4,
+    "source_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e"
+  },
+  "sonarqube": {
+    "source_identity": {
+      "analysis_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+      "test_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+      "test_artifacts_reused": false
+    },
+    "issues_total": 0,
+    "quality_gate": {
+      "projectStatus": {
+        "status": "OK",
+        "conditions": [],
+        "ignoredConditions": false,
+        "caycStatus": "compliant"
+      }
+    },
+    "hotspot_detail_caveat": {
+      "status": "API_UNAVAILABLE",
+      "http_status": 400,
+      "meaning": "Use security_hotspots in metrics.json; detailed hotspot review is not inferred."
+    }
+  },
+  "ci_jobs_passed": 7,
+  "ci_completed": true
+}

@@ -1,0 +1,36 @@
+✔ US-01-T01 register without email verification (1985.284939ms)
+✔ US-01-T02 reject duplicate email and invalid registration without creating an account (1643.510131ms)
+✔ US-02-T01 accept correct credentials and reject incorrect credentials (1595.550959ms)
+✔ US-03-T01 persist and clear preferences (1387.178974ms)
+✔ US-04-T01 add an ingredient with addition timestamp (1399.640391ms)
+✔ US-04-T02 reject a blank ingredient (1387.880112ms)
+✔ US-05-T01 list own ingredients and preserve original dates (1497.058551ms)
+✔ US-05-T02 list repeated ingredient names as separate entries (1380.043667ms)
+✔ US-06-T01 delete only the selected ingredient (1414.476107ms)
+✔ US-07-T01 send fridge and current preferences to provider without deducting inventory (1422.681931ms)
+✔ US-07-T02 reject a batch containing a declared allergen conflict (1428.955312ms)
+✔ US-07-T03 block recipe generation for an empty fridge (1397.831145ms)
+✔ US-08-T01 return complete details using the application-assigned recipe ID (1405.005351ms)
+✔ US-08-T02 reject empty cooking steps (1420.546048ms)
+✔ US-08-T03 reject missing calories (1390.29196ms)
+✔ US-08-T04 reject zero cooking time (1421.303877ms)
+✔ US-08-T05 reject negative calories (1398.90551ms)
+✔ US-08-T06 reject zero servings (1400.934381ms)
+✔ US-08-T07 reject blank ingredient names (1391.35823ms)
+✔ US-09-T01 return retryable provider error and preserve successful state snapshots (1505.664683ms)
+✔ US-10-T01 add only missing ingredients and preserve item IDs on repeated actions (1446.706773ms)
+✔ US-11-T01 manually add list and remove shopping items (1407.969809ms)
+✔ US-12-T01 save favorites idempotently without inventory changes (1448.600001ms)
+✔ US-13-T01 remove a favorite while retaining viewed history (1462.231539ms)
+✔ US-14-T01 record views and update history in newest-first order (1668.616052ms)
+✔ US-15-T01 deny requests with no token or a malformed token (1153.697017ms)
+✔ US-15-T02 isolate personal data and deny access to another users objects (1808.343423ms)
+✔ US-15-T03 reject an authentic token after its expiry (1400.620542ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41140.445099

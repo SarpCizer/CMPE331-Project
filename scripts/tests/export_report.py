@@ -16,6 +16,15 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image, KeepTogether
 
+# Version 2 reports validate source-pinned evidence in a dedicated renderer.
+# Keep the historical renderer below intact so the independent #66 fix merges cleanly.
+if __name__ == '__main__':
+    report_config = Path(__file__).resolve().parents[2] / 'docs/tests/report-input.json'
+    if json.loads(report_config.read_text()).get('schema_version') == 2:
+        import runpy
+        runpy.run_path(str(Path(__file__).with_name('export_verified_report.py')), run_name='__main__')
+        raise SystemExit(0)
+
 ROOT=Path(__file__).resolve().parents[2]
 BASE=ROOT/'docs/tests'
 OUT=Path(os.getenv('FRIDGELY_REPORT_OUTPUT',str(ROOT/'build/reports')))
