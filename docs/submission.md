@@ -1,6 +1,47 @@
-# Final source delivery and owner actions
+# Final source delivery
 
-Refs #16, #22, #40, #47, #48. Build the source-only course archive from the exact final GitHub revision:
+Refs #16, #22, #40, #47, #48.
+
+## Approved course files
+
+The team's approved course source is `a59556e366ffd65adf799bb8aa9bc47e95dea16e`.
+[Sarp reaffirmed İrem's approval](https://github.com/SarpCizer/CMPE331-Project/issues/24#issuecomment-7159653107),
+and the annotated [v0.1.0 tag](https://github.com/SarpCizer/CMPE331-Project/tree/v0.1.0)
+points to that commit. Use the files in the
+[approved delivery folder](https://github.com/SarpCizer/CMPE331-Project/tree/delivery/irem-approved-a59556e/delivery):
+
+- `Fridgely-source-0.1.0.zip` and its SHA-256 sidecar.
+- `Fridgely-Software-Test-Report.pdf` and its SHA-256 sidecar.
+
+[CI 45474025963](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45474025963)
+passed seven jobs for that source, including 133 backend/PostgreSQL, 28
+acceptance and 22 browser tests. The ZIP preserves the committed Markdown and
+README from that revision, including the older report for `25c111a`. For the
+tested submission source, use the companion PDF and the [matching Markdown
+report](tests/software-test-report.md) reviewed in
+[#67](https://github.com/SarpCizer/CMPE331-Project/pull/67). The later [design
+addendum](design/current/implementation-alignment.md) is available in the
+repository. Use the isolated, controlled-provider tests described in the
+[root README](../README.md#verify) to verify the frozen archive's flows without
+a provider credential or model charge.
+
+## Live demo
+
+The [free Render application](https://fridgely-web.onrender.com) deploys reviewed
+`main`. The
+[verification in #40](https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7159892391)
+identifies deployed `32bf77578564cc57b243b7953c655e2597c3182b` with the
+Cloudflare adapter, which was added after the course source.
+[CI 45594103954](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45594103954)
+recorded 471 backend/PostgreSQL, 28 acceptance and 22 browser tests at that
+revision. Cite the exact demo source and its evidence during the walkthrough.
+
+The [team rehearsal and BİLGİ Learn confirmation](https://github.com/SarpCizer/CMPE331-Project/issues/48)
+require records of the actual rehearsal and submission.
+
+## Rebuilding for a reviewed source
+
+Build a source-only archive from the exact Git revision under review:
 
 ```sh
 python scripts/release/package_source.py --revision FULL_GITHUB_SHA
@@ -27,14 +68,8 @@ It is an archive-verification artifact for that PR head, not a final submission.
 python -B -m unittest discover -s scripts/release -p test_package_source.py -v
 ```
 
-The #53 review correction and actual failing/passing evidence are recorded in
-[the archive review evidence](tests/release-package-review.md). Integrate this
-reviewed correction through the agreed PR stack before building the final team
-candidate. Previously generated working-directory ZIPs are not a final source
-freeze for a different commit.
-
-Repository-owner actions: grant Render GitHub access for the private project or an authorized private fork; enable/verify main protection; obtain the team's real independent reviews; apply the agreed integration plan; create the first version tag on the approved commit. Preserve the open teammate PRs until the team resolves their overlap.
-
-Team/account actions: provide the provider credential directly in the host's secret environment; record live HTTPS/provider and deployment performance checks; confirm the project contact and GitHub Project board; ensure all six members contribute genuinely; rehearse the walkthrough; upload the approved PDF and final source ZIP through the authorized learn.bilgi account and verify receipt.
-
-The assistant cannot manufacture another person's contribution/review or enable settings without owner access. These actions remain visible in the review-evidence index instead of being checked off speculatively. The updated test-plan email sets PR review on 25 November and approved PDF on 29 November; work should be prepared earlier. Final source delivery is 30 November 2026 in the syllabus.
+The archive review and regression evidence are recorded in
+[the archive review evidence](tests/release-package-review.md) and
+[#66](https://github.com/SarpCizer/CMPE331-Project/pull/66). A different
+submission revision requires a source decision and its own ZIP, checksums,
+test evidence and matching report.

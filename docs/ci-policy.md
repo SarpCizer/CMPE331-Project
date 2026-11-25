@@ -42,5 +42,7 @@ The original Render service and Blueprint now select main. The verified automati
 deployment and bounded live Cloudflare results are recorded in
 [the deployment guide](cloud-deployment.md) and closed issue #40. CI load tests
 remain isolated PostgreSQL measurements, distinct from those live smoke results.
-See issue #22 for the still-unverified repository-owner protection setting and
-issue #48 for source selection, release artifacts and course submission.
+See [#22](https://github.com/SarpCizer/CMPE331-Project/issues/22) for the verified
+branch protection and annotated release tag, and
+[#48](https://github.com/SarpCizer/CMPE331-Project/issues/48) for the approved
+course files and submission status.

@@ -36,8 +36,8 @@ FRIDGELY_PYTHON=python node --test tests/functional/requirements.test.mjs
 ```
 
 For real PostgreSQL restart verification, set `TEST_DATABASE_URL` to a disposable
-PostgreSQL database. Local runs without it explicitly skip that one case; this
-skip is not treated as a PostgreSQL pass.
+PostgreSQL database. Local runs without it skip the PostgreSQL-only cases.
+Use the source-specific CI run for the PostgreSQL results.
 
 Start the isolated host with `python backend/tests/serve_web_test.py` after building
 the frontend. This invokes the real application and SQL database with a controlled
@@ -70,9 +70,10 @@ integration and remaining owner actions are recorded in the QA handoff above.
 
 ## Historical verification checkpoints
 
-The last complete integrated checkpoint is source273a983, [run45241264964](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45241264964):113 PostgreSQL/backend,27 acceptance,20 browser,12 HTTP and4 penetration cases; all seven jobs pass, including image/restart, archive, coverage, secret scan and Sonar (zero issues). The 50-user/5-minute run records42,336 requests, p95336.34ms and2 connection failures (0.004724%); both unchanged thresholds pass. This is a CI environment result, not a public-cloud measurement.
+An earlier integrated checkpoint is source `273a983`, [run45241264964](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45241264964):113 PostgreSQL/backend,27 acceptance,20 browser,12 HTTP and4 penetration cases; all seven jobs pass, including image/restart, archive, coverage, secret scan and Sonar (zero issues). The 50-user/5-minute run records42,336 requests, p95336.34ms and2 connection failures (0.004724%); both unchanged thresholds pass. This is a CI environment result, not a public-cloud measurement.
 
-The #63 recipe-to-shopping follow-up in current #56 adds real-auth/SQL regressions for invalid mixed batches and valid name boundaries. Its source and test-first evidence are recorded in [ingredient-contract/tdd.json](evidence/ingredient-contract/tdd.json); check its own CI run on #56 before using later-source results. [The review checklist](review-16-evidence.md) distinguishes implemented work, review gates and remaining owner/team actions. Cloud deployment is explicitly on hold until Sarp grants Render access to the original repository; the personal fork must not be deployed.
+The #63 recipe-to-shopping follow-up integrated through #56 added real-auth/SQL regressions for invalid mixed batches and valid name boundaries. Its source and test-first evidence are recorded in [ingredient-contract/tdd.json](evidence/ingredient-contract/tdd.json); check its own CI run on #56 before using later-source results. [The review checklist](review-16-evidence.md) distinguishes implemented work, review gates and remaining owner/team actions. The deployment hold at that checkpoint was later resolved in
+[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40).
 
 The following report/PDF baseline remains historical. Regenerate the final report and ZIP from the team-selected source after review; do not relabel its old measurements as testing newer code.
 

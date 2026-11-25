@@ -23,21 +23,10 @@ modal, prevent duplicate submissions and link to the resulting shopping list.
 
 ## Team handoff: use the integrated branch
 
-Refs #16, #35, #36, #37, #38, #39. The complete candidate is in
-[PR #56](https://github.com/SarpCizer/CMPE331-Project/pull/56), branch
-`feature/berfin-cloud-candidate`. Main has not been merged. Teammates can use this
-branch now without waiting for a main-branch merge. Fetch it into a clean worktree
-or checkout; preserve uncommitted work on your own branch first.
-
-```bash
-git fetch origin feature/berfin-cloud-candidate
-git switch --track origin/feature/berfin-cloud-candidate
-```
-
-If that local branch already exists, switch to it and use `git pull --ff-only`.
-Create a personal feature branch only when you need to contribute an independent
-change; review the candidate through its existing PR. Do not merge main as part
-of the setup.
+Refs #16, #35, #36, #37, #38, #39. Start from reviewed `main` for the
+current application. [PR #56](https://github.com/SarpCizer/CMPE331-Project/pull/56)
+records the initial integration. See the [delivery guide](../docs/submission.md)
+for the approved course archive and the separate live demo revision.
 
 From the repository root, using Python 3.12, Node 24 and pnpm 11.25.0:
 
@@ -88,11 +77,11 @@ The interactive schema is `http://127.0.0.1:8000/api/docs`. Sign in through
 `POST /sessions`, then use the returned bearer value with Swagger's Authorize
 control. All protected endpoints derive the account from the signed session.
 
-Without the team's server-side `OPENAI_API_KEY`, real recipe generation returns
-a visible retryable 503; account, inventory and personal-list functionality still
-works. Controlled recipes are used only by the separate test host below. Cloud
-hosting is still blocked on Render's access to the private source repository;
-localhost is not a public deployment URL. See [the cloud record](../docs/cloud-deployment.md).
+Without a configured server-side recipe provider, generation returns a visible
+retryable 503. Accounts, inventory and personal lists still work. The separate
+test host below supplies controlled recipes. See [provider setup and live
+evidence](../docs/cloud-deployment.md) for the integrated Cloudflare and OpenAI
+options and the public Render deployment.
 
 ## Build and run
 

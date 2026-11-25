@@ -1,24 +1,23 @@
 # Fridgely milestone handoff
 
-Status captured on 23 November 2026. A reviewed PR or recorded run is evidence of work in progress until its target revision is integrated and verified.
+Refs #16, #24, #48. The historical integration plan is in this file's Git history.
+This page summarizes the verified state as of 25 November 2026.
 
-| Due | Milestone | Product owner evidence and remaining gate |
-| --- | --- | --- |
-| 24 Nov | M1 Foundation & Auth | #21: decisions are recorded in [decisions.md](requirements/decisions.md) and PR #50; record team confirmation there. #24: confirm the integration route below with the branch owners and record PR dispositions. |
-| 27 Nov | M2 Core Services & AI | #25 and #26: PR #58 adds inventory acceptance coverage on the integrated host. Require review and a successful integrated run before closing the issues. |
-| 29 Nov | M3 Integration & Testing | #46: see the [AI usage log](ai-usage-log.md) and [observed incidents](ai-mistakes.md). #47: verify README setup and archive contents at the reviewed revision; PRs #53 and #54 cover packaging and placeholder cleanup. #44: PR #55 carries the testing report; the release evidence must identify completed runs and open cloud checks. |
-| 30 Nov | M4 Final Submission | #48: use the release checklist below. The course-platform receipt and team rehearsal require human confirmation. |
+| Milestone | Verified evidence |
+| --- | --- |
+| M1 Foundation & Auth | [Implementation decisions](requirements/decisions.md), [account and database design](../backend/README-accounts.md), and the [integration review](https://github.com/SarpCizer/CMPE331-Project/pull/56). |
+| M2 Core Services & AI | The integrated application has accounts, preferences, manual inventory, recipes, shopping, favorites and history. [Main CI](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45594103954) passed 28 acceptance and 22 browser cases. [Live deployment evidence](https://github.com/SarpCizer/CMPE331-Project/issues/40#issuecomment-7159892391) identifies the deployed revision and the limits of its live checks. |
+| M3 Integration & Testing | The [reviewed test report](https://github.com/SarpCizer/CMPE331-Project/pull/67) matches the approved course source. The [contribution and incident logs](ai-usage-log.md) and [archive and export corrections](https://github.com/SarpCizer/CMPE331-Project/pull/66) are integrated. See the [AI incident evidence](ai-mistakes.md) and the [protected-main and tagged-release evidence](https://github.com/SarpCizer/CMPE331-Project/issues/22). |
+| M4 Final Submission | The [approved course files and source identities](submission.md) are verified. Actual Learn confirmation and the team rehearsal are tracked in [#48](https://github.com/SarpCizer/CMPE331-Project/issues/48). |
 
-## Integration and cross-review
-
-- PR #57 is the bridge from `backend_work` to `main`; PR #9 currently targets `backend_work`. Before merging #9, Sarp and Berfin should agree how the expanded #57 will be reviewed and whether it should first be integrated as a collections-only change. Check #57's diff after any merge into its head branch.
-- The current dependent stack is #9 → #10 → #11 → #12 → #13 → #14 → #15 → #49 → #50 → #51 → #52 → #53 → #55 → #56 → #58. Review each PR against its current base, resolve feedback, and refresh the diff and CI when retargeting. Record the agreed path to `main` before merging the stack.
-- Compare #7's recipe behavior and #8's report/CI artifacts with the integrated counterparts in #10, #12 and #55. Ask the PR owners to decide which changes to carry forward and record links before closing overlapping PRs. #6 has a design review to resolve. #54 is an independent cleanup against `main`; confirm its deletion is still needed before integrating.
-- The owner confirms branch protection and review settings under #22. Link integration PRs and actual evidence to #16; leave checklist items open while evidence is pending.
+The [analysis PR](https://github.com/SarpCizer/CMPE331-Project/pull/5) and [design
+PR](https://github.com/SarpCizer/CMPE331-Project/pull/6) contain corrections to
+the instructor's comments. Their earlier changes-requested reviews remain
+visible. No later instructor approval is recorded on either PR.
 
 ## Final delivery
 
-- [ ] Freeze the reviewed source revision. From a clean checkout, follow [the submission instructions](submission.md), verify the packaged revision and SHA-256 digest, and inspect the archive file list.
-- [ ] Verify the reviewed testing report/PDF and its run links. Record the actual results and unresolved items, including live deployment and provider checks.
-- [ ] Rehearse sign-in, manual fridge add/delete, recipe generation and saving; show that recipe actions leave inventory unchanged. Cover workflow, architecture, decisions, and functional and non-functional test evidence. Record date, presenters and the rehearsal result.
-- [ ] Upload the approved ZIP and PDF through the course account and retain confirmation. Update #16 and #48 with evidence after verification.
+- [x] Verify the approved source ZIP, SHA-256 sidecar and source manifest.
+- [x] Verify the matching report PDF and the CI run for its tested commit.
+- [ ] Rehearse the [walkthrough](demo-runbook.md) as a team and record what happened in #48.
+- [ ] Submit the approved pair in BİLGİ Learn and verify the submission. Record the confirmation in #48 and update the Learn checkbox in [#16](https://github.com/SarpCizer/CMPE331-Project/issues/16).
