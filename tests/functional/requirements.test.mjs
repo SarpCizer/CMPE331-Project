@@ -86,8 +86,24 @@ test('US-07-T01 send fridge and current preferences to provider without deductin
   await c.expect('PUT', '/profile/preferences', {dietary:['vegan'], allergens:['peanut']}, token);
   const result = await c.generate(token); assert.equal(result.length, 2);
   assert.equal(c.calls.length, 1);
-  assert.deepEqual(c.calls[0], {ingredients:['rice'], dietary:['vegan'], allergens:['peanut']});
+  assert.deepEqual(c.calls[0], {ingredients:['rice'], dietary:['vegan'], allergens:['peanut'], amounts:[]});
   assert.deepEqual(await c.read('/inventory', token), [item]);
+});
+
+test('US-07 quantities reach the provider without changing inventory', async t => {
+  const c = await context(t), token = await c.user();
+  const item = await c.expect('POST', '/inventory', {name:'rice', quantity:0.5, unit:'kg'}, token, 201);
+  const legacy = await c.add(token, 'tomato');
+  const before = await c.read('/inventory', token);
+  assert.equal(item.quantity, 0.5);
+  assert.equal(item.unit, 'kg');
+  await c.expect('PUT', '/profile/preferences', {dietary:['vegan'], allergens:['peanut']}, token);
+  assert.equal((await c.generate(token)).length, 2);
+  assert.equal(c.calls.length, 1);
+  const names = before.map(row => row.name);
+  assert.deepEqual(c.calls[0], {ingredients:names, dietary:['vegan'], allergens:['peanut'], amounts:[['rice',0.5,'kg']]});
+  assert.deepEqual(await c.read('/inventory', token), before);
+  assert.equal(legacy.quantity, null);
 });
 
 test('US-07-T02 reject a batch containing a declared allergen conflict', async t => {
