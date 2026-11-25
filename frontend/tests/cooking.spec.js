@@ -93,7 +93,7 @@ test('lost response retries the same cooking confirmation without double deducti
   await page.getByRole('button', { name: 'I cooked this', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm cooking and update fridge', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('could not reach');
-  await page.getByRole('button', { name: 'Confirm cooking and update fridge', exact: true }).click();
+  await page.getByRole('button', { name: 'Retry previous confirmation', exact: true }).click();
   await expect(page.getByText('Cooking recorded. Your fridge has been updated.', { exact: true })).toBeVisible();
   expect(submitted).toHaveLength(2);
   expect(submitted[0]).toEqual(submitted[1]);
