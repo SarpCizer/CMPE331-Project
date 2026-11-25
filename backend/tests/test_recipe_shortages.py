@@ -91,3 +91,24 @@ def test_decimal_sums_and_zero_stock(kitchen):
         json={'quantity': 0, 'unit': 'pcs'}).status_code == 200
     rid = recipe(kitchen, ['milk', 'egg'], ['300 ml', '1 pcs'])
     assert [i['name'] for i in missing(kitchen, rid).json()] == ['egg']
+
+
+def test_casefold_expansion_keeps_valid_display_name_at_port_boundary(kitchen):
+    name = 'ß' * 150
+    kitchen.add(name, 1)
+    rid = recipe(kitchen, [name], ['1 pcs'])
+    before = kitchen.stock()
+    response = missing(kitchen, rid)
+    assert response.status_code == 200
+    assert response.json() == []
+    assert kitchen.stock() == before
+
+
+def test_unicode_legacy_unit_falls_back_without_server_error(kitchen):
+    kitchen.add('egg', 1)
+    rid = recipe(kitchen, ['egg'], ['1 pcſ'])
+    before = kitchen.stock()
+    response = missing(kitchen, rid)
+    assert response.status_code == 200
+    assert response.json() == []
+    assert kitchen.stock() == before
