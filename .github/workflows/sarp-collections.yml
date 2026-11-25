@@ -1,0 +1,84 @@
+name: Sarp collections compatibility
+
+on:
+  push:
+    branches: [backend_work]
+  pull_request:
+    paths:
+      - backend/src/fridgely_collections/**
+      - backend/tests/**
+      - backend/integration_tests/**
+      - backend/scripts/verify_team_compatibility.py
+      - .github/workflows/sarp-collections.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collections:
+    name: Sarp standalone collections
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: sarp
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r sarp/backend/requirements-test.lock
+      - run: python -m pip install --no-deps -e sarp/backend
+      - name: Test Sarp's module
+        run: >-
+          python -m pytest
+          sarp/backend/tests/test_collections_api.py
+          sarp/backend/tests/test_transactions_and_integration.py
+          sarp/backend/tests/test_history_dependency_failures.py -q
+
+  compatibility:
+    name: Sarp real-host compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: sarp_compatibility
+          POSTGRES_USER: isolated_test_user
+          POSTGRES_PASSWORD: isolated-ci-only-password
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U isolated_test_user -d sarp_compatibility"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://isolated_test_user:isolated-ci-only-password@127.0.0.1:5432/sarp_compatibility
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: sarp
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: team
+          ref: 929776ccc51d914084ebb49d5997942c51c64b58
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: python -m pip install -r team/backend/requirements-app.lock
+      - run: python -m pip install --no-deps -e team/backend
+      - name: Exercise the unchanged teammate host with Sarp's current module
+        run: >-
+          python sarp/backend/scripts/verify_team_compatibility.py
+          --team-root team
+          --output-dir "${{ runner.temp }}/sarp-compatibility"
+          --require-postgres
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: sarp-compatibility-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/sarp-compatibility/
+          if-no-files-found: error
