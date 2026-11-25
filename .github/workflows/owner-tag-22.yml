@@ -1,0 +1,120 @@
+name: One-time approved baseline tag (issue 22)
+on:
+  push:
+    branches: [docs/sarp-initial-tag-22]
+    paths: [.github/workflows/owner-tag-22.yml]
+permissions: {}
+concurrency:
+  group: fridgely-initial-approved-tag-22
+  cancel-in-progress: false
+jobs:
+  tag-approved-baseline:
+    if: github.repository == 'SarpCizer/CMPE331-Project' && github.actor == 'SarpCizer' && github.ref == 'refs/heads/docs/sarp-initial-tag-22'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+      issues: read
+    steps:
+      - name: Verify approved source and create only annotated v0.1.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          REPO = "SarpCizer/CMPE331-Project"
+          SOURCE = "a59556e366ffd65adf799bb8aa9bc47e95dea16e"
+          TAG = "v0.1.0"
+          RUN = 45474025963
+          API = "https://api.github.com/repos/" + REPO
+          REQUIRED = {
+              "Repository secret scan", "Immutable source archive and reproducibility",
+              "Cloud image and PostgreSQL smoke test", "Verify tested source identity",
+              "API, PostgreSQL, browser and load tests", "Enforce source coverage policy",
+              "SonarQube analysis and evidence",
+          }
+          assert os.environ["GITHUB_REPOSITORY"] == REPO
+          assert os.environ["GITHUB_ACTOR"] == "SarpCizer"
+          assert os.environ["GITHUB_REF"] == "refs/heads/docs/sarp-initial-tag-22"
+          assert os.environ["GITHUB_EVENT_NAME"] == "push"
+          
+          def api(method, path, data=None, missing_ok=False):
+              request = urllib.request.Request(
+                  API + path, method=method,
+                  data=json.dumps(data).encode("utf-8") if data is not None else None,
+                  headers={
+                      "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                      "Accept": "application/vnd.github+json",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                      "User-Agent": "Fridgely-scoped-initial-tag",
+                      "Content-Type": "application/json",
+                  })
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      return json.load(response)
+              except urllib.error.HTTPError as error:
+                  if error.code == 404 and missing_ok:
+                      return None
+                  raise RuntimeError(f"GitHub operation failed: {method} {path}, HTTP {error.code}") from None
+          
+          # Check the existing independent source decisions and actual source-specific CI.
+          irem = api("GET", "/issues/comments/7144770135")
+          sarp = api("GET", "/issues/comments/7159653107")
+          assert irem["user"]["login"] == "irmdmrcn" and "a59556e" in irem["body"]
+          assert sarp["user"]["login"] == "SarpCizer" and SOURCE in sarp["body"]
+          run = api("GET", f"/actions/runs/{RUN}")
+          assert run["head_sha"] == SOURCE and run["status"] == "completed" and run["conclusion"] == "success"
+          jobs = api("GET", f"/actions/runs/{RUN}/jobs?per_page=100")["jobs"]
+          assert REQUIRED <= {job["name"] for job in jobs if job["conclusion"] == "success"}
+          branch = api("GET", "/branches/main")
+          before = branch["commit"]["sha"]
+          comparison = api("GET", f"/compare/{SOURCE}...{before}")
+          assert comparison["status"] in {"ahead", "identical"} and comparison["behind_by"] == 0
+          assert comparison["merge_base_commit"]["sha"] == SOURCE
+          
+          existing = api("GET", "/git/ref/tags/" + TAG, missing_ok=True)
+          if existing:
+              assert existing["object"]["type"] == "tag", "Existing tag must already be annotated; never rewrite it"
+              tag = api("GET", "/git/tags/" + existing["object"]["sha"])
+              assert tag["object"]["type"] == "commit" and tag["object"]["sha"] == SOURCE
+              result = "existing matching annotated tag verified; no rewrite"
+          else:
+              # Create an annotated tag object, then its immutable name. Never update refs.
+              tag = api("POST", "/git/tags", {
+                  "tag": TAG,
+                  "message": (
+                      "Fridgely v0.1.0: first approved integrated baseline.\n\n"
+                      "Source: " + SOURCE + "\n"
+                      "Verified source CI: https://github.com/" + REPO + "/actions/runs/" + str(RUN) + "\n"
+                      "Irem source approval: https://github.com/" + REPO + "/issues/48#issuecomment-7144770135\n"
+                      "Sarp source confirmation: https://github.com/" + REPO + "/issues/24#issuecomment-7159653107\n"
+                      "Created by GitHub Actions at Sarp's request, with Codex assistance, under issue #22.\n"
+                      "No application edits, GitHub Release or Learn upload are performed by this tag.\n"
+                  ),
+                  "object": SOURCE, "type": "commit",
+              })
+              existing = api("POST", "/git/refs", {"ref": "refs/tags/" + TAG, "sha": tag["sha"]})
+              result = "created first annotated tag"
+          
+          verified_ref = api("GET", "/git/ref/tags/" + TAG)
+          assert verified_ref["object"]["type"] == "tag" and verified_ref["object"]["sha"] == tag["sha"]
+          verified_tag = api("GET", "/git/tags/" + verified_ref["object"]["sha"])
+          assert verified_tag["object"] == tag["object"]
+          assert verified_tag["object"]["type"] == "commit" and verified_tag["object"]["sha"] == SOURCE
+          after = api("GET", "/branches/main")["commit"]["sha"]
+          evidence = {
+              "result": result, "tag": TAG, "annotated_tag_object": tag["sha"],
+              "target_commit": SOURCE, "source_ci_run": RUN,
+              "main_before": before, "main_after": after,
+              "main_unchanged_during_tag_operation": before == after,
+              "release_created": False, "course_uploaded": False,
+              "run_url": os.environ["GITHUB_SERVER_URL"] + "/" + REPO + "/actions/runs/" + os.environ["GITHUB_RUN_ID"],
+          }
+          print(json.dumps(evidence, indent=2))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("### Initial annotated version tag verification\n\n")
+              summary.write("```json\n" + json.dumps(evidence, indent=2) + "\n```\n")
+          
+          PY
