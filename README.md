@@ -58,15 +58,24 @@ of a workflow file.
 
 ## Review structure
 
-Work is proposed through separate dependent branches: accounts/database, feature
-composition, web integration, CI verification and the test report. Existing
-backend module history is preserved. No automatic main-branch merge or production
-deployment from main is configured. The separate cloud feature branch configures
-the Render teaching deployment; see its reviewable Blueprint and deployment record.
+The integrated application and Cloudflare provider have been merged into `main`.
+Follow-up work uses focused branches and independent PR review. Existing backend
+module history and the approved submission source/report pair remain traceable.
 
-The team's Render deployment status and source revision are tracked in
-[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Live recipe generation
-requires the selected provider's server-side credentials.
+The existing [Render application](https://fridgely-web.onrender.com) is configured
+to follow `main` after successful CI checks, as recorded in
+[#40](https://github.com/SarpCizer/CMPE331-Project/issues/40). Check that issue and
+the Render deploy record for the actual deployed commit. Blueprint source alignment
+is tracked by [#70](https://github.com/SarpCizer/CMPE331-Project/pull/70); follow the
+[post-merge checks](docs/cloud-deployment.md#finish-blueprint-alignment-after-70)
+for both the YAML and the Blueprint's source branch. Keep Blueprint sync paused
+until its reviewed plan agrees with the existing service.
+
+Cloudflare Workers Free recipe generation was verified on deployed `ec9142e`
+on 25 November 2026: 25 live HTTP/behavior checks passed, missing ingredients
+reached shopping without duplicates, and the fridge remained unchanged. See the
+[source-pinned live result and sanitized evidence](docs/cloud-deployment.md#verified-live-result-25-november-2026).
+Provider setup and future changes follow the [activation checks](docs/cloud-deployment.md#activate-and-verify-cloudflare).
 
 ## Documentation and team
 
