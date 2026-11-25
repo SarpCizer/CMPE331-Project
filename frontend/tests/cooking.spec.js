@@ -130,3 +130,32 @@ test('200 ml recipe usage converts to 0.2 L and legacy unknown stock is never gu
   expect(after.find(item => item.unit === 'L').quantity).toBe(.8);
   expect(after.find(item => item.quantity == null).quantity).toBeNull();
 });
+
+test('reload after a committed lost response replays the entire original confirmation including depleted stock', async ({ page }) => {
+  const kitchen = await setup(page, [{ name: 'rice', quantity: .15, unit: 'kg' },
+    { name: 'tomato', quantity: 5, unit: 'pcs' }]);
+  const submitted = [];
+  await page.route('**/api/recipes/*/cook', async route => {
+    submitted.push(route.request().postDataJSON());
+    const response = await route.fetch();
+    if (submitted.length === 1) await route.abort();
+    else await route.fulfill({ response });
+  });
+  await page.getByRole('button', { name: 'I cooked this', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirm cooking and update fridge', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('could not reach');
+  let stock = await kitchen.stock();
+  expect(stock.find(item => item.name === 'rice').quantity).toBe(0);
+  expect(stock.find(item => item.name === 'tomato').quantity).toBe(3);
+  await page.reload();
+  await page.getByRole('link', { name: 'Recently viewed', exact: true }).click();
+  await page.getByRole('button', { name: 'View recipe', exact: true }).first().click();
+  await page.getByRole('button', { name: 'I cooked this', exact: true }).click();
+  await page.getByRole('button', { name: /^(Confirm cooking and update fridge|Retry previous confirmation)$/ }).click();
+  await expect(page.getByText('Cooking recorded. Your fridge has been updated.', { exact: true })).toBeVisible();
+  expect(submitted).toHaveLength(2);
+  expect(submitted[1]).toEqual(submitted[0]);
+  stock = await kitchen.stock();
+  expect(stock.find(item => item.name === 'rice').quantity).toBe(0);
+  expect(stock.find(item => item.name === 'tomato').quantity).toBe(3);
+});
