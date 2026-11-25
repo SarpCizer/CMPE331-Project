@@ -29,3 +29,9 @@ when their measurements are unknown.
 Validation errors return a sanitized `{"error":"..."}` with HTTP 400. Invalid/expired tokens return 401; another user's resource returns 404; duplicate accounts return 409. Recipe generation rejects an empty fridge (400), invalid provider output (502) and excluded ingredients (422). Missing provider configuration, an outage or the 28-second provider deadline returns 503 with `retryable: true`. Failed generation leaves stored collections unchanged. The interactive schema documents request and response models and these errors.
 
 The [selected recipe provider's credentials](cloud-deployment.md#recipe-provider-settings) belong in server environment settings. Accounts, inventory, preferences, shopping, existing favorites and history remain available when generation reports a provider failure. The isolated test server uses controlled recipe fixtures.
+
+## Manual fridge quantities
+
+Refs #77, #78. `POST /api/inventory` accepts `name` plus an optional `quantity`/`unit` pair. `PATCH /api/inventory/{item_id}` requires both fields and updates only the authenticated owner's entry; its name, ID and addition date stay unchanged. Quantity must be finite, greater than zero and at most 1,000,000. Units are `pcs`, `kg`, `g`, `L`, `ml`, `pack` and `bunch`; `pcs`, `pack` and `bunch` require whole numbers.
+
+Both fields are null when the amount is unknown, including existing entries upgraded by migration `0003_inventory_quantities`. No amount is invented during migration. Known amounts are included in the server-side AI input; recipe ingredient names and name-based missing-shopping matching retain their contract. Recipe generation/viewing and shopping/favorite actions never deduct or recalculate fridge quantities.
