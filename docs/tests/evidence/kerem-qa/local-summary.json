@@ -1,0 +1,24 @@
+{
+  "base_revision": "ebd8a5a9e2d9012f09582a4e6f9500072a60d094",
+  "local_test_revision": "b895aee",
+  "environment": "Windows; Python 3.12.14; controlled external provider; SQLite",
+  "backend": {
+    "passed": 294,
+    "skipped": 177,
+    "failed": 0
+  },
+  "acceptance": {
+    "passed": 28,
+    "failed": 0
+  },
+  "final_security_matrix": {
+    "passed": 165,
+    "postgresql_skipped": 165,
+    "source_sha256": "5c641a7a835df7f42a70cdfed58179a2bb3ccfb8f6c78086146d6ef86ec94805"
+  },
+  "sonar_export_regressions": {
+    "passed": 9
+  },
+  "postgresql_executed_locally": false,
+  "cloud_or_live_provider_executed": false
+}

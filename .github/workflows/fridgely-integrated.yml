@@ -312,6 +312,7 @@ jobs:
             sleep 2
           done
           python -m pip install requests==2.34.2
+          python -B -m unittest discover -s scripts/quality -p test_sonarqube.py -v 2>&1 | tee test-results/sonarqube/gate-regressions.log
           python scripts/quality/sonarqube.py init
       - name: Scan exact reviewed sources and measured coverage
         run: |

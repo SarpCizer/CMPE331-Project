@@ -1,5 +1,6 @@
 """Initialize an ephemeral local SonarQube and export actual analysis evidence."""
 import json
+import math
 import os
 from pathlib import Path
 import secrets
@@ -37,6 +38,35 @@ def initialize():
         target.write(f'SONAR_TOKEN={token}\n')
     save('server.json',{'version':session.get(BASE+'/api/server/version',timeout=15).text,
         'scope':'ephemeral loopback-only CI server','project':'fridgely'})
+
+
+def enforce_quality(gate, metrics):
+    status = gate.get('projectStatus', {})
+    conditions = status.get('conditions', [])
+    failures = []
+    if status.get('status') != 'OK':
+        failures.append('Server quality gate is not OK')
+    if status.get('ignoredConditions') or any(row.get('status') != 'OK' for row in conditions):
+        failures.append('Server quality gate has ignored or unsuccessful conditions')
+    measures = {row['metric']: row.get('value') for row in metrics.get('component', {}).get('measures', [])}
+    checks = {}
+    for metric in ('bugs', 'vulnerabilities', 'security_hotspots'):
+        raw = measures.get(metric)
+        try:
+            value = float(raw)
+            passed = math.isfinite(value) and value == 0
+        except (TypeError, ValueError):
+            passed = False
+        checks[metric] = {'actual': raw, 'maximum': 0, 'passed': passed}
+        if not passed:
+            failures.append(f'{metric} must be present, numeric and zero')
+    policy = {'passed': not failures, 'reported_gate': status.get('status'),
+        'server_conditions_evaluated': bool(conditions) and not status.get('ignoredConditions', False),
+        'security_measures': checks, 'failures': failures,
+        'scope': 'Exported source metrics; zero hotspots does not assert manual hotspot review'}
+    save('quality-policy.json', policy)
+    if failures:
+        raise RuntimeError('SonarQube quality policy failed; see retained quality-policy.json')
 
 
 def export():
@@ -83,10 +113,12 @@ def export():
     else:
         save('security-hotspots.json',{'status':'API_UNAVAILABLE','http_status':response.status_code,
             'meaning':'Use security_hotspots in metrics.json; detailed hotspot review is not inferred.'})
-    gate=json.loads((Path('test-results/sonarqube/quality-gate.json')).read_text())['projectStatus']['status']
-    print(json.dumps({'analysis':'SUCCESS','quality_gate':gate,'issues':len(issues)}))
-    # Analysis completion and gate result are distinct evidence. The report records
-    # any remaining gate conditions; the server and its credentials are disposable.
+    evidence = Path('test-results/sonarqube')
+    gate = json.loads((evidence / 'quality-gate.json').read_text())
+    metrics = json.loads((evidence / 'metrics.json').read_text())
+    enforce_quality(gate, metrics)
+    print(json.dumps({'analysis':'SUCCESS','quality_gate':gate['projectStatus']['status'],
+        'security_policy':'PASS','issues':len(issues)}))
 
 
 if __name__=='__main__':

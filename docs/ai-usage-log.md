@@ -49,3 +49,18 @@ Sarp's [published contribution and incident record](../backend/docs/ai-traceabil
 ## Kerem Sönmez
 
 The [merged #71 description](https://github.com/SarpCizer/CMPE331-Project/pull/71) discloses Codex assistance with Kerem's original deployment documentation at `62894a6`. It records Berfin's subsequent verification and follow-up separately.
+
+## Kerem Sönmez — QA follow-up, 25 November 2026
+
+Codex inspected Kerem's assigned issues and the merged evidence, reproduced the
+Sonar exporter returning success on a failed gate, added regressions before its
+fix, and expanded authorization/credential tests across every protected method
+on both API prefixes and SQLite/PostgreSQL. It also corrected stale QA status
+documents and prepared [the QA handoff](tests/kerem-qa-handoff.md). Refs #16,
+#22, #23, #41–#44; branch `ci/kerem-qa-completion`.
+
+Validation records distinguish the local SQLite passes and explicit PostgreSQL
+skips from exact-head CI. The original report author and peer approvals are
+preserved. Codex initially let a missing policy-output read obscure the desired
+RED assertion; the test was corrected and rerun before changing the exporter.
+No teammate approval, owner setting or course upload is attributed to the tool.

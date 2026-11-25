@@ -1,0 +1,137 @@
+test_absent_gate_fails_export (test_sonarqube.QualityGateTests.test_absent_gate_fails_export) ... FAIL
+test_empty_server_gate_records_independent_security_checks (test_sonarqube.QualityGateTests.test_empty_server_gate_records_independent_security_checks) ... ERROR
+test_failed_condition_cannot_hide_behind_overall_ok (test_sonarqube.QualityGateTests.test_failed_condition_cannot_hide_behind_overall_ok) ... FAIL
+test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) ... 
+  test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='NaN') ... FAIL
+  test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='-1') ... FAIL
+  test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='invalid') ... FAIL
+test_missing_security_measure_fails_export (test_sonarqube.QualityGateTests.test_missing_security_measure_fails_export) ... FAIL
+test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) ... 
+  test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='bugs') ... FAIL
+  test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='vulnerabilities') ... FAIL
+  test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='security_hotspots') ... FAIL
+test_passing_server_conditions_and_security_measures_pass (test_sonarqube.QualityGateTests.test_passing_server_conditions_and_security_measures_pass) ... ERROR
+test_reported_failed_gate_fails_export (test_sonarqube.QualityGateTests.test_reported_failed_gate_fails_export) ... FAIL
+test_unknown_gate_fails_export (test_sonarqube.QualityGateTests.test_unknown_gate_fails_export) ... FAIL
+
+======================================================================
+ERROR: test_empty_server_gate_records_independent_security_checks (test_sonarqube.QualityGateTests.test_empty_server_gate_records_independent_security_checks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 89, in test_empty_server_gate_records_independent_security_checks
+    self.assertTrue(policy["passed"])
+                    ~~~~~~^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_passing_server_conditions_and_security_measures_pass (test_sonarqube.QualityGateTests.test_passing_server_conditions_and_security_measures_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 95, in test_passing_server_conditions_and_security_measures_pass
+    self.assertTrue(policy["passed"])
+                    ~~~~~~^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+FAIL: test_absent_gate_fails_export (test_sonarqube.QualityGateTests.test_absent_gate_fails_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 60, in test_absent_gate_fails_export
+    with self.assertRaises(RuntimeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_failed_condition_cannot_hide_behind_overall_ok (test_sonarqube.QualityGateTests.test_failed_condition_cannot_hide_behind_overall_ok)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 68, in test_failed_condition_cannot_hide_behind_overall_ok
+    with self.assertRaises(RuntimeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='NaN')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 83, in test_invalid_security_measure_fails_export
+    with self.subTest(value=value), self.assertRaises(RuntimeError):
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='-1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 83, in test_invalid_security_measure_fails_export
+    with self.subTest(value=value), self.assertRaises(RuntimeError):
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_invalid_security_measure_fails_export (test_sonarqube.QualityGateTests.test_invalid_security_measure_fails_export) (value='invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 83, in test_invalid_security_measure_fails_export
+    with self.subTest(value=value), self.assertRaises(RuntimeError):
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_missing_security_measure_fails_export (test_sonarqube.QualityGateTests.test_missing_security_measure_fails_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 72, in test_missing_security_measure_fails_export
+    with self.assertRaises(RuntimeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='bugs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 77, in test_nonzero_security_measure_fails_even_with_empty_server_gate
+    with self.subTest(metric=metric), self.assertRaises(RuntimeError):
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='vulnerabilities')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 77, in test_nonzero_security_measure_fails_even_with_empty_server_gate
+    with self.subTest(metric=metric), self.assertRaises(RuntimeError):
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_nonzero_security_measure_fails_even_with_empty_server_gate (test_sonarqube.QualityGateTests.test_nonzero_security_measure_fails_even_with_empty_server_gate) (metric='security_hotspots')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 77, in test_nonzero_security_measure_fails_even_with_empty_server_gate
+    with self.subTest(metric=metric), self.assertRaises(RuntimeError):
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_reported_failed_gate_fails_export (test_sonarqube.QualityGateTests.test_reported_failed_gate_fails_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 56, in test_reported_failed_gate_fails_export
+    with self.assertRaises(RuntimeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_unknown_gate_fails_export (test_sonarqube.QualityGateTests.test_unknown_gate_fails_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<checkout>\scripts\quality\test_sonarqube.py", line 64, in test_unknown_gate_fails_export
+    with self.assertRaises(RuntimeError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.117s
+
+FAILED (failures=11, errors=2)

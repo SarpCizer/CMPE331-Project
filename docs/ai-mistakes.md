@@ -17,3 +17,16 @@ Refs #16, #46. These are observed defects or workflow failures, with bounded imp
 Four implicit form-submit types were also corrected by #13. Twelve blocker-level Sonar findings were caused by Jest detection of a custom helper named `expect`; the helper already asserted correctly. Rename it `assertResponse`, retain all assertions and execute the suite. This was a tool classification issue and is not presented as twelve application vulnerabilities.
 
 Human team members should add any serious mistakes they personally caught, with the faulty revision, reproduction, impact and verified fix. No unobserved human-caught severe defect or peer approval is claimed by this log.
+
+## Kerem QA follow-up — observed CI acceptance defect
+
+At main `ebd8a5a`, the earlier AI-assisted Sonar exporter printed the quality-gate
+status without failing when it was ERROR. Export-boundary tests reproduced the
+acceptance of failed/absent gates and nonzero security metrics. This could leave
+a CI job green despite those exported findings; no actual production exploit is
+claimed. The correction rejects failed/unknown gates and missing/invalid/nonzero
+security measures while retaining diagnostics. Nine regressions pass locally;
+the RED/GREEN provenance and limitations are in
+[Kerem's QA handoff](tests/kerem-qa-handoff.md). Codex found and corrected this
+under Kerem's task; this is not represented as an independently human-caught
+security incident. Refs #16, #23, #42.
