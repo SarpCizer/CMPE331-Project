@@ -41,6 +41,13 @@ class CoreCallbacks:
     recipe_lookup: Callable[[Session, str, str], OwnedRecipe | None]
     inventory_lookup: Callable[[Session, str], Sequence[str]]
 
+    inventory_for_recipe_lookup: Callable[[Session, str, RecipeDTO], Sequence[str]] | None = None
+
+    def inventory_for_recipe(self, session: Session, owner_id: str, recipe: RecipeDTO) -> Sequence[str]:
+        if self.inventory_for_recipe_lookup is not None:
+            return self.inventory_for_recipe_lookup(session, owner_id, recipe)
+        return self.inventory_names(session, owner_id)
+
     def recipe(self, session: Session, owner_id: str, recipe_id: str) -> OwnedRecipe | None:
         return self.recipe_lookup(session, owner_id, recipe_id)
 
