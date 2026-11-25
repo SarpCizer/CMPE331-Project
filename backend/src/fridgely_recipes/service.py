@@ -23,6 +23,7 @@ class GenerationInput:
     ingredients: tuple[str, ...]
     dietary: tuple[str, ...]
     allergens: tuple[str, ...]
+    amounts: tuple[tuple[str, float | None, str | None], ...] = ()
 
 
 class RecipeProvider(Protocol):

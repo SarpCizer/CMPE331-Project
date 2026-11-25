@@ -55,6 +55,7 @@ def build_recipes(
     preferences_lookup: Callable[[Session, str], tuple[Sequence[str], Sequence[str]]],
     provider: RecipeProvider,
     timeout_seconds: float = MAX_PROVIDER_SECONDS,
+    amounts_lookup: Callable | None = None,
 ) -> RecipesModule:
     """Build the recipe module using the verified account and core readers from the host."""
     store = SqlRecipeStore(session_factory)
@@ -65,7 +66,8 @@ def build_recipes(
                 session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
             ingredients = tuple(inventory_lookup(session, owner_id))
             dietary, allergens = preferences_lookup(session, owner_id)
-            return GenerationInput(ingredients, tuple(dietary), tuple(allergens))
+            amounts = tuple(amounts_lookup(session, owner_id)) if amounts_lookup else ()
+            return GenerationInput(ingredients, tuple(dietary), tuple(allergens), amounts)
 
     service = RecipeGenerationService(read_input, provider, store.insert_batch, timeout_seconds)
     router = APIRouter(route_class=RecipeRoute, tags=["Recipe generation"])

@@ -1,11 +1,11 @@
 from datetime import timezone
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, FastAPI, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator, model_validator
 from email_validator import validate_email
 from sqlalchemy import delete, literal, select, text, union_all
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -46,8 +46,26 @@ class PreferenceCommand(Command):
         return values
 
 
-class InventoryCommand(Command):
+class QuantityCommand(Command):
+    quantity: Annotated[float, Field(gt=0, le=1000000, allow_inf_nan=False)] | None = None
+    unit: Literal['pcs','kg','g','L','ml','pack','bunch'] | None = None
+
+    @model_validator(mode='after')
+    def validate_quantity(self):
+        if (self.quantity is None) != (self.unit is None):
+            raise ValueError('Quantity and unit must be supplied together')
+        if self.unit in {'pcs','pack','bunch'} and not self.quantity.is_integer():
+            raise ValueError('Count units require whole numbers')
+        return self
+
+
+class InventoryCommand(QuantityCommand):
     name: StrictStr
+
+
+class InventoryUpdate(QuantityCommand):
+    quantity: Annotated[float, Field(gt=0, le=1000000, allow_inf_nan=False)]
+    unit: Literal['pcs','kg','g','L','ml','pack','bunch']
 
 
 class AccountDTO(BaseModel):
@@ -63,11 +81,24 @@ class InventoryDTO(BaseModel):
     id: str
     name: str
     addedAt: str
+    quantity: float | None = None
+    unit: str | None = None
 
 
 def iso_time(value):
     value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
     return value.isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+
+
+def inventory_payload(row):
+    return {'id':row.id,'name':row.name,'addedAt':iso_time(row.added_at),
+            'quantity':row.quantity,'unit':row.unit}
+
+
+def inventory_amounts(session, owner):
+    rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == owner)
+        .order_by(InventoryEntry.added_at, InventoryEntry.id))
+    return tuple((row.name, row.quantity, row.unit) for row in rows)
 
 
 def inventory_names(session, owner):
@@ -153,15 +184,26 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
         with sessions() as session:
             rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == user.account_id)
                 .order_by(InventoryEntry.added_at, InventoryEntry.id))
-            return [{'id':row.id,'name':row.name,'addedAt':iso_time(row.added_at)} for row in rows]
+            return [inventory_payload(row) for row in rows]
 
     @router.post('/inventory', status_code=201, response_model=InventoryDTO, tags=['Inventory'])
     def add_inventory(command: InventoryCommand, user: AccountPrincipal = Depends(principal)):
         name, _key = ingredient_name(command.name)
-        row = InventoryEntry(id=uuid4().hex, owner_id=user.account_id, name=name, added_at=clock())
+        row = InventoryEntry(id=uuid4().hex, owner_id=user.account_id, name=name, added_at=clock(),
+            quantity=command.quantity, unit=command.unit)
         with sessions.begin() as session:
             session.add(row)
-        return {'id':row.id,'name':row.name,'addedAt':iso_time(row.added_at)}
+        return inventory_payload(row)
+
+    @router.patch('/inventory/{item_id}', response_model=InventoryDTO, tags=['Inventory'])
+    def update_inventory(item_id: str, command: InventoryUpdate, user: AccountPrincipal = Depends(principal)):
+        with sessions.begin() as session:
+            row = session.scalar(select(InventoryEntry).where(
+                InventoryEntry.owner_id == user.account_id, InventoryEntry.id == item_id))
+            if row is None:
+                raise HTTPException(404)
+            row.quantity, row.unit = command.quantity, command.unit
+        return inventory_payload(row)
 
     @router.delete('/inventory/{item_id}', status_code=204, tags=['Inventory'])
     def remove_inventory(item_id: str, user: AccountPrincipal = Depends(principal)):
