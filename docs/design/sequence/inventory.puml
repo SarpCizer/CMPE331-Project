@@ -1,0 +1,65 @@
+@startuml
+title S3  Manage fridge and addition dates  US-04 / US-05 / US-06
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+
+participant InventoryService as Inventory
+participant "inventory: InventoryRepository" as Entries
+User -> UI : add, list or remove a manual entry
+UI -> API : request /inventory or /inventory/:id
+ref over API : S8: obtain owner or end with 401
+alt POST
+  API -> Inventory : add(owner, name)
+  Inventory -> Inventory : validate and trim name
+  alt non-string or blank name
+    Inventory --> API : validation error
+    API --> UI : 400
+  else valid name
+    Inventory -> Inventory : build InventoryEntry with ID and server UTC time
+    Inventory -> Entries : insert(entry)
+    Entries --> Inventory : InventoryEntry after autocommit
+    Inventory --> API : saved entry
+    API --> UI : 201 {id, name, addedAt}
+  end
+else GET
+  API -> Inventory : list(owner)
+  Inventory -> Entries : listByOwner(owner)
+  Entries --> Inventory : InventoryEntry[] (possibly empty)
+  Inventory --> API : entries
+  API --> UI : 200 list; show local addition dates
+else DELETE
+  API -> Inventory : remove(owner, entryId)
+  Inventory -> Inventory : validate entry ID
+  alt invalid entry ID
+    Inventory --> API : validation error
+    API --> UI : 400
+  else valid entry ID
+    Inventory -> Entries : deleteOwned(owner, entryId)
+    Entries --> Inventory : deleted: boolean after autocommit
+    Inventory --> API : deleted: boolean
+    API --> UI : 204 if deleted; otherwise 404
+  end
+end
+@enduml

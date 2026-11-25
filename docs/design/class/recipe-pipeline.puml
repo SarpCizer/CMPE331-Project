@@ -1,0 +1,115 @@
+@startuml
+title C2  Recipe generation and persistence
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+left to right direction
+hide circle
+skinparam classAttributeIconSize 0
+skinparam nodesep 32
+class RecipeGenerationService {
+  +generate(owner: AccountId): Recipe[]
+}
+interface GenerationInputReader {
+  +snapshot(owner: AccountId): GenerationInput
+}
+class GenerationInput <<DTO>> {
+  +ingredients: string[]
+  +dietary: string[]
+  +allergens: string[]
+}
+interface RecipeProvider {
+  +generate(input: GenerationInput, signal: AbortSignal): Candidate[]
+}
+class ExternalProviderAdapter {
+  +generate(input: GenerationInput, signal: AbortSignal): Candidate[]
+}
+class Candidate <<untrusted DTO>> {
+  +payload: JSONValue
+}
+class CandidateValidator {
+  +validateBatch(candidates: Candidate[], exclusions: string[]): ValidatedRecipe[]
+}
+class ValidatedRecipe <<DTO>> {
+  +title: string
+  +ingredients: string[]
+  +steps: string[]
+  +cookingMinutes: number
+  +caloriesPerServing: number
+  +servings: integer
+}
+interface RecipeRepository {
+  +insertBatch(owner: AccountId, validated: ValidatedRecipe[]): Recipe[]
+  +findOwned(owner: AccountId, recipeId: RecipeId): Recipe?
+}
+class Recipe {
+  +id: RecipeId
+  +owner: AccountId
+  +title: string
+  +cookingMinutes: number
+  +caloriesPerServing: number
+  +servings: integer
+}
+class RecipeIngredient {
+  +position: integer
+  +name: string
+  +nameKey: string
+}
+class RecipeStep {
+  +position: integer
+  +instruction: string
+}
+interface UnitOfWork {
+  +begin(mode: TransactionMode): void
+  +commit(): void
+  +rollback(): void
+}
+enum TransactionMode {
+  READ_SNAPSHOT
+  WRITE
+  WRITE_SNAPSHOT
+}
+class SqlGenerationInputReader <<SQL adapter>>
+class SqlRecipeRepository <<SQL adapter>>
+class SqlUnitOfWork <<SQL adapter>>
+SqlGenerationInputReader ..|> GenerationInputReader
+SqlRecipeRepository ..|> RecipeRepository
+SqlUnitOfWork ..|> UnitOfWork
+RecipeGenerationService ..> GenerationInputReader
+RecipeGenerationService ..> RecipeProvider
+RecipeGenerationService ..> CandidateValidator
+RecipeGenerationService ..> RecipeRepository
+RecipeGenerationService ..> UnitOfWork
+GenerationInputReader ..> GenerationInput
+RecipeProvider ..> Candidate
+CandidateValidator ..> Candidate
+CandidateValidator ..> ValidatedRecipe
+ExternalProviderAdapter ..|> RecipeProvider
+RecipeRepository ..> Recipe
+RecipeRepository ..> ValidatedRecipe
+UnitOfWork ..> TransactionMode
+Recipe "1" *-- "1..*" RecipeIngredient : ordered
+Recipe "1" *-- "1..*" RecipeStep : ordered
+
+legend bottom
+  AccountId: defined in C1. RecipeId: opaque string identifier.
+  AbortSignal: platform cancellation signal. JSONValue: any JSON value.
+  A null findOwned result denotes no matching recipe for that account.
+endlegend
+@enduml

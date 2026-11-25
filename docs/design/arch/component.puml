@@ -1,0 +1,95 @@
+@startuml
+title A1  Component architecture
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+allowmixing
+left to right direction
+hide empty members
+hide stereotype
+actor "Account holder" as User
+component "React web UI" as UI
+package "Express application" {
+  component "HTTP routes\nand DTO mapping" as API
+  component "JWT guard" as Guard
+  component "Identity, preferences\nand inventory" as Core
+  component "Recipe generation,\ndetails and history" as Recipes
+  component "Shopping and favorites" as Lists
+  component "PostgreSQL adapters" as Persistence
+  component "Password hashing and\nJWT signing adapters" as Security
+  component "External recipe\nprovider adapter" as Adapter
+  interface AccountRepository {}
+  interface ProfileRepository {}
+  interface InventoryRepository {}
+  interface RecipeRepository {}
+  interface GenerationInputReader {}
+  interface HistoryRepository {}
+  interface ShoppingRepository {}
+  interface FavoriteRepository {}
+  interface PasswordHasher {}
+  interface TokenService {}
+  interface RecipeProvider {}
+  interface UnitOfWork {}
+}
+database "PostgreSQL" as DB
+cloud "External recipe provider" as Provider
+User --> UI : browser
+UI --> API : HTTPS / JSON
+API --> Guard : authenticate
+API --> Core : identity / preferences / inventory
+API --> Recipes : generate / open / history
+API --> Lists : shopping / favorites
+Adapter --> Provider : HTTPS
+Persistence --> DB : SQL / transactions
+
+AccountRepository <|.. Persistence
+ProfileRepository <|.. Persistence
+InventoryRepository <|.. Persistence
+RecipeRepository <|.. Persistence
+GenerationInputReader <|.. Persistence
+HistoryRepository <|.. Persistence
+ShoppingRepository <|.. Persistence
+FavoriteRepository <|.. Persistence
+UnitOfWork <|.. Persistence
+PasswordHasher <|.. Security
+TokenService <|.. Security
+RecipeProvider <|.. Adapter
+Core ..> AccountRepository : <U+00AB>use<U+00BB>
+Core ..> ProfileRepository : <U+00AB>use<U+00BB>
+Core ..> InventoryRepository : <U+00AB>use<U+00BB>
+Core ..> UnitOfWork : <U+00AB>use<U+00BB>
+Core ..> PasswordHasher : <U+00AB>use<U+00BB>
+Core ..> TokenService : <U+00AB>use<U+00BB>
+Guard ..> TokenService : <U+00AB>use<U+00BB>
+Recipes ..> RecipeRepository : <U+00AB>use<U+00BB>
+Recipes ..> GenerationInputReader : <U+00AB>use<U+00BB>
+Recipes ..> HistoryRepository : <U+00AB>use<U+00BB>
+Recipes ..> UnitOfWork : <U+00AB>use<U+00BB>
+Recipes ..> RecipeProvider : <U+00AB>use<U+00BB>
+Lists ..> RecipeRepository : <U+00AB>use<U+00BB>
+Lists ..> InventoryRepository : <U+00AB>use<U+00BB>
+Lists ..> ShoppingRepository : <U+00AB>use<U+00BB>
+Lists ..> FavoriteRepository : <U+00AB>use<U+00BB>
+Lists ..> UnitOfWork : <U+00AB>use<U+00BB>
+
+legend bottom
+  Dashed triangle: provided interface (realization)
+  Dashed «use» arrow: required interface
+endlegend
+@enduml

@@ -1,0 +1,43 @@
+@startuml
+title A2  Deployment and trust boundaries
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+!pragma layout smetana
+top to bottom direction
+node "User device" {
+  artifact "Browser / React bundle" as Browser
+}
+node "Render staging environment" {
+  node "Public Render web service" as Web {
+    artifact "Express API + built static assets" as Express
+    artifact "Runtime environment secrets" as Secrets
+  }
+  database "Managed Render PostgreSQL" as DB
+}
+cloud "External recipe provider" as AI
+node "GitHub Actions" as CI {
+  artifact "Build, test and deploy workflow" as Pipeline
+}
+Browser --> Web : HTTPS; same-origin UI and API
+Express --> DB : private connection; TLS
+Express --> AI : outbound HTTPS; server credential
+Secrets ..> Express : database / JWT / provider secrets
+Pipeline --> Web : deploy reviewed revision; HTTPS smoke checks
+Web ..> DB : versioned migrations via release step
+@enduml
