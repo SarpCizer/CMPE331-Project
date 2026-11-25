@@ -5,8 +5,8 @@ PostgreSQL/SQLite storage. Accounts, saved preferences, fridge entries, recipe
 generation, shopping, favorites and viewed history share the same verified JWT
 identity and owner-qualified database.
 
-The initial release uses manually entered ingredient names and addition dates.
-Receipt OCR, expiry alerts, quantity arithmetic, automatic inventory deduction and
+The fridge supports manually entered ingredient names, quantities, units and addition dates.
+Receipt OCR, expiry alerts, automatic quantity arithmetic, automatic inventory deduction and
 native mobile applications are outside this reviewed scope.
 
 ## Run the integrated application

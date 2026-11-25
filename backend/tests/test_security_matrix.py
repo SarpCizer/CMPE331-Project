@@ -21,6 +21,7 @@ ROUTES = [
     ("GET", "/profile/preferences", None),
     ("PUT", "/profile/preferences", {"dietary": [], "allergens": []}),
     ("GET", "/inventory", None), ("POST", "/inventory", {"name": "intrusion"}),
+    ("PATCH", "/inventory/{inventory}", {"quantity": 2, "unit": "pcs"}),
     ("DELETE", "/inventory/{inventory}", None),
     ("POST", "/recipes/generate", {}), ("GET", "/recipes/{recipe}", None),
     ("POST", "/recipes/{recipe}/shopping-items", {}),

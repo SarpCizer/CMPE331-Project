@@ -23,24 +23,36 @@ const statIcon = "shrink-0 text-[#56765a] mobile:hidden";
 
 function Fridge({ items, run, api }) {
   const [name, setName] = useState(""),
+    [quantity, setQuantity] = useState("1"),
+    [unit, setUnit] = useState("pcs"),
+    [editing, setEditing] = useState(null),
     [search, setSearch] = useState(""),
     [error, setError] = useState("");
   async function add(event) {
     event.preventDefault();
-    const invalid = nameError(name, "an ingredient");
+    const amount = Number(quantity);
+    const invalid = (editing ? "" : nameError(name, "an ingredient")) ||
+      (!Number.isFinite(amount) || amount <= 0 || amount > 1000000 ||
+       (["pcs","pack","bunch"].includes(unit) && !Number.isInteger(amount))
+        ? "Enter a valid positive quantity (whole numbers for count units)." : "");
     setError(invalid);
     if (invalid) {
-      event.currentTarget.querySelector("input").focus();
+      event.currentTarget.querySelector(editing ? "#quantity" : "#ingredient").focus();
       return;
     }
     if (
       await run(
-        () => api("/inventory", { method: "POST", body: { name } }),
-        "Ingredient added.",
+        () => editing
+          ? api(`/inventory/${editing}`, { method: "PATCH", body: { quantity: amount, unit } })
+          : api("/inventory", { method: "POST", body: { name, quantity: amount, unit } }),
+        editing ? "Ingredient updated." : "Ingredient added.",
         ["inventory"],
       )
     )
-      setName("");
+      resetForm();
+  }
+  function resetForm() {
+    setName(""); setQuantity("1"); setUnit("pcs"); setEditing(null); setError("");
   }
   const visible = items.filter((item) =>
     item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
@@ -110,6 +122,7 @@ function Fridge({ items, run, api }) {
             <input
               id="ingredient"
               value={name}
+              disabled={!!editing}
               onChange={(e) => {
                 setName(e.target.value);
                 setError("");
@@ -123,9 +136,23 @@ function Fridge({ items, run, api }) {
             />
             <FieldError id="ingredient-error">{error}</FieldError>
           </div>
+          <div className="w-[100px] mobile:flex-1">
+            <label htmlFor="quantity" className="text-[0.8rem]">Quantity</label>
+            <input id="quantity" type="number" min="0.000001" max="1000000" step="any"
+              value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+          </div>
+          <div className="w-[110px] mobile:flex-1">
+            <label htmlFor="unit" className="text-[0.8rem]">Unit</label>
+            <select id="unit" value={unit} onChange={(e) => setUnit(e.target.value)}
+              className="w-full rounded-lg border border-line bg-white p-2">
+              {["pcs","kg","g","L","ml","pack","bunch"].map((value) =>
+                <option key={value} value={value}>{value}</option>)}
+            </select>
+          </div>
+          {editing && <button type="button" onClick={resetForm}>Cancel edit</button>}
           <button type="submit" className={inlineSubmit}>
             <Icon name="plus" className="w-[18px]" />
-            Add ingredient
+            {editing ? "Save quantity" : "Add ingredient"}
           </button>
         </form>
         {items.length > 0 && (
@@ -162,6 +189,7 @@ function Fridge({ items, run, api }) {
                 <div className="min-w-0 flex-1">
                   <strong className="block text-[0.95rem] font-[550] wrap-anywhere">
                     {item.name}
+                    {item.quantity != null && <span className="ml-2 text-[#607565]">· {item.quantity} {item.unit}</span>}
                   </strong>
                   <span className="block text-[0.8rem] text-[#607565]">
                     Added{" "}
@@ -170,6 +198,12 @@ function Fridge({ items, run, api }) {
                     }).format(new Date(item.addedAt))}
                   </span>
                 </div>
+                <button type="button" className={removeButton} aria-label={`Edit quantity for ${item.name}`}
+                  onClick={() => {
+                    setEditing(item.id); setName(item.name);
+                    setQuantity(String(item.quantity ?? 1)); setUnit(item.unit ?? "pcs"); setError("");
+                    document.getElementById("quantity")?.focus();
+                  }}>Edit</button>
                 <button
                   className={removeButton}
                   aria-label={`Remove ${item.name}`}

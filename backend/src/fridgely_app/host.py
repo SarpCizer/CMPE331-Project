@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from fridgely_collections import CoreCallbacks, build_collections
 from fridgely_recipes.api import build_recipes
 from fridgely_recipes.provider import configured_recipe_provider
-from .core import create_core_app, inventory_names, preference_lists
+from .core import create_core_app, inventory_names, inventory_amounts, preference_lists
 from .documentation import install_documentation
 from .security import utc_now
 
@@ -29,7 +29,7 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
     recipes = build_recipes(session_factory=api.state.sessions,
         require_account=api.state.authentication.require_account,
         inventory_lookup=inventory_names, preferences_lookup=preference_lists,
-        provider=provider, timeout_seconds=provider_timeout)
+        provider=provider, timeout_seconds=provider_timeout, amounts_lookup=inventory_amounts)
     collections = build_collections(session_factory=api.state.sessions,
         require_account=api.state.authentication.require_account,
         core=CoreCallbacks(recipes.store.find_owned, inventory_names), clock=clock)
