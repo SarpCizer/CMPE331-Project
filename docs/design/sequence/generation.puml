@@ -1,0 +1,75 @@
+@startuml
+title S4  Generate recipes and handle failures  US-07 / US-09
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+
+participant RecipeGenerationService as Gen
+participant "tx: UnitOfWork" as Tx
+participant "inputs: GenerationInputReader" as Input
+participant "provider: RecipeProvider" as Provider
+participant CandidateValidator as Validate
+participant "recipes: RecipeRepository" as Recipes
+User -> UI : request recipe suggestions
+UI -> API : POST /recipes/generate
+ref over API : S8: obtain owner or end with 401
+API -> Gen : generate(owner)
+group Read snapshot
+  Gen -> Tx : begin(READ_SNAPSHOT)
+  Gen -> Input : snapshot(owner)
+  Input --> Gen : GenerationInput
+  Gen -> Tx : commit()
+  Tx --> Gen : snapshot closed
+end
+alt empty fridge
+  Gen --> API : empty fridge
+  API --> UI : 400; prompt to add an ingredient
+else fridge has ingredients
+  Gen -> Provider : generate(input, deadlineSignal)
+  alt timeout or provider unavailable
+    Provider --> Gen : controlled provider failure
+    Gen --> API : retryable provider error
+    API --> UI : 503 {error, retryable: true}
+  else provider returned candidates
+    Provider --> Gen : Candidate[]
+    Gen -> Validate : validateBatch(candidates, exclusions)
+    alt malformed or declared conflict
+      Validate --> Gen : malformed output or declared exclusion
+      Gen --> API : sanitized validation failure
+      API --> UI : 502 malformed or 422 declared conflict
+    else entire batch accepted
+      Validate --> Gen : ValidatedRecipe[]
+      group Write transaction
+        Gen -> Tx : begin(WRITE)
+        Gen -> Recipes : insertBatch(owner, validated)
+        Recipes --> Gen : Recipe[] with internal IDs and ordered children
+        Gen -> Tx : commit()
+        Tx --> Gen : committed
+      end
+      Gen --> API : Recipe[]
+      API --> UI : 200 recipes
+    end
+  end
+end
+@enduml

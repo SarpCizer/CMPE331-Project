@@ -82,6 +82,7 @@ Provider setup and future changes follow the [activation checks](docs/cloud-depl
 - [Branching, independent review and Semantic Versioning](docs/CONTRIBUTING.md)
 - [Approved stories, API contract and quality requirements](docs/requirements/README.md)
 - [Implemented database and transaction boundaries](docs/database.md)
+- [Design package and source-pinned implementation alignment](docs/design/README.md)
 - [Recorded implementation decisions for team review](docs/requirements/decisions.md)
 - [Milestone status and final-delivery checklist](docs/milestone-handoff.md)
 - [Existing requirements report and WBS/PERT/Gantt plans](docs/requirements-specification.md)
@@ -101,4 +102,3 @@ Sarp's and Ayşe's module histories; Berfin's PRs also supply the connected Reac
 and integrated checks. The team must confirm its contact, obtain independent reviews
 and ensure each member makes their own real contribution. No contribution or
 approval is fabricated for another member.
-

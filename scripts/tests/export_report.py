@@ -28,7 +28,7 @@ if __name__ == '__main__':
 ROOT=Path(__file__).resolve().parents[2]
 BASE=ROOT/'docs/tests'
 OUT=Path(os.getenv('FRIDGELY_REPORT_OUTPUT',str(ROOT/'build/reports')))
-OUT.mkdir(exist_ok=True)
+OUT.mkdir(parents=True,exist_ok=True)
 CONFIG=json.loads((BASE/'report-input.json').read_text())
 FOREST=colors.HexColor('#173f2f')
 MUTED=colors.HexColor('#53685a')

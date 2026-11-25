@@ -1,0 +1,59 @@
+@startuml
+title S2  Read, replace and clear preferences  US-03
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+
+participant PreferenceService as Pref
+participant "profiles: ProfileRepository" as Profiles
+participant "tx: UnitOfWork" as Tx
+User -> UI : open profile or save both lists
+UI -> API : GET or PUT /profile/preferences
+ref over API : S8: obtain owner or end with 401
+alt GET
+  API -> Pref : read(owner)
+  Pref -> Profiles : read(owner)
+  Profiles --> Pref : PreferenceProfile (empty arrays if unset)
+  Pref --> API : PreferenceProfile
+  API --> UI : 200 profile
+else PUT
+  API -> Pref : replace(owner, dietary, allergens)
+  Pref -> Pref : validate the two string arrays
+  alt invalid lists
+    Pref --> API : validation error
+    API --> UI : 400
+  else valid lists
+    group Write transaction
+      Pref -> Tx : begin(WRITE)
+      Pref -> Profiles : replaceBoth(owner, profile)
+      Profiles --> Pref : saved PreferenceProfile
+      Pref -> Tx : commit()
+      Tx --> Pref : committed
+    end
+    Pref --> API : PreferenceProfile
+    API --> UI : 200 saved profile
+  end
+end
+note over Pref, Profiles : Preserve list order, repeats and original strings. Empty arrays clear the lists.
+@enduml

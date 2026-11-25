@@ -1,0 +1,79 @@
+@startuml
+title S1  Register and sign in  US-01 / US-02
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "HTTP routes" as API
+
+participant IdentityService as Identity
+participant "hasher: PasswordHasher" as Hasher
+participant "accounts: AccountRepository" as Accounts
+participant "tokens: TokenService" as Tokens
+group Registration
+  User -> UI : submit email and password
+  UI -> API : POST /accounts
+  API -> Identity : register(email, password)
+  Identity -> Identity : validate credentials; normalize email
+  alt invalid registration fields
+    Identity --> API : validation error
+    API --> UI : 400
+  else valid registration fields
+    Identity -> Hasher : hash(password)
+    Hasher --> Identity : password hash
+    Identity -> Accounts : insertUnique(account)
+    alt duplicate email
+      Accounts --> Identity : uniqueness conflict
+      Identity --> API : conflict
+      API --> UI : 409
+    else created
+      Accounts --> Identity : Account after autocommit
+      Identity --> API : AccountDTO
+      API --> UI : 201 {id, email}
+    end
+  end
+end
+group Sign in
+  User -> UI : submit credentials
+  UI -> API : POST /sessions
+  API -> Identity : signIn(email, password)
+  Identity -> Identity : validate credential fields
+  alt missing or malformed fields
+    Identity --> API : validation error
+    API --> UI : 400
+  else well-formed credentials
+    Identity -> Accounts : findByEmailKey(key)
+    Accounts --> Identity : Account or null
+    Identity -> Hasher : verify(password, stored or dummy hash)
+    Hasher --> Identity : matches: boolean
+    alt missing account or incorrect password
+      Identity --> API : invalid credentials
+      API --> UI : 401
+    else verified
+      Identity -> Tokens : issue(accountId)
+      Tokens --> Identity : JWT with finite expiry
+      Identity --> API : JWT
+      API --> UI : 200 {token}
+    end
+  end
+end
+@enduml

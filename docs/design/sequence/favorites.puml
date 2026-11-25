@@ -1,0 +1,83 @@
+@startuml
+title S7  Save, list and remove favorites  US-12 / US-13
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+
+participant FavoriteService as Favorite
+participant "tx: UnitOfWork" as Tx
+participant "recipes: RecipeRepository" as Recipes
+participant "favorites: FavoriteRepository" as Favorites
+User -> UI : save, list or remove a favorite
+UI -> API : request /favorites with bearer JWT
+ref over API : S8: obtain owner or end with 401
+alt POST /favorites
+  API -> Favorite : save(owner, recipeId)
+  Favorite -> Favorite : validate body recipe ID
+  alt invalid recipe ID
+    Favorite --> API : validation error
+    API --> UI : 400
+  else valid recipe ID
+    group Lookup and upsert transaction
+      Favorite -> Tx : begin(WRITE)
+      Favorite -> Recipes : findOwned(owner, recipeId)
+      Recipes --> Favorite : Recipe or null
+      alt owned recipe exists
+        Favorite -> Favorites : upsert(owner, recipeId)
+        Favorites --> Favorite : completed
+        Favorite -> Tx : commit()
+        Tx --> Favorite : committed
+      else no owned recipe
+        Favorite -> Tx : rollback()
+        Tx --> Favorite : rolled back
+      end
+    end
+    alt transaction committed
+      Favorite --> API : Recipe
+      API --> UI : 200 recipe; repeat saves return the same recipe
+    else no owned recipe
+      Favorite --> API : unavailable
+      API --> UI : 404
+    end
+  end
+else GET /favorites
+  API -> Favorite : list(owner)
+  Favorite -> Favorites : listByOwner(owner)
+  Favorites --> Favorite : Recipe[] (possibly empty)
+  Favorite --> API : Recipe[]
+  API --> UI : 200 list
+else DELETE /favorites/:recipeId
+  API -> Favorite : remove(owner, recipeId)
+  Favorite -> Favorite : validate path recipe ID
+  alt invalid recipe ID
+    Favorite --> API : validation error
+    API --> UI : 400
+  else valid recipe ID
+    Favorite -> Favorites : deleteOwned(owner, recipeId)
+    Favorites --> Favorite : deleted: boolean after autocommit
+    Favorite --> API : deleted: boolean
+    API --> UI : 204 if deleted; otherwise 404
+  end
+end
+@enduml

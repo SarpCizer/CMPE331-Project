@@ -1,0 +1,101 @@
+@startuml
+title S6  Add missing ingredients and manage shopping  US-10 / US-11
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontColor #172A3A
+skinparam defaultFontSize 15
+skinparam ArrowColor #345A72
+skinparam Shadowing false
+skinparam dpi 150
+skinparam TitleFontColor #123A52
+skinparam TitleFontSize 19
+skinparam ClassBackgroundColor #EDF5FA
+skinparam ClassBorderColor #456F89
+skinparam ComponentBackgroundColor #EDF5FA
+skinparam ComponentBorderColor #456F89
+skinparam PackageBorderColor #456F89
+skinparam ParticipantBackgroundColor #E6F4F0
+skinparam ParticipantBorderColor #417364
+skinparam SequenceGroupBackgroundColor #EDF5FA
+skinparam SequenceGroupBorderColor #617C8D
+hide footbox
+autonumber
+skinparam maxMessageSize 220
+actor User
+participant "Web UI" as UI
+participant "Protected routes" as API
+
+participant ShoppingService as Shop
+participant "tx: UnitOfWork" as Tx
+participant "recipes: RecipeRepository" as Recipes
+participant "inventory: InventoryRepository" as Inventory
+participant "shopping: ShoppingRepository" as Orders
+User -> UI : add missing, list, add manually, or delete
+UI -> API : shopping action with bearer JWT
+ref over API : S8: obtain owner or end with 401
+alt POST /recipes/:id/shopping-items
+  API -> Shop : addMissing(owner, recipeId)
+  Shop -> Shop : validate recipe ID
+  alt invalid recipe ID
+    Shop --> API : validation error
+    API --> UI : 400
+  else valid recipe ID
+    group Snapshot and write transaction
+      Shop -> Tx : begin(WRITE_SNAPSHOT)
+      Shop -> Recipes : findOwned(owner, recipeId)
+      Recipes --> Shop : Recipe or null
+      alt owned recipe exists
+        Shop -> Inventory : listByOwner(owner)
+        Inventory --> Shop : InventoryEntry[]
+        Shop -> Shop : compute distinct missing names
+        Shop -> Orders : upsertNames(owner, missing)
+        Orders --> Shop : completed
+        Shop -> Orders : listByOwner(owner)
+        Orders --> Shop : ShoppingEntry[] with existing IDs preserved
+        Shop -> Tx : commit()
+        Tx --> Shop : committed
+      else no owned recipe
+        Shop -> Tx : rollback()
+        Tx --> Shop : rolled back
+      end
+    end
+    alt transaction committed
+      Shop --> API : ShoppingEntry[]
+      API --> UI : 200 resulting shopping list
+    else no owned recipe
+      Shop --> API : unavailable
+      API --> UI : 404
+    end
+  end
+else GET /shopping-items
+  API -> Shop : list(owner)
+  Shop -> Orders : listByOwner(owner)
+  Orders --> Shop : ShoppingEntry[] (possibly empty)
+  Shop --> API : ShoppingEntry[]
+  API --> UI : 200 list
+else POST /shopping-items
+  API -> Shop : add(owner, name)
+  Shop -> Shop : validate and trim name
+  alt non-string or blank name
+    Shop --> API : validation error
+    API --> UI : 400
+  else valid name
+    Shop -> Orders : upsertOne(owner, name)
+    Orders --> Shop : ShoppingAddResult after autocommit
+    Shop --> API : ShoppingAddResult {entry, created}
+    API --> UI : 201 new or 200 existing; {id, name}
+  end
+else DELETE /shopping-items/:id
+  API -> Shop : remove(owner, entryId)
+  Shop -> Shop : validate entry ID
+  alt invalid entry ID
+    Shop --> API : validation error
+    API --> UI : 400
+  else valid entry ID
+    Shop -> Orders : deleteOwned(owner, entryId)
+    Orders --> Shop : deleted: boolean after autocommit
+    Shop --> API : deleted: boolean
+    API --> UI : 204 if deleted; otherwise 404
+  end
+end
+@enduml
