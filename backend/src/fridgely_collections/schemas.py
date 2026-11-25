@@ -1,12 +1,18 @@
 from typing import Annotated
 import unicodedata
 
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, StrictInt, StringConstraints
+from pydantic import (
+    BaseModel, ConfigDict, Field, FiniteFloat, StrictInt, StringConstraints,
+    model_serializer, model_validator,
+)
 
 from .errors import CollectionError
 
 Nonblank = Annotated[str, StringConstraints(strict=True, strip_whitespace=True, min_length=1)]
 Identifier = Annotated[str, StringConstraints(strict=True, min_length=1, max_length=128)]
+IngredientAmount = Annotated[str, StringConstraints(
+    strict=True, strip_whitespace=True, min_length=1, max_length=64,
+)]
 
 
 class DTO(BaseModel):
@@ -34,10 +40,28 @@ class RecipeDTO(DTO):
     id: Identifier
     title: Nonblank
     ingredients: Annotated[list[Nonblank], Field(min_length=1)]
+    ingredientAmounts: list[IngredientAmount] | None = None
     steps: Annotated[list[Nonblank], Field(min_length=1)]
     cookingMinutes: Annotated[FiniteFloat, Field(gt=0)]
     caloriesPerServing: Annotated[FiniteFloat, Field(ge=0)]
     servings: Annotated[StrictInt, Field(gt=0)]
+
+    @model_validator(mode="after")
+    def validate_amounts(self):
+        amounts = self.ingredientAmounts
+        if amounts is not None and (
+            len(amounts) != len(self.ingredients)
+            or any(unicodedata.category(char).startswith("C") for amount in amounts for char in amount)
+        ):
+            raise ValueError("Ingredient amounts must match the ingredient list in order.")
+        return self
+
+    @model_serializer(mode="wrap")
+    def serialize_recipe(self, handler):
+        payload = handler(self)
+        if self.ingredientAmounts is None:
+            payload.pop("ingredientAmounts", None)
+        return payload
 
 
 class HistoryDTO(DTO):

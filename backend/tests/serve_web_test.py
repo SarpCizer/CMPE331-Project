@@ -16,6 +16,7 @@ class FixtureProvider:
             raise RuntimeError('Controlled provider outage')
         return [
             {'title':'Tomato rice','ingredients':['rice','tomato','onion'],
+             'ingredientAmounts':['1 cup','2 medium','1 small'],
              'steps':['Cook the rice.','Simmer tomato and onion.','Combine and serve.'],
              'cookingMinutes':25,'caloriesPerServing':320,'servings':2},
             {'title':'Tomato salad','ingredients':['tomato','olive oil'],

@@ -7,13 +7,14 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
 from fridgely_app import host
-from fridgely_app.database import make_engine, migrate
-from fridgely_recipes.storage import Recipe
+from fridgely_app.database import make_engine, migrate, session_factory
+from fridgely_recipes.storage import Recipe, RecipeIngredient, SqlRecipeStore
 
 
 RECIPE = {
     "title": "Tomato rice",
     "ingredients": ["rice", "tomato"],
+    "ingredientAmounts": ["1 cup", "2 medium"],
     "steps": ["Cook the rice", "Add the tomato"],
     "cookingMinutes": 20,
     "caloriesPerServing": 325,
@@ -83,6 +84,7 @@ def test_cloudflare_recipes_work_through_the_real_host(cloudflare_host, encode):
         detail = f"/api/recipes/{recipe['id']}"
         assert client.get(detail, headers=headers).json() == recipe
         assert client.get("/api/history", headers=headers).json()[0]["recipe"] == recipe
+        assert client.post("/api/favorites", headers=headers, json={"recipeId": recipe["id"]}).json() == recipe
         shopping = client.post(detail + "/shopping-items", headers=headers, json={})
         assert shopping.status_code == 200
         assert [item["name"] for item in shopping.json()] == ["tomato"]
@@ -98,13 +100,69 @@ def test_cloudflare_recipes_work_through_the_real_host(cloudflare_host, encode):
     assert json.loads(payload["messages"][1]["content"]) == {"ingredients": ["rice"], **PREFERENCES}
     assert payload["response_format"]["type"] == "json_schema"
     assert payload["response_format"]["json_schema"]["required"] == ["recipes"]
+    fields = payload["response_format"]["json_schema"]["properties"]["recipes"]["items"]
+    assert "ingredientAmounts" in fields["required"]
+
+
+def test_cloudflare_receives_known_fridge_amounts_only(cloudflare_host):
+    with TestClient(cloudflare_host.new_app()) as client:
+        headers = sign_in(client)
+        assert client.post("/api/inventory", headers=headers, json={
+            "name": "egg", "quantity": 2, "unit": "pcs",
+        }).status_code == 201
+        before = client.get("/api/inventory", headers=headers).json()
+        assert client.post("/api/recipes/generate", headers=headers, json={}).status_code == 200
+        assert client.get("/api/inventory", headers=headers).json() == before
+
+    request, = cloudflare_host.requests
+    prompt = json.loads(json.loads(request.content)["messages"][1]["content"])
+    assert set(prompt["ingredients"]) == {"rice", "egg"}
+    assert prompt["availableAmounts"] == [{"name": "egg", "quantity": 2, "unit": "pcs"}]
+
+
+def test_migration_preserves_recipes_saved_without_amounts(tmp_path):
+    engine = make_engine(f"sqlite:///{(tmp_path / 'legacy.db').as_posix()}")
+    migrate(engine, "0003_inventory_quantities")
+    with engine.begin() as connection:
+        connection.exec_driver_sql(
+            "INSERT INTO accounts (id, email, password_hash, created_at) "
+            "VALUES ('owner', 'legacy@example.test', 'fixture', CURRENT_TIMESTAMP)"
+        )
+        connection.exec_driver_sql(
+            "INSERT INTO recipes (id, owner_id, title, cooking_minutes, calories_per_serving, servings) "
+            "VALUES ('old-recipe', 'owner', 'Rice', 20, 200, 2)"
+        )
+        connection.exec_driver_sql(
+            "INSERT INTO recipe_ingredients (recipe_id, position, name, name_key) "
+            "VALUES ('old-recipe', 0, 'Rice', 'rice')"
+        )
+        connection.exec_driver_sql(
+            "INSERT INTO recipe_steps (recipe_id, position, instruction) "
+            "VALUES ('old-recipe', 0, 'Cook the rice')"
+        )
+
+    migrate(engine)
+    sessions = session_factory(engine)
+    with sessions() as session:
+        assert session.get(RecipeIngredient, ("old-recipe", 0)).amount is None
+        saved = SqlRecipeStore(sessions).find_owned(session, "owner", "old-recipe").recipe
+        assert saved.ingredients == ["Rice"]
+        assert "ingredientAmounts" not in saved.model_dump()
+    engine.dispose()
 
 
 @pytest.mark.parametrize(("response_factory", "expected"), [
     (lambda: httpx.Response(429, text="private quota detail"), 503),
     (lambda: httpx.Response(200, json={"success": False, "errors": ["private quota detail"]}), 503),
     (lambda: cloudflare_result("private malformed detail"), 502),
-    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredients": ["peanut"]}]}), 422),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {
+        **RECIPE, "ingredients": ["peanut"], "ingredientAmounts": ["1 tbsp"],
+    }]}), 422),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {
+        key: value for key, value in RECIPE.items() if key != "ingredientAmounts"
+    }]}), 502),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["1 cup"]}]}), 502),
+    (lambda: cloudflare_result({"recipes": [RECIPE, {**RECIPE, "ingredientAmounts": ["1 cup", " "]}]}), 502),
 ])
 def test_cloudflare_failures_leave_no_partial_recipe(cloudflare_host, response_factory, expected):
     state = cloudflare_host
@@ -148,3 +206,5 @@ def test_openai_is_still_the_default_provider(cloudflare_host, monkeypatch):
     outbound, = cloudflare_host.requests
     assert str(outbound.url) == "https://api.openai.com/v1/responses"
     assert outbound.headers["Authorization"] == "Bearer test-openai-token"
+    schema = json.loads(outbound.content)["text"]["format"]["schema"]
+    assert "ingredientAmounts" in schema["properties"]["recipes"]["items"]["required"]

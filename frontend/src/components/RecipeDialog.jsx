@@ -73,6 +73,12 @@ export default function RecipeDialog({
             className="max-w-full rounded-lg border border-[#d8e2d2] px-[10px] py-[5px] text-[0.9rem] wrap-anywhere"
           >
             {name}
+            {recipe.ingredientAmounts?.[index] && (
+              <span className="text-[#50644e]">
+                {" · "}
+                {recipe.ingredientAmounts[index]}
+              </span>
+            )}
           </li>
         ))}
       </ul>
