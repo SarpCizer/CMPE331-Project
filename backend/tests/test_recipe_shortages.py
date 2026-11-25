@@ -28,7 +28,7 @@ def test_favorite_shortage_is_added_once_and_can_be_removed(kitchen):
     kitchen.add('sugar', .94, 'kg')
     rid = recipe(kitchen, ['banana', 'milk', 'sugar'], ['2 pcs', '200 ml', '20 g'])
     before = kitchen.stock()
-    assert kitchen.client.post(f'/api/favorites/{rid}', headers=kitchen.alice, json={}).status_code in {200, 201}
+    assert kitchen.client.post('/api/favorites', headers=kitchen.alice, json={'recipeId': rid}).status_code in {200, 201}
     result = missing(kitchen, rid)
     assert result.status_code == 200
     items = result.json()
@@ -66,3 +66,28 @@ def test_duplicate_stock_and_owner_isolation(kitchen):
     assert [i['name'] for i in missing(kitchen, rid).json()] == ['egg']
     assert missing(kitchen, rid, kitchen.bob).status_code == 404
     assert kitchen.client.get('/api/shopping-items', headers=kitchen.bob).json() == []
+
+@pytest.mark.parametrize('amount', ['to taste', '0 pcs', '1.5 pcs', '1 cup', '200 g'])
+def test_unreliable_legacy_measurements_do_not_invent_shortages(kitchen, amount):
+    kitchen.add('egg', 1)
+    rid = recipe(kitchen, ['egg'], [amount])
+    assert missing(kitchen, rid).json() == []
+
+
+def test_unknown_stock_and_mixed_recipe_dimensions_preserve_presence(kitchen):
+    kitchen.add('rice', .1, 'kg')
+    assert kitchen.client.post('/api/inventory', headers=kitchen.alice, json={'name': 'rice'}).status_code == 201
+    rid = recipe(kitchen, ['rice'], ['500 g'])
+    assert missing(kitchen, rid).json() == []
+    rid = recipe(kitchen, ['rice', 'rice'], ['500 g', '1 pcs'])
+    assert missing(kitchen, rid).json() == []
+
+
+def test_decimal_sums_and_zero_stock(kitchen):
+    kitchen.add('milk', .1, 'L')
+    kitchen.add('milk', .2, 'L')
+    egg = kitchen.add('egg', 1)
+    assert kitchen.client.patch('/api/inventory/' + egg['id'], headers=kitchen.alice,
+        json={'quantity': 0, 'unit': 'pcs'}).status_code == 200
+    rid = recipe(kitchen, ['milk', 'egg'], ['300 ml', '1 pcs'])
+    assert [i['name'] for i in missing(kitchen, rid).json()] == ['egg']
