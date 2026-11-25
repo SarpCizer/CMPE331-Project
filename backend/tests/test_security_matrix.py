@@ -25,6 +25,8 @@ ROUTES = [
     ("DELETE", "/inventory/{inventory}", None),
     ("POST", "/recipes/generate", {}), ("GET", "/recipes/{recipe}", None),
     ("POST", "/recipes/{recipe}/shopping-items", {}),
+    ("POST", "/recipes/{recipe}/cook", {"requestId": "security-matrix-cooking", "items": [
+        {"inventoryId": "{inventory}", "quantity": 1, "unit": "pcs"}]}),
     ("GET", "/shopping-items", None), ("POST", "/shopping-items", {"name": "intrusion"}),
     ("DELETE", "/shopping-items/{shopping}", None),
     ("POST", "/favorites", {"recipeId": "{recipe}"}),

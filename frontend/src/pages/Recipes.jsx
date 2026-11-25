@@ -6,19 +6,20 @@ import RecipeCard from "../components/RecipeCard";
 export default function RecipesPage() {
   const { data, api, run, busy, generated, setGenerated, openRecipe } =
     useOutletContext();
+  const stocked = data.inventory.filter(item => item.quantity == null || item.quantity > 0);
   return (
     <>
       <section className="panel bg-[#eaf0e6]">
         <span className="eyebrow">A LITTLE INSPIRATION</span>
         <h2>Something good is already here.</h2>
         <p className="max-w-[580px] text-[0.95rem]">
-          Turn the {data.inventory.length}{" "}
-          {data.inventory.length === 1 ? "ingredient" : "ingredients"} in your
+          Turn the {stocked.length}{" "}
+          {stocked.length === 1 ? "ingredient" : "ingredients"} in your
           fridge into your next meal, with your saved preferences included.
         </p>
         <button
           className="btn-primary"
-          disabled={!data.inventory.length}
+          disabled={!stocked.length}
           onClick={async () => {
             const result = await run(
               () =>
@@ -41,7 +42,7 @@ export default function RecipesPage() {
           Edit your preferences
         </Link>
       </section>
-      {!data.inventory.length ? (
+      {!stocked.length ? (
         <Empty icon="fridge" title="Start with an ingredient">
           Add something to your fridge before asking for recipes.
         </Empty>

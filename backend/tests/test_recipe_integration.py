@@ -18,7 +18,7 @@ from fridgely_recipes.storage import Recipe, RecipeIngredient, RecipeStep, creat
 RECIPE = {
     "title": "Tomato rice",
     "ingredients": ["rice", "tomato"],
-    "ingredientAmounts": ["1 cup", "2 medium"],
+    "ingredientAmounts": ["150 g", "2 pcs"],
     "steps": ["Cook the rice", "Add the tomato"],
     "cookingMinutes": 20,
     "caloriesPerServing": 325,
@@ -145,7 +145,7 @@ def test_unknown_owner_and_empty_fridge_stop_before_provider(recipe_app):
 
 
 @pytest.mark.parametrize(("change", "status"), [
-    ({"ingredients": [" PEANUT "], "ingredientAmounts": ["1 tbsp"]}, 422),
+    ({"ingredients": [" PEANUT "], "ingredientAmounts": ["15 g"]}, 422),
     ({"ingredients": ["  "]}, 502),
     ({"steps": []}, 502),
     ({"cookingMinutes": 0}, 502),

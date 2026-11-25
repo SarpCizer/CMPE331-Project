@@ -49,7 +49,7 @@ test("invalid quantities focus their own field, explain the error and send no wr
   await page.getByRole("button", { name: "Add ingredient", exact: true }).click();
   await expect(page.getByRole("button", { name: "Remove rice", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Edit quantity for rice", exact: true }).click();
-  await quantity.fill("0");
+  await quantity.fill("-1");
   await page.getByRole("button", { name: "Save quantity", exact: true }).click();
   await expect(quantity).toBeFocused();
   await expect(quantity).toHaveAccessibleDescription(/positive quantity/i);

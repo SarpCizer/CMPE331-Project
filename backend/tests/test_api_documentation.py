@@ -21,7 +21,10 @@ def test_openapi_describes_real_routes_authentication_and_errors(tmp_path):
         assert set(schema['paths']) == {'/accounts','/sessions','/profile/preferences','/inventory',
             '/inventory/{item_id}','/health','/recipes/generate','/recipes/{recipe_id}',
             '/recipes/{recipe_id}/shopping-items','/shopping-items','/shopping-items/{item_id}',
-            '/favorites','/favorites/{recipe_id}','/history'}
+            '/favorites','/favorites/{recipe_id}','/history','/recipes/{recipe_id}/cook'}
+        cooking = schema['paths']['/recipes/{recipe_id}/cook']['post']
+        assert cooking['security'] == [{'BearerAuth': []}]
+        assert {'400','401','404','409','503'} <= cooking['responses'].keys()
         bearer = schema['components']['securitySchemes']['BearerAuth']
         assert bearer == {'type':'http','scheme':'bearer','bearerFormat':'JWT'}
         inventory = schema['paths']['/inventory']['get']

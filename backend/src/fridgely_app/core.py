@@ -64,7 +64,7 @@ class InventoryCommand(QuantityCommand):
 
 
 class InventoryUpdate(QuantityCommand):
-    quantity: Annotated[float, Field(gt=0, le=1000000, allow_inf_nan=False)]
+    quantity: Annotated[float, Field(ge=0, le=1000000, allow_inf_nan=False)]
     unit: Literal['pcs','kg','g','L','ml','pack','bunch']
 
 
@@ -98,11 +98,12 @@ def inventory_payload(row):
 def inventory_amounts(session, owner):
     rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == owner)
         .order_by(InventoryEntry.added_at, InventoryEntry.id))
-    return tuple((row.name, row.quantity, row.unit) for row in rows if row.quantity is not None)
+    return tuple((row.name, row.quantity, row.unit) for row in rows if row.quantity is not None and row.quantity > 0)
 
 
 def inventory_names(session, owner):
-    return list(session.scalars(select(InventoryEntry.name).where(InventoryEntry.owner_id == owner)
+    return list(session.scalars(select(InventoryEntry.name).where(InventoryEntry.owner_id == owner,
+        (InventoryEntry.quantity.is_(None)) | (InventoryEntry.quantity > 0))
         .order_by(InventoryEntry.added_at, InventoryEntry.id)))
 
 
@@ -122,7 +123,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
     engine = make_engine(database_url)
     sessions = session_factory(engine)
     authentication = Authentication(sessions, jwt_secret, clock, token_lifetime)
-    app = FastAPI(title='Fridgely API', version='0.1.0', docs_url=None, redoc_url=None,
+    app = FastAPI(title='Fridgely API', version='0.2.0', docs_url=None, redoc_url=None,
         description='Accounts, owned fridge inventory, preferences, recipes and personal collections. '
             'Register and sign in, then authorize requests using the returned bearer token.',
         servers=[{'url':'/api'}], root_path_in_servers=False)

@@ -85,9 +85,9 @@ test("real account, saved preferences, recipe details and collections survive re
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("Estimated 25 minutes");
   await expect(dialog.getByRole("listitem")).toContainText([
-    "rice · 1 cup",
-    "tomato · 2 medium",
-    "onion · 1 small",
+    "rice · 150 g",
+    "tomato · 2 pcs",
+    "onion · 1 pcs",
     "Cook the rice.",
     "Simmer tomato and onion.",
     "Combine and serve.",

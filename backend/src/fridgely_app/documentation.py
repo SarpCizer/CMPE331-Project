@@ -60,6 +60,8 @@ def install_documentation(api, frontend_dir):
                     statuses[404] = 'Owned resource not found'
                 if path == '/accounts':
                     statuses[409] = 'Account already exists'
+                if path.endswith('/cook'):
+                    statuses[409] = 'Stock changed, insufficient stock or confirmation conflict'
                 if path == '/recipes/generate':
                     statuses[422] = 'Generated batch rejected by dietary or allergen validation'
                     statuses[502] = 'Invalid provider response'

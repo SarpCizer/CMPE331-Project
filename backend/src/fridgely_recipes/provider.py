@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from urllib.parse import quote
 
 import httpx
@@ -17,16 +18,20 @@ INSTRUCTIONS = (
     "Respect dietary preferences and allergen exclusions for all ingredients. "
     "List each ingredient by name without quantities so the shopping list can match it. "
     "Supply a cooking amount for every ingredient in ingredientAmounts, in the same order and "
-    "for the full recipe. Use short measures such as '2', '150 g', '1 cup', or 'to taste' for seasoning. "
+    "for the full recipe. Use only positive numeric metric or count measurements: '150 g', '200 ml', "
+    "'0.5 kg', '1 L', or '2 pcs'. Use g for solids, ml for liquids and pcs for counted items. "
+    "Never use cups, spoons, handfuls, medium/small, or 'to taste'. "
+    "Do not equate grams with milliliters or invent a density conversion. "
     "Return ordered cooking steps, total cooking minutes, estimated kilocalories per serving, and servings. "
     "Avoid claims of guaranteed allergen safety."
 )
 
 TEXT_LIST = {"type": "array", "items": {"type": "string"}}
+MEASURE_PATTERN = r'^\d+(?:\.\d+)? +(?:g|kg|ml|L|pcs|pack|bunch)$'
 RECIPE_FIELDS = {
     "title": {"type": "string"},
     "ingredients": TEXT_LIST,
-    "ingredientAmounts": TEXT_LIST,
+    "ingredientAmounts": {"type": "array", "items": {"type": "string", "pattern": MEASURE_PATTERN}},
     "steps": TEXT_LIST,
     "cookingMinutes": {"type": "number"},
     "caloriesPerServing": {"type": "number"},
@@ -76,6 +81,17 @@ def recipe_batch(value: object) -> object:
         not isinstance(recipe, dict) or recipe.get("ingredientAmounts") is None for recipe in recipes
     ):
         return None
+    for recipe in recipes:
+        amounts = recipe['ingredientAmounts']
+        if not isinstance(amounts, list) or not amounts:
+            return None
+        for amount in amounts:
+            if not isinstance(amount, str) or not re.fullmatch(MEASURE_PATTERN, amount):
+                return None
+            number, unit = amount.split()
+            value = float(number)
+            if not 0 < value <= 1000000 or (unit in {'pcs', 'pack', 'bunch'} and not value.is_integer()):
+                return None
     return recipes
 
 
