@@ -94,11 +94,13 @@ def main():
     try:
         files, tracked = committed_sources(args.revision)
         output = Path(args.output).resolve()
-        checksum = output.with_suffix('.zip.sha256')
+        checksum = output.with_suffix('.zip.sha256').resolve()
         git_dir = Path(git_read('rev-parse','--absolute-git-dir').decode().strip()).resolve()
         # Guard current index paths too when the requested revision precedes HEAD.
         tracked.extend(name.decode('utf-8') for name in git_read('ls-files','-z').split(b'\0') if name)
         source_paths = {(ROOT/name).resolve() for name in tracked}
+        if checksum == output:
+            parser.error('Archive ZIP and checksum outputs must be distinct')
         if any(path in source_paths or path.is_relative_to(git_dir) for path in (output,checksum)):
             parser.error('Archive output must not overwrite tracked source or Git metadata')
     except (OSError,subprocess.CalledProcessError,UnicodeError,ValueError) as error:
