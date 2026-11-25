@@ -1,0 +1,24 @@
+{
+  "base_head": "bb27a039c8768b4cf09d15d72d84a7429c3c5b6c",
+  "integrated_feature_source": "4ef84551521222c47b4d5102784248410bf9c8d1",
+  "red_commit": "0b7667438447e86d7aa982f4b260cc127b7a38db",
+  "red": {
+    "browser_tests": 2,
+    "passed": 1,
+    "failed": 1,
+    "observed_failure": "Invalid fractional count focuses ingredient rather than quantity; quantity error lacks its own accessible association."
+  },
+  "green": {
+    "browser_passed": 24,
+    "acceptance_passed": 29,
+    "quantity_backend_passed": 9,
+    "production_build": "PASS",
+    "frontend_coverage": {
+      "lines": 100,
+      "branches": 94.42,
+      "functions": 94.66
+    }
+  },
+  "scope": "Actual local SQLite and app/HTTP tests with controlled provider. Legacy0002 migration preserves original inventory/preferences/unknown amounts. Exact published-head CI verifies PostgreSQL separately. No report/PDF, release-tag, production-data, credential, paid setting or provider call change.",
+  "provenance": "Codex assisted Berfin's follow-up; Ayse independently approved and merged original PR78 while this fix was prepared. RED was observed before this correction, not inferred from original feature commit order."
+}

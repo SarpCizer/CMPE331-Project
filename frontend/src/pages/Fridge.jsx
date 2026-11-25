@@ -27,17 +27,19 @@ function Fridge({ items, run, api }) {
     [unit, setUnit] = useState("pcs"),
     [editing, setEditing] = useState(null),
     [search, setSearch] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [quantityError, setQuantityError] = useState("");
   async function add(event) {
     event.preventDefault();
     const amount = Number(quantity);
-    const invalid = (editing ? "" : nameError(name, "an ingredient")) ||
-      (!Number.isFinite(amount) || amount <= 0 || amount > 1000000 ||
+    const invalidName = editing ? "" : nameError(name, "an ingredient");
+    const invalidQuantity = !Number.isFinite(amount) || amount <= 0 || amount > 1000000 ||
        (["pcs","pack","bunch"].includes(unit) && !Number.isInteger(amount))
-        ? "Enter a valid positive quantity (whole numbers for count units)." : "");
-    setError(invalid);
-    if (invalid) {
-      event.currentTarget.querySelector(editing ? "#quantity" : "#ingredient").focus();
+        ? "Enter a valid positive quantity (whole numbers for count units)." : "";
+    setError(invalidName);
+    setQuantityError(invalidQuantity);
+    if (invalidName || invalidQuantity) {
+      event.currentTarget.querySelector(invalidName ? "#ingredient" : "#quantity").focus();
       return;
     }
     if (
@@ -52,7 +54,7 @@ function Fridge({ items, run, api }) {
       resetForm();
   }
   function resetForm() {
-    setName(""); setQuantity("1"); setUnit("pcs"); setEditing(null); setError("");
+    setName(""); setQuantity("1"); setUnit("pcs"); setEditing(null); setError(""); setQuantityError("");
   }
   const visible = items.filter((item) =>
     item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
@@ -139,11 +141,14 @@ function Fridge({ items, run, api }) {
           <div className="w-[100px] mobile:flex-1">
             <label htmlFor="quantity" className="text-[0.8rem]">Quantity</label>
             <input id="quantity" type="number" min="0.000001" max="1000000" step="any"
-              value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+              value={quantity} onChange={(e) => { setQuantity(e.target.value); setQuantityError(""); }} required
+              aria-invalid={!!quantityError}
+              aria-describedby={quantityError ? "quantity-error" : undefined} />
+            <FieldError id="quantity-error">{quantityError}</FieldError>
           </div>
           <div className="w-[110px] mobile:flex-1">
             <label htmlFor="unit" className="text-[0.8rem]">Unit</label>
-            <select id="unit" value={unit} onChange={(e) => setUnit(e.target.value)}
+            <select id="unit" value={unit} onChange={(e) => { setUnit(e.target.value); setQuantityError(""); }}
               className="w-full rounded-lg border border-line bg-white p-2">
               {["pcs","kg","g","L","ml","pack","bunch"].map((value) =>
                 <option key={value} value={value}>{value}</option>)}
@@ -201,7 +206,7 @@ function Fridge({ items, run, api }) {
                 <button type="button" className={removeButton} aria-label={`Edit quantity for ${item.name}`}
                   onClick={() => {
                     setEditing(item.id); setName(item.name);
-                    setQuantity(String(item.quantity ?? 1)); setUnit(item.unit ?? "pcs"); setError("");
+                    setQuantity(String(item.quantity ?? 1)); setUnit(item.unit ?? "pcs"); setError(""); setQuantityError("");
                     document.getElementById("quantity")?.focus();
                   }}>Edit</button>
                 <button
