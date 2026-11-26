@@ -102,8 +102,22 @@ def test_shopping_failure_rolls_back_all_weekly_items(kitchen):
     assert shopping(kitchen).status_code == 200
 
 
-def test_plan_upgrade_preserves_legacy_collections(tmp_path):
-    engine=make_engine(f'sqlite:///{tmp_path / "legacy-plan.db"}')
+@pytest.mark.parametrize('database', ['sqlite','postgresql'])
+def test_plan_upgrade_preserves_legacy_collections(tmp_path,database):
+    import os
+    from uuid import uuid4
+    from sqlalchemy import event
+    url=f'sqlite:///{tmp_path / "legacy-plan.db"}' if database=='sqlite' else os.getenv('TEST_DATABASE_URL')
+    if not url: pytest.skip('TEST_DATABASE_URL required for PostgreSQL planner upgrade')
+    engine=make_engine(url)
+    cleanup=None
+    schema='planner_upgrade_'+uuid4().hex
+    if database=='postgresql':
+        cleanup=make_engine(url)
+        with cleanup.begin() as connection: connection.execute(text(f'CREATE SCHEMA "{schema}"'))
+        @event.listens_for(engine,'connect')
+        def isolate(connection,_record):
+            cursor=connection.cursor();cursor.execute(f'SET search_path TO "{schema}"');cursor.close()
     try:
         migrate(engine,'0006_shopping_quantities')
         with engine.begin() as connection:
@@ -113,7 +127,11 @@ def test_plan_upgrade_preserves_legacy_collections(tmp_path):
         with engine.connect() as connection:
             assert tuple(connection.execute(text('SELECT id,owner_id,name,quantity,unit FROM shopping_items')).one()) == ('item','legacy','Milk',2,'L')
             assert connection.execute(text('SELECT count(*) FROM weekly_meals')).scalar_one() == 0
-    finally: engine.dispose()
+    finally:
+        engine.dispose()
+        if cleanup is not None:
+            with cleanup.begin() as connection: connection.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
+            cleanup.dispose()
 
 
 def test_independent_main_and_dessert_portions_scale_before_combining(kitchen):

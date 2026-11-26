@@ -12,6 +12,13 @@ from fridgely_app.host import create_app
 
 class FixtureProvider:
     async def generate(self,data):
+        if data.requested_dish:
+            if data.requested_dish == 'provider-failure':
+                raise RuntimeError('Controlled requested-dish outage')
+            return [{'title': data.requested_dish, 'ingredients': ['rice', 'egg'],
+                'ingredientAmounts': [f'{100 * data.requested_servings} g', f'{data.requested_servings} pcs'],
+                'steps': ['Prepare the sauce.', 'Cook and serve.'], 'cookingMinutes': 15,
+                'caloriesPerServing': 200, 'servings': data.requested_servings}]
         if 'provider-failure' in data.ingredients:
             raise RuntimeError('Controlled provider outage')
         if 'banana' in data.ingredients:

@@ -61,23 +61,26 @@ class SqlRecipeStore:
 
     def insert_batch(self, owner_id: str, recipes: list[RecipeDTO]) -> None:
         with self.session_factory() as session, session.begin():
-            for recipe in recipes:
-                session.add(Recipe(
-                    id=recipe.id,
-                    owner_id=owner_id,
-                    title=recipe.title,
-                    cooking_minutes=recipe.cookingMinutes,
-                    calories_per_serving=recipe.caloriesPerServing,
-                    servings=recipe.servings,
-                    ingredients=[
-                        RecipeIngredient(
-                            position=i, name=name, name_key=name.casefold(),
-                            amount=recipe.ingredientAmounts[i] if recipe.ingredientAmounts is not None else None,
-                        )
-                        for i, name in enumerate(recipe.ingredients)
-                    ],
-                    steps=[RecipeStep(position=i, instruction=step) for i, step in enumerate(recipe.steps)],
-                ))
+            self.insert_in_session(session, owner_id, recipes)
+
+    def insert_in_session(self, session, owner_id, recipes):
+        for recipe in recipes:
+            session.add(Recipe(
+                id=recipe.id,
+                owner_id=owner_id,
+                title=recipe.title,
+                cooking_minutes=recipe.cookingMinutes,
+                calories_per_serving=recipe.caloriesPerServing,
+                servings=recipe.servings,
+                ingredients=[
+                    RecipeIngredient(
+                        position=i, name=name, name_key=name.casefold(),
+                        amount=recipe.ingredientAmounts[i] if recipe.ingredientAmounts is not None else None,
+                    )
+                    for i, name in enumerate(recipe.ingredients)
+                ],
+                steps=[RecipeStep(position=i, instruction=step) for i, step in enumerate(recipe.steps)],
+            ))
 
     def find_owned(self, session: Session, owner_id: str, recipe_id: str) -> OwnedRecipe | None:
         # Collections owns this session and performs the history/shopping commit.
@@ -89,6 +92,16 @@ class SqlRecipeStore:
         if row is None:
             return None
 
+        return self._owned(row)
+
+    def list_owned(self, session, owner_id):
+        rows = session.scalars(select(Recipe).where(Recipe.owner_id == owner_id)
+            .options(selectinload(Recipe.ingredients), selectinload(Recipe.steps))
+            .order_by(Recipe.title, Recipe.id).limit(100)).all()
+        return [self._owned(row).recipe for row in rows]
+
+    @staticmethod
+    def _owned(row):
         amounts = [ingredient.amount for ingredient in row.ingredients]
         recipe = RecipeDTO(
             id=row.id,

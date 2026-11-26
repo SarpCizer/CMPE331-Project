@@ -78,3 +78,60 @@ def test_late_generation_cannot_replace_a_more_recent_slot_edit(custom):
     entry,=custom.client.get('/api/weekly-plan',params={'weekStart':WEEK},headers=custom.headers).json()['entries']
     assert entry['servings']==3
     with custom.sessions() as session:assert session.scalar(select(func.count()).select_from(Recipe))==1
+
+
+@pytest.mark.parametrize('body', [
+    {'dish':'','servings':1}, {'dish':'x'*121,'servings':1}, {'dish':'x\n','servings':1,'owner':'other'},
+    {'dish':'Pasta','servings':0}, {'dish':'Pasta','servings':21}, {'dish':'Pasta','servings':1.5},
+    {'dish':'Pasta','servings':True}, {'dish':'Pasta','servings':'2'}, {'dish':'x\x00y','servings':2},
+])
+def test_invalid_dish_does_not_call_provider(custom,body):
+    response=custom.client.post('/api/weekly-plan/0/dinner/generate',headers=custom.headers,
+        json={'weekStart':WEEK,**body})
+    assert response.status_code==400
+    assert custom.state.calls==[]
+
+
+def test_allergen_rejection_and_storage_failure_leave_existing_plan(custom):
+    from sqlalchemy import event
+    from sqlalchemy.exc import SQLAlchemyError
+    first=generate(custom,servings=1).json()
+    custom.client.put('/api/profile/preferences',headers=custom.headers,json={'dietary':[],'allergens':['egg']})
+    assert generate(custom).status_code==422
+    custom.client.put('/api/profile/preferences',headers=custom.headers,json={'dietary':[],'allergens':[]})
+    engine=custom.client.app.state.engine
+    def fail(_conn,_cursor,statement,_parameters,_context,_many):
+        if statement.startswith('INSERT INTO weekly_meals'): raise SQLAlchemyError('private storage detail')
+    event.listen(engine,'before_cursor_execute',fail)
+    try:
+        response=generate(custom)
+        assert response.status_code==503 and 'private' not in response.text
+    finally: event.remove(engine,'before_cursor_execute',fail)
+    assert custom.client.get('/api/weekly-plan',params={'weekStart':WEEK},headers=custom.headers).json()==first
+    with custom.sessions() as session:assert session.scalar(select(func.count()).select_from(Recipe))==1
+
+
+def test_clear_during_generation_stays_cleared_and_portions_do_not_call_ai(custom):
+    first=generate(custom).json()['entries'][0]['recipe']['id']
+    assert custom.client.put('/api/weekly-plan/0/dessert',headers=custom.headers,
+        json={'weekStart':WEEK,'recipeId':first,'servings':1}).status_code==200
+    assert len(custom.state.calls)==1
+    custom.state.mode='wait'
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        pending=pool.submit(generate,custom,'New dish',2)
+        try:
+            assert custom.state.started.wait(5)
+            assert custom.client.delete('/api/weekly-plan/0/dinner',headers=custom.headers,
+                params={'weekStart':WEEK}).status_code==200
+        finally: custom.state.release.set()
+        assert pending.result(timeout=10).status_code==409
+    entries=custom.client.get('/api/weekly-plan',params={'weekStart':WEEK},headers=custom.headers).json()['entries']
+    assert len(entries)==1 and entries[0]['meal']=='dessert'
+
+
+def test_catalog_does_not_leak_another_users_recipes(custom):
+    generate(custom)
+    credentials={'email':'other@example.test','password':'Synthetic-password-123!'}
+    custom.client.post('/api/accounts',json=credentials)
+    token=custom.client.post('/api/sessions',json=credentials).json()['token']
+    assert custom.client.get('/api/weekly-plan/recipes',headers={'Authorization':f'Bearer {token}'}).json()==[]

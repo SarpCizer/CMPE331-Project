@@ -40,7 +40,7 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
     api.include_router(recipes.router)
     api.include_router(collections.router)
     api.include_router(planner_router(api.state.authentication.require_account,
-        collections.service._transaction, collections.service._recipe, clock))
+        collections.service._transaction, collections.service._recipe, clock, recipes.store, recipes.generation))
     api.include_router(purchase_router(api.state.sessions, api.state.authentication.require_account, clock))
     api.include_router(cooking_router(api.state.sessions, api.state.authentication.require_account, recipes.store))
 

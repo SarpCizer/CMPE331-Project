@@ -12,10 +12,14 @@ def upgrade():
         sa.Column('week_start', sa.Date(), primary_key=True),
         sa.Column('day', sa.Integer(), primary_key=True),
         sa.Column('meal', sa.String(12), primary_key=True),
-        sa.Column('recipe_id', sa.String(128), nullable=False),
+        sa.Column('recipe_id', sa.String(128), nullable=True),
+        sa.Column('servings', sa.Integer(), nullable=True),
+        sa.Column('revision', sa.String(32), nullable=False),
+        sa.ForeignKeyConstraint(['owner_id'], ['accounts.id'], ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['owner_id', 'recipe_id'], ['recipes.owner_id', 'recipes.id'], ondelete='CASCADE'),
+        sa.CheckConstraint('(recipe_id IS NULL AND servings IS NULL) OR (recipe_id IS NOT NULL AND servings IS NOT NULL AND servings >= 1 AND servings <= 20)', name='ck_weekly_servings'),
         sa.CheckConstraint('day >= 0 AND day <= 6', name='ck_weekly_day'),
-        sa.CheckConstraint("meal IN ('breakfast','lunch','dinner')", name='ck_weekly_meal'))
+        sa.CheckConstraint("meal IN ('breakfast','lunch','dinner','dessert')", name='ck_weekly_meal'))
 
 
 def downgrade():

@@ -49,7 +49,7 @@ def test_real_accounts_supply_owned_inventory_and_latest_preferences(host):
     generated=client.post('/recipes/generate',headers=alice,json={})
     assert generated.status_code == 200
     recipe,=generated.json()
-    assert host.state.calls == [{'ingredients':('rice',),'dietary':('vegan',),'allergens':('peanut',),'amounts':(('rice',0.5,'kg'),)}]
+    assert host.state.calls == [{'ingredients':('rice',),'dietary':('vegan',),'allergens':('peanut',),'amounts':(('rice',0.5,'kg'),),'requested_dish':None,'requested_servings':None}]
     assert client.get(f'/recipes/{recipe["id"]}',headers=bob).status_code == 404
     assert client.get(f'/recipes/{recipe["id"]}',headers=alice).json() == recipe
     assert client.post('/favorites',headers=alice,json={'recipeId':recipe['id']}).status_code == 200
@@ -58,7 +58,7 @@ def test_real_accounts_supply_owned_inventory_and_latest_preferences(host):
     latest={'dietary':['vegetarian'],'allergens':['walnut']}
     assert client.put('/profile/preferences',headers=alice,json=latest).status_code == 200
     assert client.post('/recipes/generate',headers=alice,json={}).status_code == 200
-    assert host.state.calls[-1] == {'ingredients':('rice',),'dietary':('vegetarian',),'allergens':('walnut',),'amounts':(('rice',0.5,'kg'),)}
+    assert host.state.calls[-1] == {'ingredients':('rice',),'dietary':('vegetarian',),'allergens':('walnut',),'amounts':(('rice',0.5,'kg'),),'requested_dish':None,'requested_servings':None}
     paths=['/inventory','/profile/preferences','/shopping-items','/favorites','/history']
     before=[client.get(path,headers=alice).json() for path in paths]
     host.state.fail=True

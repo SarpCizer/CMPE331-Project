@@ -1,6 +1,8 @@
 """Read-only recipe stock comparison and measured shopping deficits."""
 from collections import defaultdict
 from decimal import Decimal
+from fractions import Fraction
+from math import ceil
 import re
 
 from sqlalchemy import select
@@ -36,7 +38,7 @@ def _requirements_snapshot(session, owner, measurements):
     for name, measurement in measurements:
         display, key = ingredient_name(name)
         displays.setdefault(key, display)
-        required[key].append(_amount(measurement))
+        required[key].append(measurement if isinstance(measurement, tuple) else _amount(measurement))
     return stock, required, displays
 
 
@@ -56,22 +58,24 @@ def _shortfall(amounts, rows):
     if any(row.quantity is None or not row.unit or
            _UNITS.get(row.unit.lower(), (None,))[0] != dimension for row in rows):
         return None
-    needed = sum((amount[1] for amount in amounts), Decimal(0))
-    available = sum((Decimal(str(row.quantity)) * _UNITS[row.unit.lower()][1] for row in rows), Decimal(0))
-    return dimension, max(Decimal(0), needed - available)
+    needed = sum((Fraction(amount[1]) for amount in amounts), Fraction(0))
+    available = sum((Fraction(Decimal(str(row.quantity))) * Fraction(_UNITS[row.unit.lower()][1]) for row in rows), Fraction(0))
+    return dimension, max(Fraction(0), needed - available)
 
 
-def _shopping_amount(dimension, value):
+def _shopping_amount(dimension, value, round_for_purchase=False):
     unit = {'mass': 'g', 'volume': 'ml'}.get(dimension, dimension)
     if value > 1000000 and dimension in {'mass', 'volume'}:
         value /= 1000
         unit = 'kg' if dimension == 'mass' else 'L'
+    if round_for_purchase:
+        value = ceil(value) if dimension in {'pcs', 'pack', 'bunch'} else Fraction(ceil(value * 1000), 1000)
     if not 0 < value <= 1000000:
         return {}  # Unsupported legacy extremes require a reviewed manual amount.
     return {'quantity': float(value), 'unit': unit}
 
 
-def requirements_shopping_items(session, owner, measurements):
+def requirements_shopping_items(session, owner, measurements, *, round_for_purchase=False):
     """Aggregate all requirements first and subtract each stock group once."""
     stock, required, displays = _requirements_snapshot(session, owner, measurements)
     missing, review = [], []
@@ -79,7 +83,7 @@ def requirements_shopping_items(session, owner, measurements):
         rows = stock.get(key, [])
         measured = _shortfall(amounts, rows)
         if measured is not None and measured[1] > 0:
-            quantity = _shopping_amount(*measured)
+            quantity = _shopping_amount(*measured, round_for_purchase=round_for_purchase)
             missing.append(ShoppingCommand(name=displays[key], **quantity))
             if not quantity:
                 review.append(displays[key])

@@ -45,6 +45,7 @@ class RecipeRoute(APIRoute):
 class RecipesModule:
     router: APIRouter
     store: SqlRecipeStore
+    generation: RecipeGenerationService | None = None
 
 
 def build_recipes(
@@ -81,4 +82,4 @@ def build_recipes(
             raise RecipeError(503, "Authentication integration must return AccountPrincipal.")
         return await service.generate(principal.account_id)
 
-    return RecipesModule(router, store)
+    return RecipesModule(router, store, service)
