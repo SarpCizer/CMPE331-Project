@@ -97,6 +97,10 @@ def export():
     evidence = BASE / config['evidence_root']
     summary, index = validate(config, evidence)
     provenance, browser_counts, historical_loads = validate_provenance(config, evidence)
+    follow_up = None
+    if (BASE / 'review-follow-up.json').is_file():
+        import review_follow_up
+        follow_up = review_follow_up.load(BASE)
     # Validate before creating or replacing any published output.
     out = Path(os.getenv('FRIDGELY_REPORT_OUTPUT', str(ROOT / 'build/reports')))
     out.mkdir(parents=True, exist_ok=True)
@@ -187,7 +191,7 @@ def export():
     ], [220, 279])
     heading('What this evidence establishes')
     paragraph('The integrated frontend, API, ownership rules and PostgreSQL persistence are compatible within the recorded tests. Recipe workflows use controlled external provider responses. Actual paid or free model inference was not exercised, and the live service has no verified recipe-provider credentials.')
-    paragraph('Prepared by Berfin Gökgöz with Codex assistance. No team-wide approval, live AI success or course-platform upload is asserted.', 'small')
+    paragraph('Original report: Berfin Gökgöz with Codex assistance. Review corrections: Sarp Çizer with Codex assistance. No instructor acceptance or course-platform upload is inferred.', 'small')
 
     page()
     heading('Functional traceability', True)
@@ -209,7 +213,7 @@ def export():
         ['US-14', 'Newest-first view history', 'T01'],
         ['US-15', 'Missing, malformed and expired JWT; cross-owner isolation', 'T01-T03'],
     ], [49, 369, 81])
-    paragraph('Each short ID is prefixed by its story, for example US-07-T01. Full case names and PASS counts are in acceptance.log; backend-junit.xml and browser-junit.xml retain individual cases. The repository coverage/traceability.csv retains the detailed criterion mapping.', 'small')
+    paragraph('Each short ID is prefixed by its story, for example US-07-T01. Full historical case names and PASS counts are in acceptance.log; backend-junit.xml and browser-junit.xml retain individual cases. The current coverage/traceability.csv identifies its separate immutable assertion source; the follow-up explains its additional AC/NFR detail.', 'small')
     heading('Database and transaction boundaries')
     paragraph('The 133 backend tests include real PostgreSQL with no skips. JWT subjects supply identity; client-supplied owner fields cannot transfer ownership. Inventory changes through manual add/delete. Collection regressions check commit-before-success and rollback behavior; duplicate ingredient rows remain distinct and retain their addition dates.')
 
@@ -300,13 +304,17 @@ def export():
     layout.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'TOP'), ('LEFTPADDING', (0, 0), (-1, -1), 0)]))
     story.append(layout)
 
+    if follow_up:
+        review_follow_up.append(BASE, story, markdown, heading, paragraph, table, page, *follow_up)
+
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setStrokeColor(pale)
         canvas.line(48, 40, A4[0] - 48, 40)
         canvas.setFont('Report', 7.5)
         canvas.setFillColor(muted)
-        canvas.drawString(48, 27, 'Fridgely | a59556e | CI 45474025963 | release approval pending')
+        identity = ('Follow-up ' + follow_up[0]['source_revision'][:7] + ' | CI ' + str(follow_up[0]['ci_run_id']) + ' | review copy') if follow_up and doc.page > 8 else 'Historical a59556e | CI 45474025963'
+        canvas.drawString(48, 27, 'Fridgely | ' + identity)
         canvas.drawRightString(A4[0] - 48, 27, str(doc.page))
         canvas.restoreState()
 

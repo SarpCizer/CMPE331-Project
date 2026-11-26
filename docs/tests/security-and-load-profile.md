@@ -64,9 +64,11 @@ remain separate even when their source revision matches.
 
 ## Evaluated Sonar conditions
 
-The ephemeral Sonar server receives a selected project quality gate with six
-overall-code conditions: zero bugs, vulnerabilities, security hotspots, BLOCKER
-and CRITICAL violations; aggregate coverage at least 90%. Export fails if any
+The ephemeral Sonar server receives a selected project quality gate with five
+overall-code conditions: zero bugs, vulnerabilities, BLOCKER and CRITICAL
+violations; aggregate coverage at least 90%. An independent export policy also
+requires zero security hotspots: the server's [condition validator](https://github.com/SonarSource/sonarqube/blob/master/server/sonar-webserver-webapi/src/main/java/org/sonar/server/qualitygate/QualityGateConditionsUpdater.java)
+explicitly disallows `security_hotspots` as a gate condition. Export fails if any
 required condition is missing, empty, unevaluated, altered or failing. The raw
 server conditions and observed values are retained beside the actual dashboard
 capture. Separate per-language line/branch policy checks remain active.

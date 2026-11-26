@@ -19,7 +19,7 @@ class ReportEvidenceTests(unittest.TestCase):
         shutil.copytree(ROOT / "docs/tests", self.root / "docs/tests")
         target = self.root / "scripts/tests"
         target.mkdir(parents=True)
-        for name in ("export_report.py", "export_verified_report.py"):
+        for name in ("export_report.py", "export_verified_report.py", "review_follow_up.py"):
             shutil.copy2(ROOT / "scripts/tests" / name, target)
 
     def export(self, destination=None):

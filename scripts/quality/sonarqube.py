@@ -14,7 +14,7 @@ BASE=os.getenv('SONAR_HOST_URL','http://127.0.0.1:9000').rstrip('/')
 GATE_NAME = 'Fridgely measured release conditions'
 REQUIRED_CONDITIONS = {
     'bugs': ('GT', '0'), 'vulnerabilities': ('GT', '0'),
-    'security_hotspots': ('GT', '0'), 'coverage': ('LT', '90'),
+    'coverage': ('LT', '90'),
     'blocker_violations': ('GT', '0'), 'critical_violations': ('GT', '0'),
 }
 if urlparse(BASE).hostname not in {'127.0.0.1','localhost'}:
@@ -42,6 +42,8 @@ def initialize():
     for metric, (operator, threshold) in REQUIRED_CONDITIONS.items():
         response = session.post(BASE + '/api/qualitygates/create_condition',
             data={'gateName': GATE_NAME, 'metric': metric, 'op': operator, 'error': threshold}, timeout=15)
+        if not response.ok:
+            save('configuration-error.json', {'metric': metric, 'status': response.status_code, 'response': response.text})
         response.raise_for_status()
     response = session.post(BASE + '/api/qualitygates/select',
         data={'gateName': GATE_NAME, 'projectKey': 'fridgely'}, timeout=15)
