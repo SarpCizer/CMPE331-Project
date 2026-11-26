@@ -77,7 +77,7 @@ def build_collections(*, session_factory: Callable[[], Session], core: CoreData,
         return Response(status_code=204)
 
     @router.post("/recipes/{recipe_id}/shopping-items", response_model=list[ShoppingItemDTO],
-                 summary="Add absent or insufficient recipe ingredients")
+                 summary="Add missing recipe quantities to shopping")
     def add_missing(recipe_id: str, command: EmptyCommand | None = Body(default=None),
                     account: str = Depends(owner)):
         return service.add_missing(account, recipe_id)

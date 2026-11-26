@@ -1,13 +1,33 @@
 from datetime import datetime
+from decimal import Decimal
 from uuid import uuid4
 
-from sqlalchemy import case, delete, select, update
+from sqlalchemy import case, delete, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from .models import Favorite, RecipeView, ShoppingItem
 from .schemas import ShoppingItemDTO
+
+
+_SCALES = {'g': ('mass', Decimal(1)), 'kg': ('mass', Decimal(1000)),
+           'ml': ('volume', Decimal(1)), 'L': ('volume', Decimal(1000)),
+           **{unit: (unit, Decimal(1)) for unit in ('pcs', 'pack', 'bunch')}}
+
+
+def minimum_quantity(row, quantity, unit):
+    if row.quantity is None:
+        return quantity, unit
+    old = _SCALES.get(row.unit)
+    new = _SCALES[unit]
+    if old is None or old[0] != new[0]:
+        return None
+    needed = Decimal(str(quantity)) * new[1] / old[1]
+    if Decimal(str(row.quantity)) >= needed:
+        return None
+    # Keep the entered unit when possible; avoid exceeding the stored bound.
+    return (float(needed), row.unit) if needed <= 1000000 else (quantity, unit)
 
 
 def dialect_insert(session: Session, model):
@@ -23,18 +43,18 @@ class CollectionRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def add_item(self, owner: str, name: str, key: str, quantity=None, unit=None) -> tuple[ShoppingItemDTO, bool]:
+    def add_item(self, owner: str, name: str, key: str, quantity=None, unit=None, *, minimum=False) -> tuple[ShoppingItemDTO, bool]:
         stmt = dialect_insert(self.session, ShoppingItem).values(
             id=uuid4().hex, owner_id=owner, name=name, name_key=key, quantity=quantity, unit=unit)
         created = self.session.execute(stmt.on_conflict_do_nothing(
             index_elements=[ShoppingItem.owner_id, ShoppingItem.name_key]
         ).returning(ShoppingItem.id)).scalar_one_or_none() is not None
-        if not created and quantity is not None:
-            self.session.execute(update(ShoppingItem).where(
-                ShoppingItem.owner_id == owner, ShoppingItem.name_key == key
-            ).values(quantity=quantity, unit=unit))
         row = self.session.scalars(select(ShoppingItem).where(
-            ShoppingItem.owner_id == owner, ShoppingItem.name_key == key)).one()
+            ShoppingItem.owner_id == owner, ShoppingItem.name_key == key).with_for_update()).one()
+        if not created and quantity is not None:
+            replacement = minimum_quantity(row, quantity, unit) if minimum else (quantity, unit)
+            if replacement is not None:
+                row.quantity, row.unit = replacement
         return ShoppingItemDTO(id=row.id, name=row.name, quantity=row.quantity, unit=row.unit), created
 
     def items(self, owner: str) -> list[ShoppingItemDTO]:

@@ -98,3 +98,44 @@ for (const recovery of ['retry', 'reload', 'changed amount']) test(`lost purchas
   await page.reload();
   expect((await kitchen.stock())[0].quantity).toBe(2);
 });
+
+test('favorite adds measured deficits and bought amounts refill exactly enough stock', async ({ page }) => {
+  const kitchen = await setup(page);
+  for (const item of [{ name: 'banana', quantity: 1, unit: 'pcs' }, { name: 'milk', quantity: .1, unit: 'L' }, { name: 'sugar', quantity: .01, unit: 'kg' }]) {
+    expect((await page.request.post('/api/inventory', { headers: kitchen.headers, data: item })).status()).toBe(201);
+  }
+  const before = await kitchen.stock();
+  await page.getByRole('link', { name: 'Find recipes', exact: true }).click();
+  await page.reload(); // Refresh inventory seeded through the isolated API.
+  await page.getByRole('button', { name: 'Generate recipes', exact: true }).click();
+  await page.getByRole('button', { name: 'View recipe', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Save favorite', exact: true }).click();
+  await page.getByRole('button', { name: 'Close recipe', exact: true }).click();
+  await page.getByRole('link', { name: 'Favorites', exact: true }).click();
+  await page.getByRole('button', { name: 'View recipe', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Add missing ingredients', exact: true }).click();
+  await expect(page.getByText('Missing ingredients added to shopping.', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Close recipe', exact: true }).click();
+  await page.getByRole('link', { name: 'Shopping list', exact: true }).click();
+  await page.reload();
+  expect(await kitchen.stock()).toEqual(before);
+  for (const [name, quantity, unit] of [['banana', '1', 'pcs'], ['milk', '100', 'ml'], ['sugar', '10', 'g']]) {
+    const row = page.getByRole('listitem').filter({ has: page.getByRole('button', { name: `Remove ${name}`, exact: true }) });
+    await expect(row).toContainText(`${quantity} ${unit}`);
+    await page.getByRole('button', { name: `Bought — add to fridge: ${name}`, exact: true }).click();
+    await expect(page.getByLabel('Bought quantity', { exact: true })).toHaveValue(quantity);
+    await page.getByRole('button', { name: 'Confirm purchase and add to fridge', exact: true }).click();
+    await expect(row).toHaveCount(0);
+  }
+  const stock = await kitchen.stock();
+  expect(stock.find(i => i.name === 'banana').quantity).toBe(2);
+  expect(stock.find(i => i.name === 'milk').quantity).toBe(.2);
+  expect(stock.find(i => i.name === 'sugar').quantity).toBe(.02);
+  await page.getByRole('link', { name: 'Favorites', exact: true }).click();
+  await page.getByRole('button', { name: 'View recipe', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Add missing ingredients', exact: true }).click();
+  await expect(page.getByText('Missing ingredients added to shopping.', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Close recipe', exact: true }).click();
+  await page.getByRole('link', { name: 'Shopping list', exact: true }).click();
+  await expect(page.getByText('All set for now', { exact: true })).toBeVisible();
+});

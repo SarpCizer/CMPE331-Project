@@ -87,3 +87,51 @@ def test_zero_stock_uses_full_requirement_and_expanding_casefold_name_is_safe(ki
     assert result.status_code == 200
     assert result.json()[0]['name'] == name
     assert result.json()[0]['quantity'] == 2
+
+
+@pytest.mark.parametrize('measurement,expected', [('2000000 g', (2000, 'kg')), ('2000000000 g', None), ('2000000 pcs', None)])
+def test_large_legacy_measurements_do_not_break_quantity_bounds(kitchen, measurement, expected):
+    kitchen.add('banana', 1)
+    rid = recipe(kitchen, ['rice'], [measurement])
+    result = missing(kitchen, rid)
+    assert result.status_code == 200
+    item, = result.json()
+    assert item['name'] == 'rice'
+    if expected is None:
+        assert 'quantity' not in item
+    else:
+        assert (item['quantity'], item['unit']) == expected
+
+
+def test_unknown_stock_and_mixed_dimensions_preserve_legacy_presence(kitchen):
+    kitchen.client.post('/api/inventory', headers=kitchen.alice, json={'name': 'rice'})
+    kitchen.add('rice', 50, 'g')
+    rid = recipe(kitchen, ['rice', 'egg', 'egg'], ['100 g', '1 pcs', '20 g'])
+    result = missing(kitchen, rid).json()
+    assert [i['name'] for i in result] == ['egg']
+    assert 'quantity' not in result[0]
+
+
+def test_cart_unit_can_change_to_keep_the_quantity_within_bounds(kitchen):
+    kitchen.add('banana', 1)
+    rid = recipe(kitchen, ['rice'], ['2000000 g'])
+    item = kitchen.client.post('/api/shopping-items', headers=kitchen.alice,
+        json={'name': 'rice', 'quantity': 1000000, 'unit': 'g'}).json()
+    assert missing(kitchen, rid).json() == [{**item, 'quantity': 2000, 'unit': 'kg'}]
+
+
+def test_simultaneous_recipe_additions_keep_maximum_deficit_not_sum(kitchen):
+    from concurrent.futures import ThreadPoolExecutor
+    kitchen.add('rice', 50, 'g')
+    small = recipe(kitchen, ['rice'], ['200 g'])
+    large = recipe(kitchen, ['rice'], ['300 g'])
+    kitchen.client.post('/api/shopping-items', headers=kitchen.alice, json={'name': 'rice'})
+    before = kitchen.stock()
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        responses = list(pool.map(lambda rid: missing(kitchen, rid), [small, large]))
+    assert any(r.status_code == 200 for r in responses)
+    assert all(r.status_code in {200, 503} for r in responses)
+    if all(r.status_code == 200 for r in responses):
+        assert cart(kitchen)[0]['quantity'] == 250
+    assert missing(kitchen, large).json()[0]['quantity'] == 250
+    assert kitchen.stock() == before
