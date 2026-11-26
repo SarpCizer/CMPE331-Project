@@ -37,7 +37,7 @@ def load(base):
         raise ValueError('Follow-up CI is incomplete')
     for path in ['integrated/postgresql-load.json','integrated/recipe-generation-load.json','local/non-ai-load.json','local/recipe-generation-load.json','zap/summary.json']:
         value=read(root/path)
-        if value['revision']!=revision or value['passed'] is not True:
+        if value['revision']!=revision or (not path.startswith('local/') and value['passed'] is not True):
             raise ValueError('Follow-up measurement source/result mismatch: '+path)
     sonar=read(root/'sonar/source-identity.json')
     if sonar['analysis_revision']!=revision or sonar['test_revision']!=revision or sonar['test_artifacts_reused']:
@@ -150,7 +150,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         ['Local SQLite',f'{local["overall"]["requests"]} / {local["overall"]["errors"]}',f'{local["overall"]["p95_ms"]:.2f} / {500-local["overall"]["p95_ms"]:.2f} ms'],
         ['CI PostgreSQL',f'{load_result["overall"]["requests"]} / {load_result["overall"]["errors"]}',f'{load_result["overall"]["p95_ms"]:.2f} / {500-load_result["overall"]["p95_ms"]:.2f} ms'],
     ],[175,140,184])
-    paragraph('This is an isolated agreed CI-environment assessment; neither row is a production SLA. Each route must also satisfy p95 <=500ms and errors<1%. Provider calls are excluded from this NFR-03 measurement.','small')
+    paragraph(f'Local NFR-03 profile: {"PASS" if local["passed"] else "FAIL"}; CI profile: {"PASS" if load_result["passed"] else "FAIL"}. A negative margin means that environment exceeded the limit. Failed local measurements are retained and do not become CI passes. This is an isolated agreed CI-environment assessment; neither row is a production SLA. Each route must also satisfy p95 <=500ms and errors<1%. Provider calls are excluded from this measurement.','small')
 
     page();heading('Generation load and security results',True)
     figure('review-generation-performance.svg',bars(f'Controlled generation HTTP p95 | {short}',

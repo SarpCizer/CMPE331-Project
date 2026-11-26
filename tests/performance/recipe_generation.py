@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timezone
 import json
 import os
+import platform
 from pathlib import Path
 import secrets
 import socket
@@ -40,6 +41,7 @@ class ControlledProvider:
 
 
 async def measure(args, directory):
+    started_utc = datetime.now(timezone.utc).isoformat()
     url = os.getenv('TEST_DATABASE_URL', f'sqlite:///{Path(directory) / "generation.db"}')
     engine = make_engine(url)
     migrate(engine)
@@ -124,7 +126,10 @@ async def measure(args, directory):
                 saved_after_timeout = session.scalar(select(func.count()).select_from(Recipe).where(Recipe.owner_id.in_(owners)))
             persisted = saved_before_timeout == steady['requests'] - steady['errors'] and saved_after_timeout == saved_before_timeout
             passed = steady['p95_ms'] <= 2000 and steady['error_rate'] < .01 and not malformed and unchanged and timeout_passed and cancelled == args.timeout_users and unchanged_after_timeout and persisted
-            result = {'revision': args.revision, 'started_utc': datetime.now(timezone.utc).isoformat(),
+            result = {'revision': args.revision, 'started_utc': started_utc,
+                'completed_utc': datetime.now(timezone.utc).isoformat(),
+                'client': {'system': platform.system(), 'architecture': platform.machine(),
+                    'python': platform.python_version(), 'cpu_count': os.cpu_count()},
                 'environment': args.environment, 'database': 'PostgreSQL' if url.startswith('postgres') else 'SQLite',
                 'scenario': {'users': args.users, 'configured_seconds': args.duration, 'measured_seconds': elapsed,
                     'think_seconds': 1, 'provider': 'controlled 200 ms response; no external inference',
