@@ -25,13 +25,15 @@ try {
     await page.goto(base + '/dashboard?id=fridgely');
     await page.waitForLoadState('networkidle');
   }
-  await page.getByText('Fridgely', { exact: true }).first().waitFor();
-  const overall = page.getByText(/^Overall Code$/i);
+  await page.getByText('Fridgely', { exact: true }).filter({ visible: true }).first().waitFor();
+  const overall = page.getByText(/^Overall Code$/i).filter({ visible: true });
   if (await overall.count() === 1) {
     await overall.click();
     await page.waitForLoadState('networkidle');
   }
-  await page.getByText(/Coverage/i).first().waitFor();
+  await page.getByText(/Coverage/i).filter({ visible: true }).first().waitFor();
+  const dismiss = page.getByRole('button', { name: 'Dismiss', exact: true }).filter({ visible: true });
+  if (await dismiss.count() === 1) await dismiss.click();
   const location = new URL(page.url());
   if ((await page.locator('input[type="password"]').count()) || location.origin !== new URL(base).origin || location.searchParams.get('id') !== 'fridgely') throw new Error('Project dashboard was not reached');
   await page.screenshot({ path: output + '/dashboard.png', fullPage: true });
