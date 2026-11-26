@@ -73,7 +73,7 @@ for (const width of [360, 1440])
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await page.screenshot({ path: `../mood-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `../test-results/mood-${width}.png`, fullPage: true });
     await moods
       .getByRole("button", { name: "Clear mood", exact: true })
       .click();

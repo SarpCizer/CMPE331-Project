@@ -22,6 +22,7 @@ The picker follows the existing cream/green design, uses a labelled native field
 - RED: `2dfba3a` adds tests against unchanged production source `1f004ac845a79942f0e36d3d1b90532796860bf7`. Actual result: 15 failed, 6 passed; valid mood requests were rejected by the old empty-body contract.
 - Backend regressions cover every mood through both provider adapters, owner isolation, current quantities/preferences, invalid input, no stock mutation, authentication, empty fridge, allergen priority and whole-batch time-limit rejection.
 - Browser regressions exercise all six selections, reset/toggle behavior, mobile/desktop layout, keyboard selection, accessibility/contrast, no inventory changes, loading controls, sanitized provider failure and successful retry.
+- The existing Node acceptance bridge omits an unused optional mood, preserving the original no-mood input shape; a separate acceptance case verifies that a selected mood is retained.
 - Tests use synthetic accounts, temporary SQL databases and controlled external responses. PostgreSQL/container, source identity, security, measured coverage and load evidence must be read from the actual source-pinned CI run; local SQLite passes are not PostgreSQL or live-provider passes.
 
 Codex assisted implementation and verification. Main integration requires independent team review and the existing mandatory checks. Existing free provider/deployment settings and historical course artifacts are preserved.
