@@ -9,7 +9,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, Path
 from fastapi.responses import JSONResponse
 from pydantic import Field, StringConstraints, field_validator
-from sqlalchemy import Date, Integer, String, select
+from sqlalchemy import Date, Integer, String, select, update
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from starlette.concurrency import run_in_threadpool
 
@@ -207,7 +207,17 @@ def planner_router(require_account, transact, recipe_lookup, clock, store, gener
             return JSONResponse({'error':str(error), **({'retryable':True} if error.retryable else {})}, status_code=error.status)
         def commit_dish(session, _repo):
             lock_owner(session, owner)
-            if revision(session, _repo) != prior:
+            # The first write must atomically claim the observed revision. A
+            # preceding SELECT alone does not serialize SQLite deferred writes.
+            claim = uuid4().hex
+            if prior is None:
+                statement = dialect_insert(session, WeeklyMeal).values(owner_id=owner, week_start=week,
+                    day=day, meal=meal, recipe_id=None, servings=None, revision=claim)
+                statement = statement.on_conflict_do_nothing(index_elements=['owner_id','week_start','day','meal'])
+            else:
+                statement = update(WeeklyMeal).where(WeeklyMeal.owner_id==owner, WeeklyMeal.week_start==week,
+                    WeeklyMeal.day==day, WeeklyMeal.meal==meal, WeeklyMeal.revision==prior).values(revision=claim)
+            if session.execute(statement).rowcount != 1:
                 raise CollectionError(409, 'This meal changed while its recipe was being created. Refresh the week and try again.')
             store.insert_in_session(session, owner, [recipe])
             session.flush()
