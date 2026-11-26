@@ -17,10 +17,15 @@ SPEC.loader.exec_module(SONAR)
 
 class QualityGateTests(unittest.TestCase):
     def run_export(self, *, status="OK", conditions=None, measures=None):
-        gate = {"projectStatus": {"status": status, "conditions": conditions or []}}
+        required = {'bugs': ('GT', '0'), 'vulnerabilities': ('GT', '0'),
+                    'security_hotspots': ('GT', '0'), 'coverage': ('LT', '90'),
+                    'blocker_violations': ('GT', '0'), 'critical_violations': ('GT', '0')}
+        complete = [{'status': 'OK', 'metricKey': key, 'comparator': op, 'errorThreshold': threshold,
+                     'actualValue': '95' if key == 'coverage' else '0'} for key, (op, threshold) in required.items()]
+        gate = {"projectStatus": {"status": status, "conditions": complete if conditions is None else conditions}}
         metrics = {"component": {"measures": measures if measures is not None else [
-            {"metric": name, "value": "0"}
-            for name in ("bugs", "vulnerabilities", "security_hotspots")
+            {"metric": name, "value": "95" if name == 'coverage' else "0"}
+            for name in required
         ]}}
         payloads = {
             "/task": {"task": {"status": "SUCCESS", "analysisId": "test-analysis"}},
@@ -84,16 +89,22 @@ class QualityGateTests(unittest.TestCase):
                 self.run_export(measures=[{"metric": name, "value": value if name == "bugs" else "0"}
                     for name in ("bugs", "vulnerabilities", "security_hotspots")])
 
-    def test_empty_server_gate_records_independent_security_checks(self):
-        policy = self.run_export()
-        self.assertTrue(policy["passed"])
-        self.assertFalse(policy["server_conditions_evaluated"])
-        self.assertEqual(len(policy["security_measures"]), 3)
+    def test_empty_server_gate_is_rejected(self):
+        with self.assertRaises(RuntimeError):
+            self.run_export(conditions=[])
 
     def test_passing_server_conditions_and_security_measures_pass(self):
-        policy = self.run_export(conditions=[{"status": "OK", "metricKey": "bugs"}])
+        policy = self.run_export()
         self.assertTrue(policy["passed"])
         self.assertTrue(policy["server_conditions_evaluated"])
+
+    def test_incomplete_conditions_are_rejected(self):
+        with self.assertRaises(RuntimeError):
+            self.run_export(conditions=[{'status': 'OK', 'metricKey': 'bugs', 'comparator': 'GT', 'errorThreshold': '0'}])
+
+    def test_missing_actual_condition_value_is_rejected(self):
+        with self.assertRaises(RuntimeError):
+            self.run_export(conditions=[{'status': 'OK', 'metricKey': 'coverage', 'comparator': 'LT', 'errorThreshold': '90'}])
 
 
 if __name__ == "__main__":
