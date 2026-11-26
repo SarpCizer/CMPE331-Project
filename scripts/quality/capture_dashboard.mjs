@@ -6,8 +6,14 @@ if (!['127.0.0.1', 'localhost'].includes(new URL(base).hostname)) throw new Erro
 const output = 'test-results/sonarqube';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
+let page;
 try {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 });
+  page = await browser.newPage({ viewport: { width: 1280, height: 1000 }, deviceScaleFactor: 2 });
+  if (!process.env.SONAR_ADMIN_PASSWORD) throw new Error('Ephemeral CI login is missing');
+  const session = await page.context().request.post(base + '/api/authentication/login', {
+    form: { login: 'admin', password: process.env.SONAR_ADMIN_PASSWORD },
+  });
+  if (!session.ok()) throw new Error('Ephemeral server login failed: HTTP ' + session.status());
   await page.goto(base + '/dashboard?id=fridgely');
   await page.waitForLoadState('networkidle');
   if (await page.locator('input[type="password"]').count()) {
@@ -19,14 +25,15 @@ try {
     await page.goto(base + '/dashboard?id=fridgely');
     await page.waitForLoadState('networkidle');
   }
-  await page.getByText(/Quality Gate/i).first().waitFor();
-  const overall = page.getByText('Overall Code', { exact: true });
+  await page.getByText('Fridgely', { exact: true }).first().waitFor();
+  const overall = page.getByText(/^Overall Code$/i);
   if (await overall.count() === 1) {
     await overall.click();
     await page.waitForLoadState('networkidle');
   }
   await page.getByText(/Coverage/i).first().waitFor();
-  if ((await page.locator('input[type="password"]').count()) || !page.url().includes('dashboard')) throw new Error('Dashboard was not reached');
+  const location = new URL(page.url());
+  if ((await page.locator('input[type="password"]').count()) || location.origin !== new URL(base).origin || location.searchParams.get('id') !== 'fridgely') throw new Error('Project dashboard was not reached');
   await page.screenshot({ path: output + '/dashboard.png', fullPage: true });
   await writeFile(output + '/dashboard-capture.json', JSON.stringify({
     revision: process.env.TESTED_REVISION, captured_at_utc: new Date().toISOString(),
@@ -35,6 +42,10 @@ try {
   }, null, 2));
 } catch (error) {
   let message = String(error.message);
+  if (page) {
+    message += '\nURL: ' + page.url() + '\nVisible page: ' + await page.locator('body').innerText({timeout:2000}).catch(() => 'unavailable');
+    await page.screenshot({path: output + '/dashboard-capture-error.png',fullPage:true,mask:[page.locator('input')]}).catch(() => {});
+  }
   for (const secret of [process.env.SONAR_ADMIN_PASSWORD, process.env.SONAR_TOKEN].filter(Boolean)) message = message.replaceAll(secret, '[REDACTED]');
   await writeFile(output + '/dashboard-capture-error.txt', message);
   throw new Error('Dashboard capture failed; see sanitized diagnostic artifact');
