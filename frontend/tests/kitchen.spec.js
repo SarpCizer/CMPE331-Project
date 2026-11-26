@@ -198,6 +198,8 @@ for (const width of [360, 768, 1440])
         ),
       ).toBe(true);
       if (width === 1440) {
+        await page.getByRole("link", {name:label,exact:true}).evaluate(element =>
+          Promise.all(element.getAnimations().map(animation => animation.finished.catch(() => {}))));
         const audit = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
           .analyze();
