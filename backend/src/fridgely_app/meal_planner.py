@@ -19,8 +19,8 @@ from fridgely_collections.ports import AccountPrincipal
 from fridgely_collections.repository import dialect_insert
 from fridgely_collections.schemas import DTO, Identifier, RecipeDTO, ShoppingItemDTO, ingredient_name
 from fridgely_recipes.service import RecipeError, requested_recipe
-from .availability import _measurement, _UNITS, requirements_shopping_items
-from .models import Account
+from .availability import _measurement, _UNITS, requirements_shopping_items, _requirements_snapshot, _shortfall
+from .models import Account, Preferences
 
 Meal = Annotated[str, StringConstraints(strict=True, pattern=r'^dish-(?:[1-9]|1[0-9]|20)$')]
 Portions = Annotated[int, Field(ge=1, le=20)]
@@ -155,6 +155,24 @@ def planner_router(require_account, transact, recipe_lookup, clock, store, gener
 
     def rendered(session, owner, week):
         return WeekPlan(weekStart=week.isoformat(), entries=_entries(session, owner, week, recipe_lookup))
+
+    @router.get('/surprise-recipes', response_model=list[RecipeDTO], tags=['Surprise me'])
+    def surprise(user: AccountPrincipal = Depends(require_account)):
+        def eligible(session, _repo):
+            preferences = session.get(Preferences, user.account_id)
+            excluded = {ingredient_name(name)[1] for name in preferences.allergens} if preferences else set()
+            result = []
+            for recipe in store.list_owned(session, user.account_id):
+                measurements = [(name, recipe.ingredientAmounts[i] if recipe.ingredientAmounts else None)
+                    for i, name in enumerate(recipe.ingredients)]
+                stock, required, _display = _requirements_snapshot(session, user.account_id, measurements)
+                if any(key in excluded for key in required):
+                    continue
+                deficits = [_shortfall(amounts, stock.get(key, [])) for key, amounts in required.items()]
+                if deficits and all(value is not None and value[1] == 0 for value in deficits):
+                    result.append(recipe)
+            return result
+        return transact(eligible)
 
     @router.get('/weekly-plan', response_model=WeekPlan)
     def load(weekStart: str | None = None, user: AccountPrincipal = Depends(require_account)):
