@@ -69,6 +69,10 @@ jobs:
           python-version: '3.12'
       - name: Exercise dirty-checkout, revision and ZIP metadata regressions
         run: python -B -m unittest discover -s scripts/release -p test_package_source.py -v
+      - name: Install pinned report dependencies
+        run: python -m pip install -r scripts/tests/requirements-report.txt
+      - name: Verify clean PDF exports, source labels and Windows evidence bytes
+        run: python -B -m unittest discover -s scripts/tests -p test_export_report.py -v
       - name: Package the exact checked-out commit twice and compare bytes
         run: |
           archive_revision="$(git rev-parse HEAD)"
@@ -212,6 +216,9 @@ jobs:
       - name: Five-minute non-AI load scenario
         run: |
           python tests/performance/non_ai_http.py --revision "$TESTED_REVISION" --environment GitHub-Actions-Ubuntu-PostgreSQL17-one-worker --output test-results/postgresql-load.json | tee test-results/load.log
+      - name: Recipe generation concurrency and five simultaneous provider deadlines
+        run: |
+          PYTHONPATH=backend/src python tests/performance/recipe_generation.py --revision "$TESTED_REVISION" --environment GitHub-Actions-Ubuntu-PostgreSQL17-one-worker-controlled-provider --output test-results/recipe-generation-load.json | tee test-results/recipe-generation-load.log
       - name: Dependency security checks
         run: |
           python -m pip_audit -r backend/requirements-app.lock -f json -o test-results/python-dependencies.json
@@ -224,6 +231,51 @@ jobs:
           path: test-results/
           retention-days: 30
           if-no-files-found: error
+
+  zap-api:
+    name: Authenticated OWASP ZAP API scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TESTED_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+      PYTHONPATH: backend/src
+      FRIDGELY_TEST_PORT: '8094'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements-app.lock
+      - name: Install locked application and start disposable instrumented host
+        run: |
+          python -m pip install -r backend/requirements-app.lock
+          python -m pip install --no-deps -e backend
+          mkdir -p test-results
+          python tests/security/serve_zap_host.py >test-results/zap-host.log 2>&1 &
+          echo $! > "$RUNNER_TEMP/fridgely-zap-host.pid"
+          for attempt in $(seq 1 120); do
+            if curl --fail --silent http://127.0.0.1:8094/__security_probe__/metrics; then break; fi
+            sleep 1
+          done
+      - name: Authenticated standard API scan and severity policy
+        run: python tests/security/zap_scan.py --revision "$TESTED_REVISION" --output test-results/zap
+      - name: Upload sanitized ZAP findings and authentication evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: zap-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            test-results/zap/
+            test-results/zap-host.log
+          retention-days: 30
+          if-no-files-found: error
+      - name: Stop disposable host
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/fridgely-zap-host.pid" ]; then kill "$(cat "$RUNNER_TEMP/fridgely-zap-host.pid")" || true; fi
 
   coverage-policy:
     name: Enforce source coverage policy
@@ -319,6 +371,15 @@ jobs:
           mkdir -p .scannerwork
           docker run --rm --network host --workdir /usr/src --user "$(id -u):$(id -g)" -e SONAR_TOKEN -e SONAR_HOST_URL -e SONAR_USER_HOME=/tmp/sonar-cache -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli:latest -Dsonar.projectBaseDir=/usr/src -Dsonar.working.directory=/usr/src/.scannerwork -Dsonar.projectVersion="$TESTED_REVISION" -Dsonar.scm.disabled=true
           python scripts/quality/sonarqube.py export
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Capture the actual source-pinned Sonar dashboard
+        run: |
+          npm install --global pnpm@11.25.0
+          pnpm --dir frontend install --frozen-lockfile
+          pnpm --dir frontend exec playwright install --with-deps chromium
+          node scripts/quality/capture_dashboard.mjs
       - name: Upload real SonarQube results
         if: always()
         uses: actions/upload-artifact@v7.0.2

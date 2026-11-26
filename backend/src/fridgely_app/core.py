@@ -159,7 +159,10 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             raise HTTPException(409) from None
         return {'id':row.id, 'email':row.email}
 
-    @router.post('/sessions', response_model=SessionDTO, tags=['Accounts'])
+    @router.post('/sessions', response_model=SessionDTO, tags=['Accounts'], responses={
+        429: {'description': 'Sign-in rate limit exceeded', 'headers': {
+            'Retry-After': {'description': 'Seconds before another sign-in attempt', 'schema': {'type': 'integer'}}}},
+    })
     def sign_in(command: Credentials, request: Request):
         source = request.client.host if request.client else 'unknown'
         login_throttle.reserve(source, command.email)

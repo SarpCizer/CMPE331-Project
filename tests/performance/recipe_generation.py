@@ -9,6 +9,7 @@ import secrets
 import socket
 import tempfile
 import time
+import sys
 
 import httpx
 import uvicorn
@@ -18,6 +19,8 @@ from fridgely_app.database import make_engine, migrate
 from fridgely_app.host import create_app
 from fridgely_recipes.storage import Recipe
 from non_ai_http import statistics
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'helpers'))
+from measured_source import verified_revision
 
 
 class ControlledProvider:
@@ -154,6 +157,7 @@ if __name__ == '__main__':
     parser.add_argument('--environment', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
+    args.revision = verified_revision(Path(__file__).resolve().parents[2], args.revision)
     if not (1 <= args.users <= 50 and 1 <= args.timeout_users <= args.users and 1 <= args.duration <= 300):
         parser.error('Use 1-50 users, 1-300 seconds and a bounded concurrent timeout cohort')
     with tempfile.TemporaryDirectory(prefix='fridgely-generation-load-') as directory:
