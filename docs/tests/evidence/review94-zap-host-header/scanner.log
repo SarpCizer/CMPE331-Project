@@ -1,0 +1,773 @@
+Unable to find image 'ghcr.io/zaproxy/zaproxy:2.17.0' locally
+2.17.0: Pulling from zaproxy/zaproxy
+beff637b166d: Pulling fs layer
+d76c7e4d4eed: Pulling fs layer
+41b28138a536: Pulling fs layer
+cd5f7553f81c: Pulling fs layer
+5ea75c5c7143: Pulling fs layer
+1b1d49a38a01: Pulling fs layer
+e5ca1437e0c7: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+c212a4ce8543: Pulling fs layer
+7829b3d60f05: Pulling fs layer
+68fc7dda2d84: Pulling fs layer
+0a41632055c2: Pulling fs layer
+f63a8bdddb02: Pulling fs layer
+39623f43dfaa: Pulling fs layer
+6173fb42a391: Pulling fs layer
+f26fc71eb93e: Pulling fs layer
+dee331ead96d: Pulling fs layer
+3c5439d0ae62: Pulling fs layer
+41737c9a08d0: Pulling fs layer
+af3152b6af93: Pulling fs layer
+4f4fb700ef54: Already exists
+d76c7e4d4eed: Download complete
+e5ca1437e0c7: Download complete
+68fc7dda2d84: Download complete
+f63a8bdddb02: Download complete
+7829b3d60f05: Download complete
+0a41632055c2: Download complete
+39623f43dfaa: Download complete
+41737c9a08d0: Download complete
+f26fc71eb93e: Download complete
+beff637b166d: Download complete
+c212a4ce8543: Download complete
+41b28138a536: Download complete
+af3152b6af93: Download complete
+5ea75c5c7143: Download complete
+3c5439d0ae62: Download complete
+1b1d49a38a01: Download complete
+dee331ead96d: Download complete
+3c5439d0ae62: Pull complete
+6173fb42a391: Download complete
+cd5f7553f81c: Download complete
+cd5f7553f81c: Pull complete
+1b1d49a38a01: Pull complete
+beff637b166d: Pull complete
+68fc7dda2d84: Pull complete
+d76c7e4d4eed: Pull complete
+4f4fb700ef54: Pull complete
+0a41632055c2: Pull complete
+6173fb42a391: Pull complete
+dee331ead96d: Pull complete
+41737c9a08d0: Pull complete
+af3152b6af93: Pull complete
+41b28138a536: Pull complete
+f63a8bdddb02: Pull complete
+5ea75c5c7143: Pull complete
+e5ca1437e0c7: Pull complete
+7829b3d60f05: Pull complete
+39623f43dfaa: Pull complete
+f26fc71eb93e: Pull complete
+c212a4ce8543: Pull complete
+Digest: sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af
+Status: Downloaded newer image for ghcr.io/zaproxy/zaproxy:2.17.0
+2026-11-26 21:28:13,325 I/O error: [Errno 5] Failed to connect to ZAP after 300 seconds
+Traceback (most recent call last):
+  File "/zap//zap-api-scan.py", line 403, in main
+    wait_for_zap_start(zap, timeout * 60)
+  File "/zap/zap_common.py", line 326, in wait_for_zap_start
+    raise IOError(
+OSError: [Errno 5] Failed to connect to ZAP after 300 seconds
+Found Java version 17.0.21
+Available memory: 15983 MB
+Using JVM args: -Xmx3995m
+371 [main] INFO  org.parosproxy.paros.Constant - Copying default configuration to /home/zap/.ZAP/config.xml
+457 [main] INFO  org.parosproxy.paros.Constant - Creating directory /home/zap/.ZAP/session
+457 [main] INFO  org.parosproxy.paros.Constant - Creating directory /home/zap/.ZAP/dirbuster
+458 [main] INFO  org.parosproxy.paros.Constant - Creating directory /home/zap/.ZAP/fuzzers
+458 [main] INFO  org.parosproxy.paros.Constant - Creating directory /home/zap/.ZAP/plugin
+536 [main] INFO  org.zaproxy.zap.DaemonBootstrap - ZAP 2.17.0 started 26/11/2026, 21:23:13 with home: /home/zap/.ZAP/ cores: 4 maxMemory: 3 GB
+557 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config database.recoverylog = false was null
+557 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config api.disablekey = true was null
+557 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config api.addrs.addr.name = (127[.]0[.]0[.]1|::1|0:0:0:0:0:0:0:1) was null
+558 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config api.addrs.addr.regex = true was null
+558 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config stats.pkg.apiscan-api = 1 was null
+558 [main] INFO  org.parosproxy.paros.common.AbstractParam - Setting config ascan.maxScanDurationInMins = 4 was null
+1978 [ZAP-daemon] INFO  org.zaproxy.zap.control.ExtensionFactory - Installed add-ons: [[id=alertFilters, version=29.0.0], [id=ascanrules, version=84.0.0], [id=authhelper, version=0.44.0], [id=automation, version=0.62.0], [id=bruteforce, version=21.0.0], [id=callhome, version=0.23.0], [id=client, version=0.34.0], [id=commonlib, version=1.44.0], [id=database, version=0.9.0], [id=diff, version=18.0.0], [id=directorylistv1, version=9.0.0], [id=domxss, version=24.0.0], [id=encoder, version=1.9.0], [id=exim, version=0.22.0], [id=formhandler, version=6.9.0], [id=fuzz, version=13.17.0], [id=gettingStarted, version=20.0.0], [id=graaljs, version=0.14.0], [id=graphql, version=0.35.0], [id=help, version=22.0.0], [id=hud, version=0.19.0], [id=insights, version=0.7.0], [id=invoke, version=17.0.0], [id=network, version=0.33.0], [id=oast, version=0.26.0], [id=onlineMenu, version=15.0.0], [id=openapi, version=58.0.0], [id=params, version=0.1.0], [id=postman, version=0.10.0], [id=pscan, version=0.6.0], [id=pscanrules, version=77.0.0], [id=quickstart, version=60.0.0], [id=replacer, version=22.0.0], [id=reports, version=0.46.0], [id=requester, version=7.10.0], [id=retest, version=0.11.0], [id=retire, version=0.68.0], [id=reveal, version=10.0.0], [id=scanpolicies, version=0.8.0], [id=scripts, version=45.20.0], [id=selenium, version=15.60.0], [id=sequence, version=10.0.0], [id=soap, version=32.0.0], [id=spider, version=0.20.0], [id=spiderAjax, version=23.33.0], [id=tips, version=16.0.0], [id=webdriverlinux, version=231.0.0], [id=websocket, version=38.0.0], [id=zest, version=48.14.0]]
+1979 [ZAP-daemon] INFO  org.zaproxy.zap.control.ExtensionFactory - Loading extensions
+2375 [ZAP-daemon] INFO  org.zaproxy.addon.network.internal.TlsUtils - Using supported SSL/TLS protocols: [TLSv1.2, TLSv1.3]
+2547 [ZAP-daemon] INFO  org.zaproxy.zap.control.ExtensionFactory - Extensions loaded
+2732 [ZAP-daemon] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:hsqldb:file:/home/zap/.ZAP/session/untitled1 (HSQL Database Engine 2.7)
+2772 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Schema history table "PUBLIC"."PARAMS_FLYWAY_SCHEMA_HISTORY" does not exist yet
+2775 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 1 migration (execution time 00:00.010s)
+2781 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."PARAMS_FLYWAY_SCHEMA_HISTORY" with baseline ...
+2829 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbBaseline - Successfully baselined schema with version: 0
+2846 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema "PUBLIC": 0
+2883 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - Create addon params"
+2901 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.006s)
+3174 [ZAP-daemon] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:hsqldb:file:/home/zap/.ZAP/session/untitled1 (HSQL Database Engine 2.7)
+3181 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Schema history table "PUBLIC"."SCRIPTS_FLYWAY_SCHEMA_HISTORY" does not exist yet
+3182 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 1 migration (execution time 00:00.002s)
+3185 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."SCRIPTS_FLYWAY_SCHEMA_HISTORY" with baseline ...
+3197 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbBaseline - Successfully baselined schema with version: 0
+3200 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema "PUBLIC": 0
+3211 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - Create scripts run tables"
+3219 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.003s)
+3305 [ZAP-daemon] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:hsqldb:file:/home/zap/.ZAP/session/untitled1 (HSQL Database Engine 2.7)
+3315 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Schema history table "PUBLIC"."CLIENT_FLYWAY_SCHEMA_HISTORY" does not exist yet
+3316 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 1 migration (execution time 00:00.001s)
+3318 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."CLIENT_FLYWAY_SCHEMA_HISTORY" with baseline ...
+3325 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbBaseline - Successfully baselined schema with version: 0
+3328 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema "PUBLIC": 0
+3331 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - Create history table"
+3336 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.000s)
+3480 [ZAP-daemon] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:hsqldb:file:/home/zap/.ZAP/session/untitled1 (HSQL Database Engine 2.7)
+3486 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Schema history table "PUBLIC"."AUTHHELPER_FLYWAY_SCHEMA_HISTORY" does not exist yet
+3487 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbValidate - Successfully validated 6 migrations (execution time 00:00.003s)
+3490 [ZAP-daemon] INFO  org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory - Creating Schema History table "PUBLIC"."AUTHHELPER_FLYWAY_SCHEMA_HISTORY" with baseline ...
+3495 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbBaseline - Successfully baselined schema with version: 0
+3498 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Current version of schema "PUBLIC": 0
+3505 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "1 - Create tables"
+3514 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "2 - Create storage tables"
+3526 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "3 - Improve diags"
+3533 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "4 - Web element selector"
+3538 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "5 - Af plan"
+3549 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Migrating schema "PUBLIC" to version "6 - Auth report data"
+3558 [ZAP-daemon] INFO  org.flywaydb.core.internal.command.DbMigrate - Successfully applied 6 migrations to schema "PUBLIC", now at version v6 (execution time 00:00.005s)
+3912 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Auto-update Extension - Allows ZAP to check for updates
+3914 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Options Extension - Options Extension
+3914 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Edit Menu Extension - Edit Menu Extension
+3914 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing API Extension - Provides a rest based API for controlling and accessing ZAP
+3918 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing History Extension - History Extension
+3918 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionReveal - Show hidden fields and enable disabled fields
+3919 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Search Extension - Search messages for strings and regular expressions
+3919 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Breakpoint Extension - Allows you to intercept and modify requests and responses
+3920 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Passive Scan Extension - Passive scanner
+3920 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Alerts Extension - Allows you to view and manage alerts
+3921 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Active Scan Extension - Active scanner, heavily based on the original Paros active scanner, but with additional tests added
+3925 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionSequence - ExtensionSequence
+3926 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Standard Menus Extension - A set of common popup menus for miscellaneous tasks
+3926 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionBruteForce - Forced browsing of files and directories using code from the OWASP DirBuster tool
+3926 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Compare Extension - Compares 2 sessions and generates an HTML file showing the differences
+3927 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionInvoke - Invoke external applications passing context related information such as URLs and parameters
+3927 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Anti-CSRF Extension - Handles anti cross site request forgery (CSRF) tokens
+3929 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Authentication Extension - Authentication Extension
+3932 [ZAP-daemon] INFO  org.zaproxy.zap.extension.authentication.ExtensionAuthentication - Loaded authentication method types: [Form-based Authentication, HTTP/NTLM Authentication, Manual Authentication, Script-based Authentication, JSON-based Authentication]
+3933 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Users Extension - Users Extension
+3934 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Parameters Extension - Summarise and analyse form and URL parameters as well as cookies and headers
+3934 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Script Extension - Script integration
+3936 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionScripts - Scripting console, supports all JSR 223 scripting languages
+3940 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Forced User Extension - Forced User Extension
+3940 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Sessions Extension - Extension handling HTTP sessions
+3941 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionZest - Zest is a specialized scripting language, originally, from Mozilla specifically designed to be used in security tools
+3997 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionDiff - ExtensionDiff
+3998 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Post Table View Extension - HTTP Panel Post Table View Extension
+3998 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Encoder Addon - Adds support for scriptable encoders to ZAP.
+3998 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Session Management Extension - Session Management Extension
+4000 [ZAP-daemon] INFO  org.zaproxy.zap.extension.sessions.ExtensionSessionManagement - Loaded session management method types: [Cookie-based Session Management, HTTP Authentication Session Management, Script-based Session Management]
+4000 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Form Table View Extension - HTTP Panel Form Table View Extension
+4000 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing WebSockets Support - Capture messages from WebSockets with the ability to set breakpoints.
+4006 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing SOAP/WSDL Support - Allows you to import a WSDL file containing operations which ZAP will access, adding them to the Sites tree.
+4007 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Core UI Extension - Core UI related functionality.
+4007 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Authorization Extension - Authorization Extension
+4007 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Requester - Allows to manually edit and send messages.
+4008 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing AJAX Spider - AJAX Spider, uses Crawljax
+4010 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing WebDriver Provider - Provides WebDrivers to control several browsers using Selenium and includes HtmlUnit browser.
+4019 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionClientIntegration - Client Side Integration
+4022 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Refresh Sites Tree Extension - Adds menu item to refresh the Sites tree
+4022 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Help Extension - ZAP User Guide
+4022 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Call Home - Handles all of the calls to ZAP services
+4023 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Network Extension - Provides core networking capabilities.
+4039 [ZAP-daemon] INFO  org.zaproxy.addon.network.ConnectionOptions - Unsafe SSL/TLS renegotiation disabled.
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Extension Configuration Extension - Allows you to configure which extensions are loaded when ZAP starts
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Combined HTTP Panels Extension - Combined HTTP Panels Extension
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Hex View Extension - HTTP Panel Hex View Extension
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Image View Extension - HTTP Panel Image View Extension
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Query Table View Extension - HTTP Panel Query Table View Extension
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Panel Syntax Highlighter View Extension - HTTP Panel Syntax Highlighter View Extension
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Keyboard Configuration Extension - Adds support for configurable keyboard shortcuts for all of the ZAP menus.
+4040 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Scanner Rule Configuration Extension - Active and passive rule configuration
+4041 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Statistics Extension - Statistics
+4042 [ZAP-daemon] INFO  org.zaproxy.zap.extension.stats.ExtensionStats - Start recording in memory stats
+4042 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Custom Pages Extension - Custom Pages Definition
+4042 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing WebSocket Fuzzer - Allows to fuzz WebSocket messages.
+4042 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing WebSocket Message Editor - Provides the WebSocket Message Editor dialogues.
+4042 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Out-of-band Application Security Testing - Adds Out-of-band Application Security Testing functionality.
+4045 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing OAST Scripts - Adds OAST scripts.
+4045 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Common Library - A library of shared functionality
+4045 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Passive Scanner Extension - Provides core passive scanning capabilities.
+4056 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Passive Scanner Automation Framework Extension - Provides jobs and result data related to the passive scanner.
+4056 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionAlertFilters - Context alert rules filter
+4057 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Alert Filters Automation - Alert Filters Automation Framework Integration
+4058 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing SOAP Automation - SOAP Automation Framework Integration
+4059 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing SOAP Spider - SOAP Spider Integration
+4060 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Retest - Facilitates the verification of presence/absence of certain alerts.
+4060 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionInsights - Insights Extension
+4061 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Insights Automation - Insights Automation Framework Integration
+4061 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Insights Reports Extension - Adds Insights to the report data
+4062 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Sequence Automation - Sequence Automation Framework Integration
+4065 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionOnlineMenu - The Online menu links
+4065 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing AJAX Spider (Client Spider) - Stands in for the AJAX Spider (using the Client Spider) if that add-on is not installed.
+4065 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Client Spider Automation - Client Spider Automation Framework Integration
+4067 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Client Map Import/Export - Client Map export support for Import/Export.
+4068 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Client Zest Script Recording Support - Allows recording client events as Zest scripts.
+4069 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Zest Import/Export - Zest script export and import support for Import/Export.
+4069 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Import/Export - Import and Export functionality supporting multiple formats.
+4070 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Import/Export Automation - Import/Export Automation Framework Integration
+4071 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing OpenAPI Import - Allows you to spider and import OpenAPI (Swagger) definitions 
+4072 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing OpenAPI Automation - OpenAPI Automation Framework Integration
+4073 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing OpenAPI Scripts - Adds scripts relevant to OpenAPI specifications.
+4073 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing OpenAPI Spider - OpenAPI Spider Integration
+4074 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionGraphQl - Allows you to inspect and attack GraphQL endpoints.
+4077 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing GraphQL Automation - GraphQL Automation Framework Integration
+4078 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing GraphQL Spider - GraphQL Spider Integration
+4079 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Authentication Helper - Authentication Helper
+4080 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Authentication Helper Automation - Authentication Helper Automation Framework Integration
+4084 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Client Spider Browser Based Authentication Support - Enables browser based authentication when performing an authenticated Client Spider scan.
+4084 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Authentication Helper Reports - Authentication Helper Reports
+4085 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing AJAX Spider Browser Based Authentication Support - Enables browser based authentication when performing an authenticated AJAX Spider scan.
+4086 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionGettingStarted - The ZAP Getting Started Guide
+4086 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start panel  - Adds the Quick Start panel for scanning and exploring applications
+4087 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start Ajax Spider integration - Add the option to use the Ajax Spider in the Quick Start scan
+4087 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start Client Spider Integration - Provides the option to use the Client Spider when running a quick scan
+4087 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start HUD Integration - HUD integration for the quick start panel
+4087 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start Browser Launcher - Launch browsers preset proxying through ZAP
+4087 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Quick Start Spider Integration - Adds the option to use the traditional Spider in the Quick Start scan.
+4088 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Scripts Automation Framework Integration - Scripts Automation
+4093 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Script Console Report Data - Supplies script data to reports when the session database contains recorded output.
+4093 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Parameters Automation Framework Integration - Parameters Automation
+4094 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Automation Framework - Provides functionality to simplify using ZAP in an automated manner
+4095 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Ajax Spider Automation - Ajax Spider Automation Framework Integration
+4097 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Advance Fuzzer - Provides the foundation for concrete message types (for example, HTTP, WebSockets) expose fuzzer implementations.
+4097 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing HTTP Fuzzer - Allows to fuzz HTTP messages.
+4098 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Retire.js - Retire.js
+4098 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Vulnerable JS Library (Powered by Retire.js)
+4099 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Postman Import - Allows you to spider and import Postman collections
+4099 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Postman Automation - Postman Automation Framework Integration
+4100 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionFormHandler - This extension allows a user to change the default values used for generated content (e.g. spiders, importers).
+4102 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionTipsAndTricks - Tips and Tricks
+4102 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Database Extension - Provides databases and persistence capabilities.
+4102 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Active Scan Rules - Release status active scan rules
+4102 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Match and Replace - Easy way to replace strings in requests and responses
+4104 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Replacer Automation - Replacer Automation Framework Integration
+4104 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Spider Extension - Spider used for automatically finding URIs on a site.
+4115 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Spider Automation - Spider Automation Integration
+4117 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing GraalVM JavaScript Engine Extension - Provides the GraalVM JavaScript engine for ZAP scripting.
+4125 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionDomXSS - DOM XSS Active Scan Rule
+4161 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Report Generator - Templated and themed report generation functionality
+4162 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Report Generation Automation Integration - Report Generation Automation Integration
+4164 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionHUD - Heads Up Display
+4259 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing ExtensionHUDlaunch - ExtensionHUDlaunch
+4259 [ZAP-daemon] INFO  org.parosproxy.paros.extension.ExtensionLoader - Initializing Passive Scan Rules - Release status passive scan rules.
+4390 [ZAP-daemon] INFO  org.zaproxy.addon.oast.services.callback.CallbackService - Started callback service on 0.0.0.0:45655
+4391 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: WSDL File Detection
+4393 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Authentication Request Identified
+4393 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session Management Response Identified
+4393 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Verification Request Identified
+4394 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Script Passive Scan Rules
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Anti-clickjacking Header
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Application Error Disclosure
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Big Redirect Detected (Potential Sensitive Information Leak)
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Re-examine Cache-control Directives
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Charset Mismatch
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content Security Policy (CSP) Header Not Set
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: CSP
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content-Type Header Missing
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie No HttpOnly Flag
+4416 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Loosely Scoped Cookie
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie without SameSite Attribute
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Without Secure Flag
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain Misconfiguration
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain JavaScript Source File Inclusion
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Absence of Anti-CSRF Tokens
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Directory Browsing
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Hash Disclosure
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Heartbleed OpenSSL Vulnerability (Indicative)
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: In Page Banner Information Leak
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Private IP Disclosure
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session ID in URL Rewrite
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Debug Error Messages
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in URL
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in HTTP Referrer Header
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Suspicious Comments
+4417 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Weak Authentication Method
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP to HTTPS Insecure Transition in Form Post
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTPS to HTTP Insecure Transition in Form Post
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Insecure JSF ViewState
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Java Serialization Object
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Reverse Tabnabbing
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Secure Pages Include Mixed Content
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Modern Web Application
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: PII Disclosure
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Script Served From Malicious Domain (polyfill)
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Retrieved from Cache
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP Server Response Header
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Side Technology Version with Known Vulnerabilities
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Strict-Transport-Security Header
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Sub Resource Integrity Attribute Missing
+4418 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Timestamp Disclosure
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable Charset
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Poisoning
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable HTML Element Attribute (Potential XSS)
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable JavaScript Event (XSS)
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Off-site Redirect
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Username Hash Found
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Viewstate
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-AspNet-Version Response Header
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Backend-Server Header Information Leak
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-ChromeLogger-Data (XCOLD) Header Information Leak
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Content-Type-Options Header Missing
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Debug-Token Information Leak
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+4419 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: ZAP is Out of Date
+4420 [ZAP-daemon] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Stats Passive Scan Rule
+5265 [ZAP-daemon] INFO  org.zaproxy.addon.network.ExtensionNetwork - Creating new root CA certificate.
+6007 [ZAP-daemon] INFO  org.zaproxy.addon.network.ExtensionNetwork - New root CA certificate created.
+7023 [ZAP-daemon] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - There is/are 7 newer addons
+8095 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon client v0.35.0
+8255 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon client v0.35.0
+8323 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon commonlib v1.45.0
+8366 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Stats Passive Scan Rule
+8383 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: WSDL File Detection
+8676 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Script Passive Scan Rules
+8812 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Authentication Request Identified
+8812 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session Management Response Identified
+8812 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Verification Request Identified
+9170 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Vulnerable JS Library (Powered by Retire.js)
+10504 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Anti-clickjacking Header
+10504 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Application Error Disclosure
+10504 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Big Redirect Detected (Potential Sensitive Information Leak)
+10504 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Re-examine Cache-control Directives
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Charset Mismatch
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content Security Policy (CSP) Header Not Set
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: CSP
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content-Type Header Missing
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie No HttpOnly Flag
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Loosely Scoped Cookie
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie without SameSite Attribute
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Without Secure Flag
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain Misconfiguration
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain JavaScript Source File Inclusion
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Absence of Anti-CSRF Tokens
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Directory Browsing
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Hash Disclosure
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Heartbleed OpenSSL Vulnerability (Indicative)
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: In Page Banner Information Leak
+10505 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Private IP Disclosure
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session ID in URL Rewrite
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Debug Error Messages
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in URL
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in HTTP Referrer Header
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Suspicious Comments
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Weak Authentication Method
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP to HTTPS Insecure Transition in Form Post
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTPS to HTTP Insecure Transition in Form Post
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Insecure JSF ViewState
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Java Serialization Object
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Reverse Tabnabbing
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Secure Pages Include Mixed Content
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Modern Web Application
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: PII Disclosure
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Script Served From Malicious Domain (polyfill)
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Retrieved from Cache
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP Server Response Header
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Side Technology Version with Known Vulnerabilities
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Strict-Transport-Security Header
+10506 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Sub Resource Integrity Attribute Missing
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Timestamp Disclosure
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable Charset
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Poisoning
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable HTML Element Attribute (Potential XSS)
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable JavaScript Event (XSS)
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Off-site Redirect
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Username Hash Found
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Viewstate
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-AspNet-Version Response Header
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Backend-Server Header Information Leak
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-ChromeLogger-Data (XCOLD) Header Information Leak
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Content-Type-Options Header Missing
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Debug-Token Information Leak
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+10507 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: ZAP is Out of Date
+10623 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon commonlib v1.45.0
+10636 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon webdriverlinux v236.0.0
+10952 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon webdriverlinux v236.0.0
+10975 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon selenium v15.62.0
+11276 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Authentication Request Identified
+11276 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session Management Response Identified
+11276 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Verification Request Identified
+11412 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon selenium v15.62.0
+11417 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon pscanrules v79.0.0
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Anti-clickjacking Header
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Application Error Disclosure
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Big Redirect Detected (Potential Sensitive Information Leak)
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Re-examine Cache-control Directives
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Charset Mismatch
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content Security Policy (CSP) Header Not Set
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: CSP
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content-Type Header Missing
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie No HttpOnly Flag
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Loosely Scoped Cookie
+11442 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie without SameSite Attribute
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Without Secure Flag
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain Misconfiguration
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cross-Domain JavaScript Source File Inclusion
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Absence of Anti-CSRF Tokens
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Directory Browsing
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Hash Disclosure
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Heartbleed OpenSSL Vulnerability (Indicative)
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: In Page Banner Information Leak
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Private IP Disclosure
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Session ID in URL Rewrite
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Debug Error Messages
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in URL
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Sensitive Information in HTTP Referrer Header
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Information Disclosure - Suspicious Comments
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Weak Authentication Method
+11443 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP to HTTPS Insecure Transition in Form Post
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTPS to HTTP Insecure Transition in Form Post
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Insecure JSF ViewState
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Java Serialization Object
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Reverse Tabnabbing
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Secure Pages Include Mixed Content
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Modern Web Application
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: PII Disclosure
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Script Served From Malicious Domain (polyfill)
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Retrieved from Cache
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP Server Response Header
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Side Technology Version with Known Vulnerabilities
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Strict-Transport-Security Header
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Sub Resource Integrity Attribute Missing
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Timestamp Disclosure
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable Charset
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Cookie Poisoning
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable HTML Element Attribute (Potential XSS)
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: User Controllable JavaScript Event (XSS)
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Off-site Redirect
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Username Hash Found
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Viewstate
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-AspNet-Version Response Header
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Backend-Server Header Information Leak
+11444 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-ChromeLogger-Data (XCOLD) Header Information Leak
+11445 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Content-Type-Options Header Missing
+11445 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: X-Debug-Token Information Leak
+11445 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s)
+11445 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: ZAP is Out of Date
+11446 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon pscanrules v79.0.0
+11449 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon help v23.0.0
+11451 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon help v23.0.0
+11454 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon retire v0.69.0
+11476 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Vulnerable JS Library (Powered by Retire.js)
+11478 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon retire v0.69.0
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/client-alpha-0.35.0.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/commonlib-release-1.45.0.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/webdriverlinux-release-236.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/selenium-release-15.62.0.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/pscanrules-release-79.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/help-release-23.zap
+11661 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/retire-release-0.69.0.zap
+11663 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/client-alpha-0.35.0.zap
+11663 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/commonlib-release-1.45.0.zap
+11663 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/webdriverlinux-release-236.zap
+11664 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/selenium-release-15.62.0.zap
+11664 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/pscanrules-release-79.zap
+11664 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/help-release-23.zap
+11664 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/retire-release-0.69.0.zap
+11664 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on update check complete
+11665 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Downloading add-on from: https://github.com/zaproxy/zap-extensions/releases/download/pscanrulesBeta-v50/pscanrulesBeta-beta-50.zap
+12068 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Installing new addon pscanrulesBeta v50.0.0
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Content Cacheability
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Dangerous JS Functions
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Permissions Policy Header Not Set
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: HTTP Parameter Override
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Insufficient Site Isolation Against Spectre Vulnerability
+12078 [ZAP-DownloadInstaller] INFO  org.zaproxy.addon.pscan.internal.ScanRuleManager - Loaded passive scan rule: Source Code Disclosure
+12081 [ZAP-DownloadInstaller] INFO  org.zaproxy.zap.extension.autoupdate.ExtensionAutoUpdate - Finished installing new addon pscanrulesBeta v50.0.0
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/client-alpha-0.35.0.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/commonlib-release-1.45.0.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/webdriverlinux-release-236.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/selenium-release-15.62.0.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/pscanrules-release-79.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/help-release-23.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/retire-release-0.69.0.zap
+12266 [ZAP-daemon] INFO  org.parosproxy.paros.CommandLine - Add-on downloaded to: /home/zap/.ZAP/plugin/pscanrulesBeta-beta-50.zap
+12272 [ZAP-daemon] INFO  org.zaproxy.addon.network.ExtensionNetwork - ZAP is now listening on 0.0.0.0:8095
+12958 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+13966 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+14971 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+15976 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+16979 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+17983 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+18987 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+19990 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+20993 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+21997 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+23000 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+24004 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+25008 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+26011 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+27014 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+28017 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+29020 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+30023 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+31027 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+32031 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+33034 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+34037 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+35040 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+36043 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+37047 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+38050 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+39053 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+40056 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+41059 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+42062 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+43066 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+44069 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+45073 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+46076 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+47079 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+48082 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+49086 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+50089 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+51092 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+52095 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+53098 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+54101 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+55104 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+56108 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+57110 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+58113 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+59116 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+60119 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+61123 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+62126 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+63129 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+64132 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+65135 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+66138 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+67141 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+68144 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+69147 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+70150 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+71153 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+72156 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+73159 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+74162 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+75165 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+76168 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+77171 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+78174 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+79177 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+80180 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+81183 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+82186 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+83189 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+84191 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+85195 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+86197 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+87200 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+88203 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+89206 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+90209 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+91212 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+92215 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+93218 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+94220 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+95223 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+96226 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+97229 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+98234 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+99237 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+100240 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+101243 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+102246 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+103249 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+104252 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+105254 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+106257 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+107260 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+108263 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+109267 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+110270 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+111273 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+112276 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+113279 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+114282 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+115285 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+116288 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+117291 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+118293 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+119296 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+120299 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+121302 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+122305 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+123308 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+124311 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+125314 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+126317 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+127320 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+128323 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+129326 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+130328 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+131331 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+132334 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+133337 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+134340 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+135343 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+136346 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+137349 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+138352 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+139355 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+140358 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+141362 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+142365 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+143367 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+144370 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+145373 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+146376 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+147378 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+148381 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+149384 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+150387 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+ERROR [Errno 5] Failed to connect to ZAP after 300 seconds
+151390 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+152392 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+153395 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+154398 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+155401 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+156403 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+157406 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+158409 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+159412 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+160415 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+161418 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+162420 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+163424 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+164426 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+165429 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+166432 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+167435 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+168438 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+169441 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+170444 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+171447 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+172449 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+173452 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+174455 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+175458 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+176461 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+177464 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+178466 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+179469 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+180472 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+181475 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+182478 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+183480 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+184483 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+185486 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+186489 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+187492 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+188495 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+189498 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+190500 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+191503 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+192506 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+193509 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+194512 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+195514 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+196517 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+197520 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+198522 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+199525 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+200528 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+201531 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+202533 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+203536 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+204539 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+205542 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+206545 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+207547 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+208550 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+209552 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+210555 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+211558 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+212561 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+213563 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+214566 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+215568 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+216571 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+217574 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+218577 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+219580 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+220582 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+221585 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+222588 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+223591 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+224594 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+225597 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+226599 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+227602 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+228605 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+229608 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+230613 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+231616 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+232618 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+233621 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+234624 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+235626 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+236629 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+237632 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+238634 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+239637 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+240639 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+241643 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+242645 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+243648 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+244650 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+245653 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+246656 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+247658 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+248661 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+249664 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+250666 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+251669 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+252671 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+253674 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+254677 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+255680 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+256683 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+257685 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+258688 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+259691 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+260694 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+261696 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+262699 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+263702 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+264704 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+265714 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+266717 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+267720 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+268723 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+269726 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+270728 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+271731 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+272734 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+273736 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+274739 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+275742 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+276744 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+277747 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+278749 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+279752 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+280754 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+281757 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+282760 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+283762 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+284765 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+285767 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+286770 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+287773 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+288776 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+289778 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+290781 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+291784 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+292787 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+293789 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+294792 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+295794 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+296797 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+297799 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+298802 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted
+299805 [ZAP-IO-Server-1-1] WARN  org.zaproxy.zap.extension.api.API - Request to API URL http://zap/JSON/core/view/version/ with host header zap not permitted

@@ -54,7 +54,7 @@ def scan(args):
             '-e', 'ZAP_AUTH_HEADER_SITE', IMAGE, 'sh', '-c',
             'mkdir -p /zap/wrk && exec zap-api-scan.py "$@"', 'zap-api-scan.py', '-t', args.base + '/api/openapi.json',
             '-f', 'openapi', '-J', 'zap-report.json', '-r', 'zap-report.html', '-I', '-T', '5', '-P', '8095',
-            '-z', '-host 127.0.0.1 -config api.addrs.addr.name=(127[.]0[.]0[.]1|::1|0:0:0:0:0:0:0:1) -config api.addrs.addr.regex=true -config ascan.maxScanDurationInMins=4']
+            '-z', '-host 127.0.0.1 -config api.addrs.addr.name=(localhost|zap|127[.]0[.]0[.]1|::1|0:0:0:0:0:0:0:1) -config api.addrs.addr.regex=true -config ascan.maxScanDurationInMins=4']
         code, scanner_log = 3, ''
         try:
             completed = subprocess.run(command, env=environment, stdout=subprocess.PIPE,

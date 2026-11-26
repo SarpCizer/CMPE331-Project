@@ -1,0 +1,10 @@
+{
+  "source_revision": "32c73de367a75da38b9ec9297f160181b2e77ae0",
+  "run_id": 45897376333,
+  "job_id": 140174518850,
+  "artifact_id": 15153934531,
+  "outcome": "SETUP_FAILED_NO_SCAN",
+  "cause": "ZAP internal API client sends Host: zap through its loopback proxy; the restricted allowlist did not include that local API alias.",
+  "fix": "Permit literal localhost/zap API aliases and IPv4/IPv6 loopback; retain the restricted binding and authenticated-request canary.",
+  "counted_as_security_pass": false
+}

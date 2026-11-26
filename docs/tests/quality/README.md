@@ -1,5 +1,23 @@
 # Quality evidence and mitigation register
 
+## Instructor-review follow-up
+
+The historical zero-issue scans below retain their original revisions. The
+follow-up uses evaluated server conditions and a separate zero-hotspot policy;
+it does not describe every finding as fixed. Source `19aa281` analysis passed
+the five server conditions (96.0% aggregate coverage; zero bugs, vulnerabilities,
+BLOCKER and CRITICAL issues), while its dashboard-capture step failed separately.
+
+That analysis retains one **open MAJOR python:S8786** finding in
+`backend/src/fridgely_app/availability.py:16`: the amount regex may backtrack
+super-linearly. Public `IngredientAmount` DTO input is capped at 64 characters
+in `fridgely_collections/schemas.py`; this bounds normal exposure but does not
+make the pattern linear. A linear parser remains follow-up work. This is not
+one of the twelve historical S2970 false positives and is not silently suppressed.
+Use the final source-qualified evidence bundle for the corrected capture and scan.
+
+## Historical scans
+
 The JSON files are exports from an actual SonarQube server executed in GitHub Actions, not an unexecuted configuration or estimated findings. The CI server is ephemeral and loopback-only. `before-fixes/` records revision `94c00cf`; `after-fixes/` records revision `03c8ffe` from [PR #13](https://github.com/SarpCizer/CMPE331-Project/pull/13), [run 44798645271](https://github.com/SarpCizer/CMPE331-Project/actions/runs/44798645271).
 
 | Rule | Initial count / severity | Mitigation | Verification |

@@ -71,5 +71,22 @@ class FollowUpEvidenceTests(unittest.TestCase):
         self.put(self.root/'integrated/postgresql-load.json',{'revision':self.revision,'passed':False});self.index()
         with self.assertRaisesRegex(ValueError,'result mismatch'): report.load(self.base)
 
+    def test_different_commits_require_identical_measured_source_trees(self):
+        local_revision='b'*40
+        self.put(self.base/'review-follow-up.json',{'source_revision':self.revision,'local_source_revision':local_revision,'ci_run_id':1,'evidence_root':'synthetic-evidence'})
+        for name in ['local/non-ai-load.json','local/recipe-generation-load.json']:
+            self.put(self.root/name,{'revision':local_revision,'passed':True})
+        self.index()
+        with self.assertRaisesRegex(ValueError,'requires indexed scope proof'): report.load(self.base)
+        files={f'backend/synthetic-fixture-{i}.py':'c'*40 for i in range(10)}
+        proof={'local_source_revision':local_revision,'ci_source_revision':self.revision,
+            'scope':['backend','frontend/src','frontend/package.json','frontend/pnpm-lock.yaml','tests/performance','tests/helpers'],
+            'local_files':files,'ci_files':dict(files)}
+        self.put(self.root/'measured-source-equivalence.json',proof);self.index()
+        report.load(self.base)
+        proof['ci_files']['backend/synthetic-fixture-0.py']='d'*40
+        self.put(self.root/'measured-source-equivalence.json',proof);self.index()
+        with self.assertRaisesRegex(ValueError,'source trees differ'): report.load(self.base)
+
 
 if __name__=='__main__': unittest.main()

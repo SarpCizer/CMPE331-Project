@@ -20,6 +20,7 @@ def read(path):
 def load(base):
     config=read(base/'review-follow-up.json')
     revision=config['source_revision']
+    local_revision=config.get('local_source_revision',revision)
     if not re.fullmatch('[0-9a-f]{40}',revision): raise ValueError('Invalid follow-up source')
     root=(base/config['evidence_root']).resolve()
     if not root.is_relative_to(base.resolve()): raise ValueError('Unsafe follow-up evidence root')
@@ -46,8 +47,19 @@ def load(base):
         raise ValueError('Follow-up CI is incomplete')
     for path in ['integrated/postgresql-load.json','integrated/recipe-generation-load.json','local/non-ai-load.json','local/recipe-generation-load.json','zap/summary.json']:
         value=read(root/path)
-        if value['revision']!=revision or (not path.startswith('local/') and value['passed'] is not True):
+        expected_revision=local_revision if path.startswith('local/') else revision
+        if value['revision']!=expected_revision or (not path.startswith('local/') and value['passed'] is not True):
             raise ValueError('Follow-up measurement source/result mismatch: '+path)
+    if local_revision!=revision:
+        name='measured-source-equivalence.json'
+        if name not in index['files']: raise ValueError('Different local source requires indexed scope proof')
+        proof=read(root/name)
+        scope=['backend','frontend/src','frontend/package.json','frontend/pnpm-lock.yaml','tests/performance','tests/helpers']
+        if (proof['local_source_revision']!=local_revision or proof['ci_source_revision']!=revision
+                or proof['scope']!=scope or len(proof['local_files'])<10
+                or proof['local_files']!=proof['ci_files']
+                or any(not re.fullmatch('[0-9a-f]{40}',value) for value in proof['local_files'].values())):
+            raise ValueError('Measured application/profile source trees differ')
     zap=read(root/'zap/summary.json')
     if zap['authenticated_successful_requests_observed']<=0 or zap['alerts_by_risk']['high'] or zap['alerts_by_risk']['medium']:
         raise ValueError('Follow-up ZAP policy or authentication failed')
@@ -93,6 +105,7 @@ def bars(title, labels, values, maximum, suffix='%', threshold=None):
 def append(base, story, markdown, heading, paragraph, table, page, config, root):
     revision,run=config['source_revision'],config['ci_run_id']
     short=revision[:7]
+    local_short=config.get('local_source_revision',revision)[:7]
     coverage=read(root/'coverage/coverage-gate.json')['actual_percent']
     load_result=read(root/'integrated/postgresql-load.json')
     generation=read(root/'integrated/recipe-generation-load.json')
@@ -127,7 +140,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         markdown.extend([f'![{name}](figures/{name})',''])
 
     page();heading('Instructor review follow-up',True)
-    paragraph(f'Corrections by Sarp Çizer with Codex assistance. Historical pages retain their a59556e measurements; the following pages use the separately measured source {revision}. This branch has not been merged or deployed by this correction.')
+    paragraph(f'Corrections by Sarp Çizer with Codex assistance. Historical pages retain a59556e measurements. Follow-up CI source: {revision}. Local benchmarks retain their actual {config.get("local_source_revision",revision)} revision; measured source equivalence is explained below. This branch has not been merged or deployed by this correction.')
     paragraph(f'[Follow-up CI run {run}]({REPO}/actions/runs/{run}) | [Source {short}]({REPO}/commit/{revision}) | [Review corrections PR #94]({REPO}/pull/94)')
     table(['Review item','Concrete correction'],[
         ['Rebuild / inventory / versions','Create absent parent folders; UTF-8 and raw-byte guards; immutable browser inventory; every load value keeps its source/environment.'],
@@ -161,19 +174,19 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
 
     page();heading('Performance: version-qualified comparison',True)
     figure('review-non-ai-performance.svg',bars('Non-AI HTTP p95 | 50 users, 100 rows each, five minutes',
-        ['Historical local 9f43e3a','Historical CI 25c111a','Report CI a59556e',f'Local {short}',f'CI {short}'],
+        ['Historical local 9f43e3a','Historical CI 25c111a','Report CI a59556e',f'Local {local_short}',f'CI {short}'],
         [44.353917,371.467618,204.055576,local['overall']['p95_ms'],load_result['overall']['p95_ms']],
         max(550,local['overall']['p95_ms']*1.15,load_result['overall']['p95_ms']*1.15),suffix=' ms',threshold=500))
-    paragraph(f'The follow-up local and CI runs both identify {revision}; the source guard rejects guessed SHAs or uncommitted application/test changes. Local environment: {local["environment"]}. CI environment: {load_result["environment"]}. Both run the same non-AI profile; database/CPU/OS still differ, so their difference does not isolate a cause.')
+    paragraph(f'Local run: {local["revision"]}. CI run: {load_result["revision"]}. Every result retains its actual full commit; the runner rejects guessed SHAs or uncommitted application/test changes. An indexed comparison of both complete scoped Git trees verifies identical backend, frontend source/dependencies, performance profiles and test helpers. Full commits can differ in report/scanner/dashboard tooling without relabelling a benchmark. Local: {local["environment"]}. CI: {load_result["environment"]}. Database/CPU/OS still differ, so the comparison does not isolate a cause.')
     paragraph('The older 371.47ms CI p95 was 8.38 times the 44.35ms local p95 and only 128.53ms below the 500ms limit. Those runs also used different application revisions. Database/runner contention and intervening code are plausible explanations, not established causes; no CPU/SQL trace from those old runs exists. The a59556e result was 204.06ms. All historical observations, including errors/outliers, remain retained.')
-    table(['Same-source environment','Requests / errors','p95 / margin to 500ms'],[
+    table(['Environment / source','Requests / errors','p95 / margin to 500ms'],[
         ['Local SQLite',f'{local["overall"]["requests"]} / {local["overall"]["errors"]}',f'{local["overall"]["p95_ms"]:.2f} / {500-local["overall"]["p95_ms"]:.2f} ms'],
         ['CI PostgreSQL',f'{load_result["overall"]["requests"]} / {load_result["overall"]["errors"]}',f'{load_result["overall"]["p95_ms"]:.2f} / {500-load_result["overall"]["p95_ms"]:.2f} ms'],
     ],[175,140,184])
     paragraph(f'Local NFR-03 profile: {"PASS" if local["passed"] else "FAIL"}; CI profile: {"PASS" if load_result["passed"] else "FAIL"}. A negative margin means that environment exceeded the limit. Failed local measurements are retained and do not become CI passes. This is an isolated agreed CI-environment assessment; neither row is a production SLA. Each route must also satisfy p95 <=500ms and errors<1%. Provider calls are excluded from this measurement.','small')
 
     page();heading('Generation load and security results',True)
-    figure('review-generation-performance.svg',bars(f'Controlled generation HTTP p95 | {short}',
+    figure('review-generation-performance.svg',bars(f'Controlled generation p95 | local {local_short} / CI {short}',
         ['Local SQLite, ten users','CI PostgreSQL, ten users'],
         [local_generation['steady']['p95_ms'],generation['steady']['p95_ms']],
         max(2200,local_generation['steady']['p95_ms']*1.15,generation['steady']['p95_ms']*1.15),suffix=' ms',threshold=2000))
@@ -199,6 +212,11 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         [item['metricKey'],item['comparator']+' '+item['errorThreshold'],item['actualValue']]
         for item in gate['conditions']
     ],[235,120,144])
+    findings=read(root/'sonar/issues.json')['issues']
+    paragraph(f'Current scan: {len(findings)} open issue(s). The quality gate is a threshold decision, not a claim of zero findings.','small')
+    for finding in findings:
+        paragraph(f'{finding["rule"]}, {finding["severity"]}: {finding["component"].replace("fridgely:","")}:{finding.get("line","-")}. '+
+            ('The amount regex has a backtracking warning. Public IngredientAmount DTOs are limited to 64 characters, bounding ordinary inputs; a linear parser remains follow-up work. This is retained as an open maintainability/performance finding, not classified as a false positive.' if finding['rule']=='python:S8786' else finding['message']), 'small')
     paragraph('The historical twelve javascript:S2970 BLOCKER alerts were false positives: the custom HTTP helper already called Node assert.equal, but its name expect triggered Jest matcher analysis. Renaming it assertResponse corrected framework detection while retaining assertions. It did not fix twelve security vulnerabilities. Original exports and the mitigation register remain preserved.','small')
 
     page();heading('Traceability and reproducible review',True)
