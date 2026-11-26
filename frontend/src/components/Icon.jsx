@@ -35,6 +35,7 @@ export default function Icon({ name = "leaf", ...props }) {
         <circle cx="10" cy="18" r="2" />
       </>
     ),
+    calendar: (<><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 11h18m-12 4h2m4 0h2m-8 3h2" /></>),
     plus: <path d="M12 5v14M5 12h14" />,
     close: <path d="m6 6 12 12M6 18 18 6" />,
   };

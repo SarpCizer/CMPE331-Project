@@ -1,0 +1,113 @@
+import { useEffect, useRef, useState } from 'react';
+import { Link, useOutletContext } from 'react-router-dom';
+import Icon from '../components/Icon';
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const meals = ['breakfast', 'lunch', 'dinner'];
+function monday(value) {
+  const date = new Date(`${value}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
+  return date.toISOString().slice(0, 10);
+}
+function currentWeek() {
+  const now = new Date();
+  return monday(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`);
+}
+function shift(value, amount) {
+  const date = new Date(`${value}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + amount);
+  return date.toISOString().slice(0,10);
+}
+
+export default function WeeklyPlan() {
+  const { data, generated, session, api, run, busy, openRecipe, clearSession } = useOutletContext();
+  const [week, setWeek] = useState(currentWeek);
+  const [plan, setPlan] = useState({ entries: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
+  const [result, setResult] = useState(null);
+  const current = useRef(week);
+  current.current = week;
+  useEffect(() => {
+    let active = true;
+    setLoading(true); setError(''); setResult(null);
+    api(`/weekly-plan?weekStart=${week}`).then(value => {
+      if (active) setPlan(value);
+    }).catch(failure => { if (active) {
+      if (failure.status === 401) clearSession('Your session ended. Please sign in again.');
+      else setError(failure.message);
+    } })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [week, retry, session.token]);
+  const recipes = [...new Map([...data.favorites, ...data.history.map(item => item.recipe),
+    ...generated, ...plan.entries.map(entry => entry.recipe)].map(recipe => [recipe.id, recipe])).values()];
+
+  async function save(day, meal, recipeId) {
+    const requested = week;
+    const value = await run(() => recipeId
+      ? api(`/weekly-plan/${day}/${meal}`, { method: 'PUT', body: { weekStart: requested, recipeId } })
+      : api(`/weekly-plan/${day}/${meal}?weekStart=${requested}`, { method: 'DELETE' }),
+    recipeId ? 'Meal saved to your week.' : 'Meal removed from your week.');
+    if (value && current.current === requested) { setPlan(value); setResult(null); }
+  }
+  return <section className="panel">
+    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+      <div><h2>A week of good food.</h2><p className="mb-0 text-sm">Choose recipes for your week. Each selection includes the recipe's displayed servings; repeated meals count each time.</p></div>
+      <span className="rounded-lg bg-[#e8f0e7] px-3 py-2 text-sm text-green">{loading ? 'Loading…' : `${plan.entries.length} planned meals`}</span>
+    </div>
+    <div className="mb-5 flex flex-wrap items-end gap-3">
+      <button type="button" className="btn-secondary" disabled={busy} onClick={() => setWeek(shift(week,-7))}>Previous week</button>
+      <div><label htmlFor="plan-week">Week containing</label><input id="plan-week" type="date" value={week} disabled={busy}
+        onChange={event => { if (event.target.value) setWeek(monday(event.target.value)); }} /></div>
+      <button type="button" className="btn-secondary" disabled={busy} onClick={() => setWeek(shift(week,7))}>Next week</button>
+    </div>
+    <p className="text-sm text-[#536958]">Week beginning {week}. Choose any date to open its Monday–Sunday week. Planning never reserves or deducts fridge ingredients.</p>
+    {loading ? <p role="status">Loading weekly plan…</p> : error ? <div className="alert-error" role="alert">{error}
+      <button className="btn-text" type="button" onClick={() => setRetry(value => value + 1)}>Retry weekly plan</button></div> : <>
+      {!recipes.length && <p className="rounded-xl bg-[#f0f3ee] p-4">Start with your favorite or recently viewed recipes. <Link to="/recipes">Find recipes</Link> and save a favorite to plan your week.</p>}
+      <div className="grid gap-5">
+        {days.map((day, index) => <section key={day} aria-label={`${day} meal plan`} className="rounded-2xl border border-line p-4">
+          <h3 className="mb-4 flex items-center gap-2"><Icon name="calendar" />{day}</h3>
+          <div className="grid grid-cols-3 gap-4 mobile:grid-cols-1 tablet:grid-cols-1">
+            {meals.map(meal => {
+              const entry = plan.entries.find(item => item.day === index && item.meal === meal);
+              const recipe = entry?.recipe;
+              return <div key={meal} className="min-w-0 rounded-xl bg-[#f6f8f3] p-3">
+                <label htmlFor={`plan-${index}-${meal}`} className="capitalize">{meal}</label>
+                <select id={`plan-${index}-${meal}`} className="w-full min-w-0 rounded-lg border border-line bg-white p-2" value={recipe?.id || ''}
+                  disabled={busy || !recipes.length} onChange={event => save(index, meal, event.target.value)}>
+                  <option value="">No meal planned</option>
+                  {recipes.map(item => <option key={item.id} value={item.id}>{item.title} · {item.servings} servings</option>)}
+                </select>
+                {recipe && <div className="mt-3">
+                  <p className="text-sm">{recipe.servings} servings · {recipe.cookingMinutes} min (estimate)</p>
+                  <details className="text-sm"><summary className="cursor-pointer font-semibold">Ingredients & preparation</summary>
+                    <ul className="my-3 pl-5">{recipe.ingredients.map((name, i) => <li className="wrap-anywhere" key={i}>{name} · {recipe.ingredientAmounts?.[i] || 'Amount needs review'}</li>)}</ul>
+                    <ol className="my-3 list-decimal pl-5">{recipe.steps.map((step,i) => <li className="mb-2 wrap-anywhere" key={i}>{step}</li>)}</ol>
+                  </details>
+                  <button className="btn-text mt-2" type="button" disabled={busy} aria-label={`View recipe for ${day} ${meal}`}
+                    onClick={() => openRecipe(recipe.id)}>View recipe</button>
+                </div>}
+              </div>;
+            })}
+          </div>
+        </section>)}
+      </div>
+      <div className="mt-6 rounded-xl bg-[#e8f0e7] p-4">
+        <h3>One list for the whole week.</h3>
+        <p className="text-sm">We total all planned recipes, then subtract your current fridge stock once. Missing quantities are added to your existing shopping list; larger amounts already there are kept.</p>
+        <button className="btn-primary mobile:w-full" type="button" disabled={busy || !plan.entries.length} onClick={async () => {
+          const requested = week;
+          const value = await run(() => api('/weekly-plan/shopping-items', { method: 'POST', body: { weekStart: requested } }),
+            'Weekly shopping list updated.', ['shopping']);
+          if (value && current.current === requested) setResult(value);
+        }}>Generate weekly shopping list</button>
+        {result && <div className="mt-4"><p>{result.plannedMeals} planned meals checked. <Link to="/shopping">View shopping list</Link></p>
+          {result.needsReview.length > 0 && <p className="rounded-lg border border-[#d9b98e] bg-[#fff6e8] p-3 text-[#6b4318]" role="status">Amounts need review: {result.needsReview.join(', ')}. Some recipe or stock measurements could not be compared. Check these quantities before buying.</p>}
+        </div>}
+      </div>
+    </>}
+  </section>;
+}

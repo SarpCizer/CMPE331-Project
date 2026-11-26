@@ -28,17 +28,22 @@ def _amount(text):
     return dimension, quantity * scale
 
 
-def _snapshot(session, owner, recipe):
+def _requirements_snapshot(session, owner, measurements):
     stock, required, displays = defaultdict(list), defaultdict(list), {}
     for row in session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == owner)):
         if row.quantity is None or row.quantity > 0:
             stock[ingredient_name(row.name)[1]].append(row)
-    for index, name in enumerate(recipe.ingredients):
+    for name, measurement in measurements:
         display, key = ingredient_name(name)
         displays.setdefault(key, display)
-        measurement = recipe.ingredientAmounts[index] if recipe.ingredientAmounts else None
         required[key].append(_amount(measurement))
     return stock, required, displays
+
+
+def _snapshot(session, owner, recipe):
+    return _requirements_snapshot(session, owner, [(name,
+        recipe.ingredientAmounts[index] if recipe.ingredientAmounts else None)
+        for index, name in enumerate(recipe.ingredients)])
 
 
 def _shortfall(amounts, rows):
@@ -66,18 +71,29 @@ def _shopping_amount(dimension, value):
     return {'quantity': float(value), 'unit': unit}
 
 
-def recipe_shopping_items(session, owner, recipe):
-    """Report true deficits without changing stock or inventing legacy quantities."""
-    stock, required, displays = _snapshot(session, owner, recipe)
-    missing = []
+def requirements_shopping_items(session, owner, measurements):
+    """Aggregate all requirements first and subtract each stock group once."""
+    stock, required, displays = _requirements_snapshot(session, owner, measurements)
+    missing, review = [], []
     for key, amounts in required.items():
         rows = stock.get(key, [])
         measured = _shortfall(amounts, rows)
         if measured is not None and measured[1] > 0:
-            missing.append(ShoppingCommand(name=displays[key], **_shopping_amount(*measured)))
-        elif not rows and measured is None:
-            missing.append(ShoppingCommand(name=displays[key]))
-    return missing
+            quantity = _shopping_amount(*measured)
+            missing.append(ShoppingCommand(name=displays[key], **quantity))
+            if not quantity:
+                review.append(displays[key])
+        elif measured is None:
+            review.append(displays[key])
+            if not rows:
+                missing.append(ShoppingCommand(name=displays[key]))
+    return missing, review
+
+
+def recipe_shopping_items(session, owner, recipe):
+    measurements = [(name, recipe.ingredientAmounts[index] if recipe.ingredientAmounts else None)
+                    for index, name in enumerate(recipe.ingredients)]
+    return requirements_shopping_items(session, owner, measurements)[0]
 
 
 def inventory_for_recipe(session, owner, recipe):

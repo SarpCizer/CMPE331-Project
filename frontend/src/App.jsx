@@ -8,6 +8,7 @@ import Fridge from "./pages/Fridge";
 import History from "./pages/History";
 import Preferences from "./pages/Preferences";
 import Recipes from "./pages/Recipes";
+import WeeklyPlan from "./pages/WeeklyPlan";
 import Shopping from "./pages/Shopping";
 
 function SignIn({ kitchen }) {
@@ -34,6 +35,7 @@ export default function App() {
           <Route index element={<Navigate to="/fridge" replace />} />
           <Route path="fridge" element={<Fridge />} />
           <Route path="recipes" element={<Recipes />} />
+          <Route path="weekly-plan" element={<WeeklyPlan />} />
           <Route path="shopping" element={<Shopping />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="history" element={<History />} />

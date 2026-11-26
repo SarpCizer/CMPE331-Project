@@ -8,6 +8,7 @@ export const initialData = () => ({
 export const sections = [
   ["fridge", "My fridge", "fridge"],
   ["recipes", "Find recipes", "leaf"],
+  ["weekly-plan", "Weekly meal planner", "calendar"],
   ["shopping", "Shopping list", "bag"],
   ["favorites", "Favorites", "heart"],
   ["history", "Recently viewed", "clock"],
@@ -31,6 +32,7 @@ export const pageResources = {
   fridge: "inventory",
   recipes: "inventory",
   shopping: "shopping",
+  "weekly-plan": "favorites",
   preferences: "preferences",
   favorites: "favorites",
   history: "history",
