@@ -40,14 +40,14 @@ export default function SurpriseWheel({ api, run, busy, openRecipe }) {
       <div className="relative mx-auto h-[260px] w-[260px] shrink-0" aria-hidden="true">
         <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 text-3xl text-[#b57950]">▼</div>
         <div className="h-full w-full rounded-full border-8 border-[#e5ece2] shadow-inner" style={{background:gradient,transform:`rotate(${rotation}deg)`,transition:spinning&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'transform 2.2s cubic-bezier(.15,.7,.15,1)':undefined}}>
-          {recipes.map((recipe,i)=><span key={recipe.id} className="absolute left-1/2 top-1/2 text-xs font-semibold text-white" style={{transform:`rotate(${(i+.5)*360/recipes.length-90}deg) translateX(38px)`,width:76,overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{recipes.length>12?i+1:recipe.title}</span>)}
+          {recipes.map((recipe,i)=><span key={recipe.id} className="absolute left-1/2 top-1/2 text-xs font-semibold text-white" style={{transform:`rotate(${(i+.5)*360/recipes.length-90}deg) translate(40px,-50%)`,transformOrigin:'0 0',width:76,overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>{recipes.length>12?i+1:recipe.title}</span>)}
         </div>
       </div>
       <div className="min-w-0 flex-1">
         <button type="button" className="btn-primary" disabled={busy||spinning} onClick={spin}>{spinning?'Choosing your meal…':'Spin the wheel'}</button>
         <button type="button" className="btn-text ml-3" disabled={busy||spinning} onClick={refresh}>Refresh wheel recipes</button>
         <div role="status" aria-live="polite" className="mt-4">
-          {notice?<p>{notice}</p>:selected?<><h3>{selected.title}</h3><p>{selected.servings} portions · {selected.cookingMinutes} min (estimate)</p><button type="button" className="btn-secondary" disabled={busy||spinning} onClick={()=>openRecipe(selected.id)}>View selected recipe</button></>:loaded&&!recipes.length?<p>No fully stocked recipes yet. Generate recipes above or restock ingredients. Unknown amounts must be measured before a recipe can enter the wheel.</p>:spinning?<p>Checking your fridge and picking a recipe…</p>:<p>{loaded?`${recipes.length} recipes ready to spin.`:'Spin to load recipes from your fridge.'}</p>}
+          {notice?<p>{notice}</p>:selected?<><h3>{selected.title}</h3><p>{selected.servings} {selected.servings===1?'portion':'portions'} · {selected.cookingMinutes} min (estimate)</p><button type="button" className="btn-secondary" disabled={busy||spinning} onClick={()=>openRecipe(selected.id)}>View selected recipe</button></>:loaded&&!recipes.length?<p>No fully stocked recipes yet. Generate recipes above or restock ingredients. Unknown amounts must be measured before a recipe can enter the wheel.</p>:spinning?<p>Checking your fridge and picking a recipe…</p>:<p>{loaded?`${recipes.length} recipes ready to spin.`:'Spin to load recipes from your fridge.'}</p>}
         </div>
         {recipes.length>0&&<details className="mt-4"><summary>Recipes on the wheel ({recipes.length})</summary><ul className="list-disc pl-5">{recipes.map(item=><li key={item.id}>{item.title}</li>)}</ul></details>}
       </div>
