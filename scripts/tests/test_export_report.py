@@ -81,6 +81,26 @@ class ReportEvidenceTests(unittest.TestCase):
         for name in ['completion.spec.js', 'kitchen.spec.js', 'preferences-fidelity.spec.js', 'text-format.spec.js']:
             self.assertIn('/blob/a59556e366ffd65adf799bb8aa9bc47e95dea16e/frontend/tests/' + name, text)
 
+    def test_other_revision_inventory_is_rejected_before_output_creation(self):
+        path = self.root / 'docs/tests/report-provenance.json'
+        data = json.loads(path.read_text(encoding='utf-8'))
+        data['report_baseline_revision'] = '0' * 40
+        path.write_text(json.dumps(data), encoding='utf-8')
+        result = self.export()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('inventory source revision mismatch', result.stderr.lower())
+        self.assertFalse((self.root / 'build').exists())
+
+    def test_relabelled_historical_load_is_rejected_before_output_creation(self):
+        path = self.root / 'docs/tests/report-provenance.json'
+        data = json.loads(path.read_text(encoding='utf-8'))
+        data['historical_loads'][0]['revision'] = data['report_baseline_revision']
+        path.write_text(json.dumps(data), encoding='utf-8')
+        result = self.export()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('historical load revision mismatch', result.stderr.lower())
+        self.assertFalse((self.root / 'build').exists())
+
 
 class EvidenceCheckoutTests(unittest.TestCase):
     def test_hashed_evidence_retains_exact_bytes_with_autocrlf_enabled(self):

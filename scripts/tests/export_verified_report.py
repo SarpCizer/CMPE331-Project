@@ -21,7 +21,36 @@ REPO = 'https://github.com/SarpCizer/CMPE331-Project'
 
 
 def read(path):
-    return json.loads(Path(path).read_text())
+    return json.loads(Path(path).read_text(encoding='utf-8'))
+
+
+def validate_provenance(config, evidence):
+    provenance = read(BASE / 'report-provenance.json')
+    if provenance['report_baseline_revision'] != config['ci_revision']:
+        raise ValueError('Inventory source revision mismatch')
+    files = provenance['browser_test_files']
+    all_files = files + provenance['browser_support_files']
+    paths = [item['path'] for item in all_files]
+    if len(set(paths)) != len(paths) or any(not re.fullmatch(r'frontend/tests/[A-Za-z0-9_.-]+\.js', path) for path in paths):
+        raise ValueError('Invalid or duplicate browser inventory path')
+    if any(not re.fullmatch(r'[0-9a-f]{40}', item['git_blob_sha']) for item in all_files):
+        raise ValueError('Invalid browser inventory blob identity')
+    suites = ET.parse(evidence / 'integrated-evidence/browser-junit.xml').getroot().findall('testsuite')
+    counts = {suite.get('name'): int(suite.get('tests')) for suite in suites}
+    if set(counts) != {Path(item['path']).name for item in files}:
+        raise ValueError('Browser inventory does not match recorded JUnit suites')
+    loads = []
+    for item in provenance['historical_loads']:
+        path = (BASE / item['path']).resolve()
+        if not path.is_relative_to(BASE.resolve()):
+            raise ValueError('Unsafe historical load path')
+        data = read(path)
+        if data['revision'] != item['revision']:
+            raise ValueError('Historical load revision mismatch')
+        if hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
+            raise ValueError('Historical load evidence digest mismatch')
+        loads.append((item, data))
+    return provenance, counts, loads
 
 
 def junit(path):
@@ -67,6 +96,7 @@ def export():
     config = read(BASE / 'report-input.json')
     evidence = BASE / config['evidence_root']
     summary, index = validate(config, evidence)
+    provenance, browser_counts, historical_loads = validate_provenance(config, evidence)
     # Validate before creating or replacing any published output.
     out = Path(os.getenv('FRIDGELY_REPORT_OUTPUT', str(ROOT / 'build/reports')))
     out.mkdir(parents=True, exist_ok=True)
@@ -91,10 +121,13 @@ def export():
     }
     story, markdown = [], []
 
+    def markup(text):
+        escaped = html.escape(str(text))
+        return re.sub(r'\[([^\]]+)\]\((https://[^)]+)\)', r'<link href="\2" color="#245d42">\1</link>', escaped)
+
     def paragraph(text, kind='body'):
         # Markdown links use concise PDF anchor text to avoid unbreakable URLs.
-        escaped = html.escape(text)
-        escaped = re.sub(r'\[([^\]]+)\]\((https://[^)]+)\)', r'<link href="\2" color="#245d42">\1</link>', escaped)
+        escaped = markup(text)
         story.append(Paragraph(escaped, styles[kind]))
         markdown.extend([text, ''])
 
@@ -103,7 +136,7 @@ def export():
         markdown.extend([('# ' if first else '## ') + text, ''])
 
     def table(headers, rows, widths):
-        cells = [[Paragraph(html.escape(str(x)), styles['cell']) for x in row] for row in [headers, *rows]]
+        cells = [[Paragraph(markup(x), styles['cell']) for x in row] for row in [headers, *rows]]
         grid = Table(cells, colWidths=widths, repeatRows=1, hAlign='LEFT')
         grid.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), pale), ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -138,6 +171,7 @@ def export():
     coverage = summary['coverage']['actual_percent']
     heading('Fridgely\nSoftware Testing Report', True)
     paragraph(config['report_date'] + ' | Prepared for the CMPE331 submission review', 'small')
+    paragraph('Historical application snapshot; reproducibility/provenance correction dated ' + provenance['correction_date'] + '. Measurements retain their original source identities.', 'small')
     heading('Verified integration candidate')
     paragraph(config['release_status'])
     paragraph('Tested source: ' + rev)
@@ -227,6 +261,26 @@ def export():
     paragraph('3. Independent report review and the actual learn.bilgi upload/receipt remain pending. Main was not merged; no paid resource or provider request was created by this work.')
 
     page()
+    heading('Reproducibility and evidence versions', True)
+    paragraph('The default exporter creates build/reports, including missing parents, after validating the evidence. An explicit FRIDGELY_REPORT_OUTPUT supports a new nested directory. Windows checkouts preserve raw evidence bytes; UTF-8 text is read and written explicitly. Regressions exercise default and nested outputs plus rejection of mismatched source identities.')
+    heading('Browser files in the tested snapshot')
+    paragraph(f'Inventory source: {rev}. Each link targets this immutable source. The recorded JUnit contains 22 cases across four files; helper modules are not counted as test cases.')
+    table(['Recorded test file', 'JUnit cases'], [
+        [f'[{item["path"]}]({REPO}/blob/{rev}/{item["path"]})', str(browser_counts[Path(item['path']).name])]
+        for item in provenance['browser_test_files']
+    ], [410, 89])
+    report_head = provenance['reviewed_report_head']
+    paragraph(f'[completion.spec.js in the reviewed report head]({REPO}/blob/{report_head}/frontend/tests/completion.spec.js) has the same recorded Git blob as the tested source. fixtures.js and global-setup.js are supporting modules. This inventory belongs to the historical snapshot.', 'small')
+    heading('Three distinct performance measurements')
+    rows = []
+    for metadata, result in historical_loads:
+        rows.append([metadata['label'], f'[{result["revision"][:7]}]({REPO}/commit/{result["revision"]})', result['environment'], f'{result["overall"]["p95_ms"]:.2f}'])
+    rows.append(['Report CI', f'[{rev[:7]}]({REPO}/commit/{rev})', load['environment'], f'{load["overall"]["p95_ms"]:.2f}'])
+    table(['Measurement', 'Source', 'Environment', 'p95 ms'], rows, [105, 70, 249, 75])
+    paragraph('Different revisions and environments were measured. The local run used macOS ARM64, 8 reported CPUs and SQLite; historical CI used Linux x86_64, 2 reported CPUs and PostgreSQL. The 44.35 ms and 371.47 ms p95 values are not a controlled comparison of identical code. The later a59556e CI measurement is 204.06 ms. No local performance run at a59556e is retained.')
+    paragraph('Historical CI is about 8.38 times the local value, with 128.53 ms below the 500 ms limit. Hardware, database access and intervening code changes are plausible contributors; the retained runs do not isolate their effects. A same-revision paired experiment is needed for causal attribution. The a59556e CI run leaves 295.94 ms of p95 headroom in its named environment.', 'small')
+
+    page()
     heading('Responsive evidence: desktop', True)
     paragraph('Actual browser screenshots from the same CI run and a59556e source. Synthetic test-account contents are used; no live account credentials are shown. The 22 Chromium cases cover the functional flow, loading/error/cancellation states, responsive layout, accessibility checks and keyboard interaction.', 'body')
     screenshot('fridge-1440.png', 499, 465)
@@ -262,8 +316,8 @@ def export():
                            title='Fridgely Software Testing Report - a59556e', author='Berfin Gökgöz')
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
     text = '\n'.join(markdown)
-    (out / 'Fridgely-Software-Test-Report.md').write_text(text)
-    (BASE / 'software-test-report.md').write_text(text)
+    (out / 'Fridgely-Software-Test-Report.md').write_text(text, encoding='utf-8')
+    (BASE / 'software-test-report.md').write_text(text, encoding='utf-8')
     shutil.copyfile(pdf, BASE / 'software-test-report.pdf')
     print(json.dumps({'pdf': str(pdf), 'source': rev, 'ci_run': run,
                       'evidence_files_verified': len(index['files']), 'release_approval': 'pending'}))

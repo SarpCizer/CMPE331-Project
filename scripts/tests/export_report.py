@@ -20,7 +20,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 # Keep the historical renderer below intact so the independent #66 fix merges cleanly.
 if __name__ == '__main__':
     report_config = Path(__file__).resolve().parents[2] / 'docs/tests/report-input.json'
-    if json.loads(report_config.read_text()).get('schema_version') == 2:
+    if json.loads(report_config.read_text(encoding='utf-8')).get('schema_version') == 2:
         import runpy
         runpy.run_path(str(Path(__file__).with_name('export_verified_report.py')), run_name='__main__')
         raise SystemExit(0)
@@ -29,14 +29,14 @@ ROOT=Path(__file__).resolve().parents[2]
 BASE=ROOT/'docs/tests'
 OUT=Path(os.getenv('FRIDGELY_REPORT_OUTPUT',str(ROOT/'build/reports')))
 OUT.mkdir(parents=True,exist_ok=True)
-CONFIG=json.loads((BASE/'report-input.json').read_text())
+CONFIG=json.loads((BASE/'report-input.json').read_text(encoding='utf-8'))
 FOREST=colors.HexColor('#173f2f')
 MUTED=colors.HexColor('#53685a')
 PALE=colors.HexColor('#e9f1e7')
 
 def read(path,default=None):
     path=Path(path)
-    return json.loads(path.read_text()) if path.exists() else default
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else default
 
 def junit(path):
     root=ET.parse(path).getroot()
@@ -310,7 +310,7 @@ document=SimpleDocTemplate(str(pdf),pagesize=A4,rightMargin=47,leftMargin=47,top
     title='Fridgely Software Test Report',author='Berfin Gökgöz')
 document.build(story,onFirstPage=footer,onLaterPages=footer)
 markdown=ROOT/'docs/tests/software-test-report.md'
-markdown.write_text('\n'.join(md)+'\n')
+markdown.write_text('\n'.join(md)+'\n',encoding='utf-8')
 shutil.copyfile(pdf,ROOT/'docs/tests/software-test-report.pdf')
 shutil.copyfile(markdown,OUT/'Fridgely-Software-Test-Report.md')
 shutil.copytree(ROOT/'docs/tests/evidence/screenshots',OUT/'evidence/screenshots',dirs_exist_ok=True)

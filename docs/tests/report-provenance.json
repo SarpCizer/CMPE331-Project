@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "correction_date": "2026-11-26",
+  "report_baseline_revision": "a59556e366ffd65adf799bb8aa9bc47e95dea16e",
+  "reviewed_report_head": "2d53035de40caf4ae472ce033a5f9977295e0d19",
+  "instructor_review": "https://github.com/SarpCizer/CMPE331-Project/pull/67#issuecomment-7198211995",
+  "browser_test_files": [
+    {
+      "path": "frontend/tests/completion.spec.js",
+      "git_blob_sha": "646d059948ac3d71f6ac3cdee2c2a19a06547a6c"
+    },
+    {
+      "path": "frontend/tests/kitchen.spec.js",
+      "git_blob_sha": "8190cebc3f1bdff843fff518c90f86ebe9a6fd80"
+    },
+    {
+      "path": "frontend/tests/preferences-fidelity.spec.js",
+      "git_blob_sha": "9c07393f8d8cd4a780beaab95caeeb7224cdd633"
+    },
+    {
+      "path": "frontend/tests/text-format.spec.js",
+      "git_blob_sha": "c453f8a56819f9ea2ea11b7d4058d92fe9e7398c"
+    }
+  ],
+  "browser_support_files": [
+    {
+      "path": "frontend/tests/fixtures.js",
+      "git_blob_sha": "d22f16019296e51348911c39e1379473eeb41a57"
+    },
+    {
+      "path": "frontend/tests/global-setup.js",
+      "git_blob_sha": "80ddf92b1501903e94c95a242eb8774ac919bdcf"
+    }
+  ],
+  "historical_loads": [
+    {
+      "label": "Historical local",
+      "path": "non-func-tests/local-load.json",
+      "revision": "9f43e3af07f08d070251e371fb6112c989db330e",
+      "sha256": "8c7c693d4acaa65cc29925b7262dda1a834f2f8b33ec1e8424f43d25883f5da5"
+    },
+    {
+      "label": "Historical CI",
+      "path": "non-func-tests/postgresql-load.json",
+      "revision": "25c111aa5a8d678b60c17745289675821b62f91d",
+      "sha256": "5cf90f3b21be68d6a56a1a18ea391abd5ee6c65902fecf471ae3bea54eae46f3"
+    }
+  ]
+}
