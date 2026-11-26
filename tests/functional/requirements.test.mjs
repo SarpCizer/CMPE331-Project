@@ -106,6 +106,15 @@ test('US-07 quantities reach the provider without changing inventory', async t =
   assert.equal(legacy.quantity, null);
 });
 
+test('US-07 mood reaches the provider while the existing request shape remains compatible', async t => {
+  const c = await context(t), token = await c.user();
+  const item = await c.add(token, 'rice');
+  const result = await c.expect('POST', '/recipes/generate', {mood:'healthy'}, token);
+  assert.equal(result.length, 2);
+  assert.deepEqual(c.calls[0], {ingredients:['rice'], dietary:[], allergens:[], amounts:[], mood:'healthy'});
+  assert.deepEqual(await c.read('/inventory', token), [item]);
+});
+
 test('US-07-T02 reject a batch containing a declared allergen conflict', async t => {
   const unsafe = {...recipes[1], ingredients:['rice', 'peanut']};
   const c = await context(t, [recipes[0], unsafe]), token = await c.user();

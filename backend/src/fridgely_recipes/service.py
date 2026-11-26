@@ -1,5 +1,5 @@
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Callable, Protocol
 from uuid import uuid4
 
@@ -8,6 +8,7 @@ from starlette.concurrency import run_in_threadpool
 
 from fridgely_collections.errors import CollectionError
 from fridgely_collections.schemas import RecipeDTO, ingredient_name
+from .moods import Mood, MOOD_MAX_MINUTES
 
 MAX_PROVIDER_SECONDS = 28
 
@@ -26,6 +27,7 @@ class GenerationInput:
     amounts: tuple[tuple[str, float | None, str | None], ...] = ()
     requested_dish: str | None = None
     requested_servings: int | None = None
+    mood: Mood | None = None
 
 
 class RecipeProvider(Protocol):
@@ -70,8 +72,10 @@ class RecipeGenerationService:
         self.insert_batch = insert_batch
         self.timeout_seconds = timeout_seconds
 
-    async def generate(self, owner_id: str) -> list[RecipeDTO]:
+    async def generate(self, owner_id: str, mood: Mood | None = None) -> list[RecipeDTO]:
         data = await run_in_threadpool(self.read_input, owner_id)
+        if mood is not None:
+            data = replace(data, mood=mood)
         if not data.ingredients:
             raise RecipeError(400, "Add an ingredient to your fridge before generating recipes.")
 
@@ -82,6 +86,9 @@ class RecipeGenerationService:
             raise RecipeError(503, "The recipe service is temporarily unavailable.", retryable=True) from None
 
         recipes = validate_batch(candidates, data.allergens)
+        limit = MOOD_MAX_MINUTES.get(data.mood)
+        if limit is not None and any(recipe.cookingMinutes > limit for recipe in recipes):
+            raise RecipeError(502, 'The recipe suggestions exceed your selected time limit. Please try again.')
         await run_in_threadpool(self.insert_batch, owner_id, recipes)
         return recipes
 
