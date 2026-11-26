@@ -49,6 +49,10 @@ def _purchase(session, owner, item_id, command, digest, clock):
     item = session.scalar(select(ShoppingItem).where(
         ShoppingItem.owner_id == owner, ShoppingItem.id == item_id).with_for_update())
     if item is None:
+        # On SQLite another purchase can commit between the two reads.
+        prior = _receipt(session, owner, item_id, digest)
+        if prior is not None:
+            return prior
         raise CollectionError(404, 'Not found')
     dimension, scale = _UNITS[command.unit]
     rows = session.scalars(select(InventoryEntry).where(InventoryEntry.owner_id == owner)
