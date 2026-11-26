@@ -6,7 +6,7 @@ export default function RecipeCard({ recipe, onOpen, warm = false }) {
     <article className="flex h-full flex-col overflow-hidden rounded-[19px] border border-line bg-white">
       <div
         className={`flex h-[135px] items-center justify-center gap-[17px] ${
-          warm ? "bg-[#f3e9d9] text-[#795a2c]" : "bg-[#e7eddd] text-[#627c51]"
+          warm ? "bg-[#f3e9d9] text-[#795a2c]" : "bg-[#e7eddd] text-[#526944]"
         }`}
       >
         <Icon name="leaf" width="46" height="46" />

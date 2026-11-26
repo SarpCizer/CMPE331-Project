@@ -1,13 +1,18 @@
 import { Link, useOutletContext } from "react-router-dom";
+import { useState } from "react";
+import RecipeMoodPicker from "../components/RecipeMoodPicker";
 import SurpriseWheel from "../components/SurpriseWheel";
 import Empty from "../components/Empty";
 import Icon from "../components/Icon";
 import RecipeCard from "../components/RecipeCard";
 
 export default function RecipesPage() {
+  const [mood, setMood] = useState(null);
   const { data, api, run, busy, generated, setGenerated, openRecipe } =
     useOutletContext();
-  const stocked = data.inventory.filter(item => item.quantity == null || item.quantity > 0);
+  const stocked = data.inventory.filter(
+    (item) => item.quantity == null || item.quantity > 0,
+  );
   return (
     <>
       <section className="panel bg-[#eaf0e6]">
@@ -15,18 +20,26 @@ export default function RecipesPage() {
         <h2>Something good is already here.</h2>
         <p className="max-w-[580px] text-[0.95rem]">
           Turn the {stocked.length}{" "}
-          {stocked.length === 1 ? "ingredient" : "ingredients"} in your
-          fridge into your next meal, with your saved preferences included.
+          {stocked.length === 1 ? "ingredient" : "ingredients"} in your fridge
+          into your next meal, with your saved preferences included.
         </p>
+        <RecipeMoodPicker
+          value={mood}
+          disabled={busy}
+          onChange={(value) => {
+            setMood(value);
+            setGenerated([]);
+          }}
+        />
         <button
           className="btn-primary"
-          disabled={!stocked.length}
+          disabled={busy || !stocked.length}
           onClick={async () => {
             const result = await run(
               () =>
                 api("/recipes/generate", {
                   method: "POST",
-                  body: {},
+                  body: mood ? { mood } : {},
                 }),
               "Recipes are ready.",
             );

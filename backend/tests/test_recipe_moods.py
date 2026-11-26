@@ -6,6 +6,7 @@ import pytest
 from test_recipe_integration import RECIPE, output, recipe_app, generate
 from test_cloudflare_recipe_provider import cloudflare_host, cloudflare_result, sign_in
 from fastapi.testclient import TestClient
+from test_host_integration import host, user
 
 MOODS = ['lazy', 'high-protein', 'sweet', 'budget', 'quick', 'healthy']
 
@@ -72,3 +73,19 @@ def test_cloudflare_receives_mood_and_time_guidance(cloudflare_host, mood):
         assert 'mood' in instructions.lower()
         if mood in {'lazy', 'quick'}:
             assert str(15 if mood == 'lazy' else 20) in instructions
+
+
+def test_real_host_passes_current_owned_amounts_and_preferences_with_mood(host):
+    client = host.client
+    alice = user(client, 'mood-alice@example.test')
+    bob = user(client, 'mood-bob@example.test')
+    client.post('/api/inventory', headers=alice, json={'name': 'rice', 'quantity': .5, 'unit': 'kg'})
+    client.post('/api/inventory', headers=bob, json={'name': 'private pepper', 'quantity': 2, 'unit': 'pcs'})
+    client.put('/api/profile/preferences', headers=alice, json={'dietary': ['vegan'], 'allergens': ['walnut']})
+    before = client.get('/api/inventory', headers=alice).json()
+    response = client.post('/api/recipes/generate', headers=alice, json={'mood': 'healthy'})
+    assert response.status_code == 200
+    assert host.state.calls[-1] == {'ingredients': ('rice',), 'amounts': (('rice', .5, 'kg'),),
+        'dietary': ('vegan',), 'allergens': ('walnut',), 'requested_dish': None, 'requested_servings': None, 'mood': 'healthy'}
+    assert client.get('/api/inventory', headers=alice).json() == before
+    assert client.get('/api/recipes/' + response.json()[0]['id'], headers=bob).status_code == 404

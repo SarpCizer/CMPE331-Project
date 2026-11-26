@@ -10,10 +10,15 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 from fridgely_collections.ports import AccountPrincipal
-from fridgely_collections.schemas import EmptyCommand, RecipeDTO
+from fridgely_collections.schemas import DTO, RecipeDTO
 
 from .service import GenerationInput, MAX_PROVIDER_SECONDS, RecipeError, RecipeGenerationService, RecipeProvider
 from .storage import SqlRecipeStore
+from .moods import Mood
+
+
+class GenerationCommand(DTO):
+    mood: Mood | None = None
 
 
 class RecipeRoute(APIRoute):
@@ -76,10 +81,10 @@ def build_recipes(
     @router.post("/recipes/generate", response_model=list[RecipeDTO])
     async def generate(
         principal: Annotated[AccountPrincipal, Depends(require_account)],
-        command: EmptyCommand | None = None,
+        command: GenerationCommand | None = None,
     ):
         if not isinstance(principal, AccountPrincipal):
             raise RecipeError(503, "Authentication integration must return AccountPrincipal.")
-        return await service.generate(principal.account_id)
+        return await service.generate(principal.account_id, command.mood if command else None)
 
     return RecipesModule(router, store, service)
