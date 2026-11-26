@@ -11,6 +11,12 @@ from urllib.parse import urlparse
 import requests
 
 BASE=os.getenv('SONAR_HOST_URL','http://127.0.0.1:9000').rstrip('/')
+GATE_NAME = 'Fridgely measured release conditions'
+REQUIRED_CONDITIONS = {
+    'bugs': ('GT', '0'), 'vulnerabilities': ('GT', '0'),
+    'security_hotspots': ('GT', '0'), 'coverage': ('LT', '90'),
+    'blocker_violations': ('GT', '0'), 'critical_violations': ('GT', '0'),
+}
 if urlparse(BASE).hostname not in {'127.0.0.1','localhost'}:
     raise ValueError('This helper only initializes the isolated local CI analysis server')
 
@@ -23,6 +29,7 @@ def save(path,value):
 
 def initialize():
     password='Fridgely-'+secrets.token_urlsafe(24)+'-7!'
+    print(f'::add-mask::{password}', flush=True)
     response=requests.post(BASE+'/api/users/change_password',auth=('admin','admin'),
         data={'login':'admin','previousPassword':'admin','password':password},timeout=15)
     response.raise_for_status()
@@ -30,12 +37,24 @@ def initialize():
     session.auth=('admin',password)
     response=session.post(BASE+'/api/projects/create',data={'project':'fridgely','name':'Fridgely'},timeout=15)
     response.raise_for_status()
+    response = session.post(BASE + '/api/qualitygates/create', data={'name': GATE_NAME}, timeout=15)
+    response.raise_for_status()
+    for metric, (operator, threshold) in REQUIRED_CONDITIONS.items():
+        response = session.post(BASE + '/api/qualitygates/create_condition',
+            data={'gateName': GATE_NAME, 'metric': metric, 'op': operator, 'error': threshold}, timeout=15)
+        response.raise_for_status()
+    response = session.post(BASE + '/api/qualitygates/select',
+        data={'gateName': GATE_NAME, 'projectKey': 'fridgely'}, timeout=15)
+    response.raise_for_status()
+    save('configured-gate.json', {'name': GATE_NAME, 'project': 'fridgely',
+        'revision': os.getenv('TESTED_REVISION', ''), 'conditions': REQUIRED_CONDITIONS})
     response=session.post(BASE+'/api/user_tokens/generate',data={'name':'ephemeral-ci-analysis'},timeout=15)
     response.raise_for_status()
     token=response.json()['token']
     print(f'::add-mask::{token}',flush=True)
     with open(os.environ['GITHUB_ENV'],'a') as target:
         target.write(f'SONAR_TOKEN={token}\n')
+        target.write(f'SONAR_ADMIN_PASSWORD={password}\n')
     save('server.json',{'version':session.get(BASE+'/api/server/version',timeout=15).text,
         'scope':'ephemeral loopback-only CI server','project':'fridgely'})
 
@@ -44,6 +63,19 @@ def enforce_quality(gate, metrics):
     status = gate.get('projectStatus', {})
     conditions = status.get('conditions', [])
     failures = []
+    by_metric = {row.get('metricKey'): row for row in conditions}
+    if not conditions or len(by_metric) != len(conditions) or set(REQUIRED_CONDITIONS) - set(by_metric):
+        failures.append('Required server quality gate conditions are missing or duplicated')
+    for metric, (operator, threshold) in REQUIRED_CONDITIONS.items():
+        condition = by_metric.get(metric, {})
+        try:
+            actual = float(condition['actualValue'])
+            matching = condition.get('comparator') == operator and float(condition['errorThreshold']) == float(threshold)
+            passed = math.isfinite(actual) and (90 <= actual <= 100 if metric == 'coverage' else actual == 0)
+        except (KeyError, ValueError, TypeError):
+            matching, passed = False, False
+        if not matching or not passed:
+            failures.append(f'{metric} condition must use the configured threshold and a passing measured value')
     if status.get('status') != 'OK':
         failures.append('Server quality gate is not OK')
     if status.get('ignoredConditions') or any(row.get('status') != 'OK' for row in conditions):
@@ -90,7 +122,7 @@ def export():
     endpoints={
         'quality-gate.json':('/api/qualitygates/project_status',{'analysisId':task['analysisId']}),
         'metrics.json':('/api/measures/component',{'component':'fridgely','metricKeys':
-            'bugs,vulnerabilities,code_smells,security_hotspots,coverage,line_coverage,branch_coverage,duplicated_lines_density,ncloc'}),
+            'bugs,vulnerabilities,code_smells,security_hotspots,blocker_violations,critical_violations,coverage,line_coverage,branch_coverage,duplicated_lines_density,ncloc'}),
     }
     for name,(endpoint,params) in endpoints.items():
         response=session.get(BASE+endpoint,params=params,timeout=15);response.raise_for_status()
