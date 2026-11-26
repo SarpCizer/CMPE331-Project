@@ -114,3 +114,35 @@ def test_plan_upgrade_preserves_legacy_collections(tmp_path):
             assert tuple(connection.execute(text('SELECT id,owner_id,name,quantity,unit FROM shopping_items')).one()) == ('item','legacy','Milk',2,'L')
             assert connection.execute(text('SELECT count(*) FROM weekly_meals')).scalar_one() == 0
     finally: engine.dispose()
+
+
+def test_independent_main_and_dessert_portions_scale_before_combining(kitchen):
+    kitchen.add('egg', 1)
+    # Base recipe:2 servings,150g rice and2 eggs. Plan1 serving plus4 servings.
+    for meal, servings in [('dinner',1),('dessert',4)]:
+        response = kitchen.client.put(f'/api/weekly-plan/0/{meal}',headers=kitchen.alice,
+            json={'weekStart':WEEK,'recipeId':kitchen.recipe_id,'servings':servings})
+        assert response.status_code == 200
+    data=get(kitchen).json()
+    assert [x['servings'] for x in data['entries']] == [1,4]
+    assert data['entries'][0]['scaledAmounts'] == ['75 g','1 pcs']
+    result=shopping(kitchen).json()
+    assert {x['name']:(x['quantity'],x['unit']) for x in result['shopping']} == {'rice':(375,'g'),'egg':(4,'pcs')}
+
+
+def test_fractional_counts_round_once_after_whole_week_aggregation(kitchen):
+    kitchen.add('banana',1)
+    from fridgely_collections.schemas import RecipeDTO
+    from fridgely_recipes.storage import SqlRecipeStore
+    from fridgely_app.models import InventoryEntry
+    with kitchen.client.app.state.sessions() as session:
+        owner=session.get(InventoryEntry,kitchen.stock()[0]['id']).owner_id
+    from uuid import uuid4
+    rid=uuid4().hex
+    SqlRecipeStore(kitchen.client.app.state.sessions).insert_batch(owner,[RecipeDTO(id=rid,title='Three portions',
+        ingredients=['egg'],ingredientAmounts=['1 pcs'],steps=['Prepare.'],cookingMinutes=5,caloriesPerServing=100,servings=3)])
+    for day in range(3):
+        assert kitchen.client.put(f'/api/weekly-plan/{day}/dinner',headers=kitchen.alice,
+            json={'weekStart':WEEK,'recipeId':rid,'servings':1}).status_code == 200
+    item,=shopping(kitchen).json()['shopping']
+    assert item['name']=='egg' and item['quantity']==1
