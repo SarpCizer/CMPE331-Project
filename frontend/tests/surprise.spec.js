@@ -1,0 +1,28 @@
+import {test,expect} from './fixtures.js';
+import AxeBuilder from '@axe-core/playwright';
+for(const width of [360,1440]) test(`wheel uses only fully stocked recipes at ${width}`,async({page})=>{
+ await page.setViewportSize({width,height:1000});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ const credentials={email:`wheel-${crypto.randomUUID()}@example.test`,password:'Isolated-wheel-fixture-123!'};
+ await page.request.post('/api/accounts',{data:credentials});
+ const {token}=await(await page.request.post('/api/sessions',{data:credentials})).json();
+ const headers={Authorization:`Bearer ${token}`};
+ for(const [name,quantity,unit] of [['banana',2,'pcs'],['milk',200,'ml'],['sugar',20,'g']])await page.request.post('/api/inventory',{headers,data:{name,quantity,unit}});
+ await page.request.post('/api/recipes/generate',{headers,data:{}});
+ const stock=await(await page.request.get('/api/inventory',{headers})).json();
+ await page.goto('/');await page.evaluate(s=>sessionStorage.setItem('fridgely.session',JSON.stringify(s)),{token,email:credentials.email});
+ await page.goto('/#/recipes');await page.reload();
+ const wheel=page.getByRole('region',{name:'Surprise me recipe wheel'});
+ await wheel.getByRole('button',{name:'Spin the wheel',exact:true}).click();
+ await expect(wheel.getByRole('heading',{name:'Banana shake',exact:true})).toBeVisible();
+ expect((await new AxeBuilder({page}).include('main').analyze()).violations).toEqual([]);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ expect(await(await page.request.get('/api/inventory',{headers})).json()).toEqual(stock);
+ await wheel.getByRole('button',{name:'View selected recipe'}).click();
+ await expect(page.getByRole('dialog')).toContainText('Blend.');
+ await page.getByRole('button',{name:'Close recipe',exact:true}).click();
+ const egg=stock.find(x=>x.name==='banana');
+ await page.request.patch('/api/inventory/'+egg.id,{headers,data:{quantity:1,unit:'pcs'}});
+ await wheel.getByRole('button',{name:'Refresh wheel recipes'}).click();
+ await expect(wheel).toContainText('No fully stocked recipes yet');
+});

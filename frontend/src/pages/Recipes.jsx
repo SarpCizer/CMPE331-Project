@@ -1,4 +1,5 @@
 import { Link, useOutletContext } from "react-router-dom";
+import SurpriseWheel from "../components/SurpriseWheel";
 import Empty from "../components/Empty";
 import Icon from "../components/Icon";
 import RecipeCard from "../components/RecipeCard";
@@ -42,6 +43,7 @@ export default function RecipesPage() {
           Edit your preferences
         </Link>
       </section>
+      <SurpriseWheel api={api} run={run} busy={busy} openRecipe={openRecipe} />
       {!stocked.length ? (
         <Empty icon="fridge" title="Start with an ingredient">
           Add something to your fridge before asking for recipes.

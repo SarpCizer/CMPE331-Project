@@ -33,6 +33,7 @@ ROUTES = [
     ("POST", "/favorites", {"recipeId": "{recipe}"}),
     ("GET", "/favorites", None), ("DELETE", "/favorites/{recipe}", None),
     ("GET", "/history", None),
+    ("GET", "/surprise-recipes", None),
     ("GET", "/weekly-plan", None),
     ("GET", "/weekly-plan/recipes", None),
     ("POST", "/weekly-plan/{day}/{meal}/generate", {"weekStart":"2026-11-23", "dish":"Pasta", "servings":2}),
