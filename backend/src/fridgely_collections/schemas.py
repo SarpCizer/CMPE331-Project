@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 import unicodedata
 
 from pydantic import (
@@ -19,7 +19,20 @@ class DTO(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
 
 
-class ShoppingCommand(DTO):
+class ShoppingQuantity(DTO):
+    quantity: Annotated[float, Field(gt=0, le=1000000, allow_inf_nan=False)] | None = None
+    unit: Literal['pcs', 'kg', 'g', 'L', 'ml', 'pack', 'bunch'] | None = None
+
+    @model_validator(mode='after')
+    def valid_quantity(self):
+        if (self.quantity is None) != (self.unit is None):
+            raise ValueError('Quantity and unit must be supplied together')
+        if self.unit in {'pcs', 'pack', 'bunch'} and not self.quantity.is_integer():
+            raise ValueError('Count units require whole numbers')
+        return self
+
+
+class ShoppingCommand(ShoppingQuantity):
     name: str
 
 
@@ -31,9 +44,17 @@ class EmptyCommand(DTO):
     pass
 
 
-class ShoppingItemDTO(DTO):
+class ShoppingItemDTO(ShoppingQuantity):
     id: Identifier
     name: Nonblank
+
+    @model_serializer(mode='wrap')
+    def serialize_optional_quantity(self, handler):
+        payload = handler(self)
+        if self.quantity is None:
+            payload.pop('quantity', None)
+            payload.pop('unit', None)
+        return payload
 
 
 class RecipeDTO(DTO):

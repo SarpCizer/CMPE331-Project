@@ -67,7 +67,7 @@ def build_collections(*, session_factory: Callable[[], Session], core: CoreData,
     @router.post("/shopping-items", response_model=ShoppingItemDTO, status_code=201,
                  responses={200: {"model": ShoppingItemDTO}})
     def add_item(command: ShoppingCommand, response: Response, account: str = Depends(owner)):
-        item, created = service.add_item(account, command.name)
+        item, created = service.add_item(account, command.name, command.quantity, command.unit)
         response.status_code = 201 if created else 200
         return item
 
@@ -77,7 +77,7 @@ def build_collections(*, session_factory: Callable[[], Session], core: CoreData,
         return Response(status_code=204)
 
     @router.post("/recipes/{recipe_id}/shopping-items", response_model=list[ShoppingItemDTO],
-                 summary="Add absent or insufficient recipe ingredients")
+                 summary="Add missing recipe quantities to shopping")
     def add_missing(recipe_id: str, command: EmptyCommand | None = Body(default=None),
                     account: str = Depends(owner)):
         return service.add_missing(account, recipe_id)

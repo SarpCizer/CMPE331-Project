@@ -3,7 +3,7 @@ from typing import Callable, Protocol, Sequence
 
 from sqlalchemy.orm import Session
 
-from .schemas import RecipeDTO, identifier
+from .schemas import RecipeDTO, ShoppingCommand, identifier
 
 
 @dataclass(frozen=True)
@@ -42,6 +42,13 @@ class CoreCallbacks:
     inventory_lookup: Callable[[Session, str], Sequence[str]]
 
     inventory_for_recipe_lookup: Callable[[Session, str, RecipeDTO], Sequence[str]] | None = None
+
+    shopping_shortages_lookup: Callable[[Session, str, RecipeDTO], Sequence[ShoppingCommand]] | None = None
+
+    def shopping_shortages(self, session: Session, owner_id: str, recipe: RecipeDTO) -> Sequence[ShoppingCommand] | None:
+        if self.shopping_shortages_lookup is None:
+            return None
+        return self.shopping_shortages_lookup(session, owner_id, recipe)
 
     def inventory_for_recipe(self, session: Session, owner_id: str, recipe: RecipeDTO) -> Sequence[str]:
         if self.inventory_for_recipe_lookup is not None:

@@ -123,7 +123,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
     engine = make_engine(database_url)
     sessions = session_factory(engine)
     authentication = Authentication(sessions, jwt_secret, clock, token_lifetime)
-    app = FastAPI(title='Fridgely API', version='0.2.1', docs_url=None, redoc_url=None,
+    app = FastAPI(title='Fridgely API', version='0.3.0', docs_url=None, redoc_url=None,
         description='Accounts, owned fridge inventory, preferences, recipes and personal collections. '
             'Register and sign in, then authorize requests using the returned bearer token.',
         servers=[{'url':'/api'}], root_path_in_servers=False)

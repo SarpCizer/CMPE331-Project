@@ -60,6 +60,8 @@ def install_documentation(api, frontend_dir):
                     statuses[404] = 'Owned resource not found'
                 if path == '/accounts':
                     statuses[409] = 'Account already exists'
+                if path.endswith('/purchase'):
+                    statuses[409] = 'Purchase was already recorded with other amounts or stock limit reached'
                 if path.endswith('/cook'):
                     statuses[409] = 'Stock changed, insufficient stock or confirmation conflict'
                 if path == '/recipes/generate':

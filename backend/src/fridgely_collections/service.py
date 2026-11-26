@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from .errors import CollectionError, not_found
 from .ports import CoreData, OwnedRecipe
 from .repository import CollectionRepository
-from .schemas import HistoryDTO, RecipeDTO, identifier, ingredient_name
+from .schemas import HistoryDTO, RecipeDTO, ShoppingCommand, identifier, ingredient_name
 
 T = TypeVar("T")
 
@@ -60,10 +60,14 @@ class CollectionsService:
             raise not_found()
         return recipe
 
-    def add_item(self, owner: str, name: str):
+    def add_item(self, owner: str, name: str, quantity=None, unit=None):
         identifier(owner)
         display, key = ingredient_name(name)
-        return self._transaction(lambda session, repo: repo.add_item(owner, display, key))
+        try:
+            amount = ShoppingCommand(name=display, quantity=quantity, unit=unit)
+        except ValidationError:
+            raise CollectionError(400, 'Invalid shopping quantity') from None
+        return self._transaction(lambda session, repo: repo.add_item(owner, display, key, amount.quantity, amount.unit))
 
     def items(self, owner: str):
         identifier(owner)
@@ -76,25 +80,33 @@ class CollectionsService:
                 raise not_found()
         self._transaction(remove)
 
+    def _missing_items(self, session, owner, recipe):
+        reader = getattr(self.core, 'shopping_shortages', None)
+        supplied = reader(session, owner, recipe) if callable(reader) else None
+        if supplied is not None:
+            if not isinstance(supplied, Sequence) or isinstance(supplied, (str, bytes)):
+                raise TypeError('Shortage port must return a sequence')
+            return [ShoppingCommand.model_validate(item) for item in supplied]
+        reader = getattr(self.core, 'inventory_for_recipe', None)
+        names = reader(session, owner, recipe) if callable(reader) else self.core.inventory_names(session, owner)
+        if not isinstance(names, Sequence) or isinstance(names, (str, bytes)):
+            raise TypeError('Inventory port must return a sequence of names')
+        fridge = {ingredient_name(name)[1] for name in names}
+        return [ShoppingCommand(name=name) for name in recipe.ingredients if ingredient_name(name)[1] not in fridge]
+
     def add_missing(self, owner: str, recipe_id: str):
         identifier(owner), identifier(recipe_id)
         def add(session, repo):
             recipe = self._recipe(session, owner, recipe_id)
             try:
-                reader = getattr(self.core, "inventory_for_recipe", None)
-                names = reader(session, owner, recipe) if callable(reader) else self.core.inventory_names(session, owner)
-                if not isinstance(names, Sequence) or isinstance(names, (str, bytes)):
-                    raise TypeError("Inventory port must return a sequence of names")
-                fridge = {ingredient_name(name)[1] for name in names}
                 missing = {}
-                for name in recipe.ingredients:
-                    display, key = ingredient_name(name)
-                    if key not in fridge:
-                        missing.setdefault(key, display)
-            except (CollectionError, TypeError):
-                raise CollectionError(503, "Ingredient integration returned invalid data") from None
-            for key, display in missing.items():
-                repo.add_item(owner, display, key)
+                for item in self._missing_items(session, owner, recipe):
+                    display, key = ingredient_name(item.name)
+                    missing.setdefault(key, (display, item))
+            except (CollectionError, ValidationError, TypeError):
+                raise CollectionError(503, 'Ingredient integration returned invalid data') from None
+            for key, (display, item) in missing.items():
+                repo.add_item(owner, display, key, item.quantity, item.unit, minimum=True)
             return repo.items(owner)
         return self._transaction(add)
 

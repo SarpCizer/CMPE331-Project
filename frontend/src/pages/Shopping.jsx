@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import ShoppingAmount, { amountInput } from "../components/ShoppingAmount";
+import PurchaseItem from "../components/PurchaseItem";
 import Empty from "../components/Empty";
 import FieldError from "../components/FieldError";
 import Icon from "../components/Icon";
@@ -16,9 +18,13 @@ import {
   sectionTitle,
 } from "../components/listStyles";
 
-function Shopping({ items, run, api }) {
+function Shopping({ items, run, api, busy, refresh }) {
   const [name, setName] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [quantity, setQuantity] = useState(""),
+    [unit, setUnit] = useState("pcs"),
+    [quantityError, setQuantityError] = useState(""),
+    [purchasing, setPurchasing] = useState(null);
   return (
     <section className="panel">
       <div className={sectionHeading}>
@@ -38,19 +44,22 @@ function Shopping({ items, run, api }) {
         onSubmit={async (event) => {
           event.preventDefault();
           const invalid = nameError(name, "a shopping item");
+          const amount = amountInput(quantity, unit);
+          setQuantityError(amount.error);
           setError(invalid);
-          if (invalid) {
-            event.currentTarget.querySelector("input").focus();
+          if (invalid || amount.error) {
+            event.currentTarget.querySelector(invalid ? "#shopping-name" : "#shopping-quantity").focus();
             return;
           }
           if (
             await run(
-              () => api("/shopping-items", { method: "POST", body: { name } }),
+              () => api("/shopping-items", { method: "POST", body: { name, ...amount.body } }),
               "Shopping item added.",
               ["shopping"],
             )
-          )
-            setName("");
+          ) {
+            setName(""); setQuantity(""); setUnit("pcs");
+          }
         }}
       >
         <div className="min-w-0 flex-1 mobile:basis-full">
@@ -73,11 +82,15 @@ function Shopping({ items, run, api }) {
           />
           <FieldError id="shopping-name-error">{error}</FieldError>
         </div>
-        <button type="submit" className={inlineSubmit}>
+        <ShoppingAmount id="shopping" quantity={quantity} unit={unit}
+          setQuantity={value => { setQuantity(value); setQuantityError(''); }}
+          setUnit={value => { setUnit(value); setQuantityError(''); }} error={quantityError} disabled={busy} />
+        <button type="submit" disabled={busy} className={inlineSubmit}>
           <Icon name="plus" className="w-[18px]" />
           Add item
         </button>
       </form>
+      <p className="text-sm">Adding the same name with an amount replaces its shopping amount.</p>
       {!items.length ? (
         <Empty icon="bag" title="All set for now">
           Add an item here, or add missing ingredients from a recipe.
@@ -85,15 +98,19 @@ function Shopping({ items, run, api }) {
       ) : (
         <ul className={itemList}>
           {items.map((item) => (
-            <li key={item.id} className={itemRow}>
+            <li key={item.id} className={`${itemRow} flex-wrap`}>
               <span className={itemSymbol}>
                 <Icon name="bag" />
               </span>
               <strong className="block min-w-0 flex-1 text-[0.95rem] font-[550] wrap-anywhere">
                 {item.name}
+                {item.quantity != null && <span className="ml-2 text-[#607565]">· {item.quantity} {item.unit}</span>}
               </strong>
+              <button type="button" className="btn-secondary mobile:w-full" disabled={busy}
+                aria-label={`Bought — add to fridge: ${item.name}`} onClick={() => setPurchasing(item.id)}>Bought — add to fridge</button>
               <button
                 className={removeButton}
+                disabled={busy}
                 aria-label={`Remove ${item.name}`}
                 onClick={() =>
                   run(
@@ -106,18 +123,21 @@ function Shopping({ items, run, api }) {
               >
                 Remove
               </button>
+              {purchasing === item.id && <PurchaseItem item={item} api={api} run={run} busy={busy} refresh={refresh}
+                onCancel={() => setPurchasing(null)} />}
             </li>
           ))}
         </ul>
       )}
       <p className="muted mx-0 mt-[25px] mb-0 text-[0.8rem]">
-        Removing a shopping item does not add it to your fridge.
+        Remove only deletes a shopping item. Use Bought — add to fridge to record a purchase.
       </p>
     </section>
   );
 }
 
 export default function ShoppingPage() {
-  const { data, api, run } = useOutletContext();
-  return <Shopping items={data.shopping} api={api} run={run} />;
+  const { data, api, run, busy, loadResources } = useOutletContext();
+  return <Shopping items={data.shopping} api={api} run={run} busy={busy}
+    refresh={() => loadResources(api, ["shopping", "inventory"])} />;
 }

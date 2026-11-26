@@ -15,8 +15,9 @@ The React website calls the real FastAPI application at `/api`. The same applica
 | `/api/recipes/generate` | POST recipes based on the authenticated user's current fridge and preferences |
 | `/api/recipes/{recipe_id}` | GET an owned recipe and update viewing history |
 | `/api/recipes/{recipe_id}/shopping-items` | POST absent or insufficient ingredients to the owned shopping list |
-| `/api/shopping-items` | GET / POST shopping items |
+| `/api/shopping-items` | GET / POST shopping items with optional quantity/unit |
 | `/api/shopping-items/{item_id}` | DELETE an owned shopping item |
+| `/api/shopping-items/{item_id}/purchase` | POST confirmed bought quantity; atomically refill fridge and remove the item |
 | `/api/favorites`, `/api/favorites/{recipe_id}` | GET / POST favorites; DELETE an owned favorite |
 | `/api/history` | GET viewing history |
 | `/api/health` | GET database readiness; 200 when connected, 503 when unavailable |
@@ -53,4 +54,29 @@ A pending cooking confirmation stores its complete original body before submissi
 
 **Add missing ingredients** works from generated recipes, saved favorites and history. The server reads current owned stock, so a saved recipe needing `2 pcs` banana with `1 pcs` in the fridge adds banana to shopping. Entirely absent and zero-stock ingredients are also added; sufficient ingredients are excluded. Compatible g/kg and ml/L measurements and identical count units are summed across duplicate stock and recipe entries using decimal arithmetic. The comparison uses the saved recipe amounts for its displayed serving count, not edited cooking inputs.
 
-Legacy recipes without measurements, unknown fridge quantities and incompatible units retain name-based presence behavior; no cup/density/weight conversion is guessed. The list stores product names, not shortage quantities. Repeated additions do not duplicate a product. Shopping entries persist across reload and can be removed after purchase. Adding/removing shopping entries does not refill or deduct fridge stock: explicitly add or edit the purchased product in **My fridge**. No schema migration is needed.
+Legacy recipes without measurements, unknown fridge quantities and incompatible units retain name-based presence behavior; no cup/density/weight conversion is guessed. Measured recipe additions carry the actual deficit and unit; manual additions can carry a planned quantity. Unknown legacy measurements remain name-only. Repeated additions do not duplicate a product. Shopping entries persist across reload and can be removed after purchase. Ordinary shopping additions/removals do not change fridge stock. The explicit confirmed-purchase extension below transfers the actual bought amount. No schema migration is needed.
+
+
+## Shopping amounts and confirmed purchases (user-approved extension #85)
+
+`POST /api/shopping-items` accepts `name` plus an optional positive finite `quantity`/`unit` pair, at most 1,000,000. Units match fridge entry: pcs, g, kg, ml, L, pack and bunch; count units require whole numbers. Unknown amounts remain omitted in responses, preserving old name-only clients and rows. Re-adding a normalized name with an explicit amount replaces its shopping amount, never increments it. Name-only/manual additions preserve an existing amount. Measured recipe additions ensure at least the current deficit without accumulating repeated clicks or reducing a larger compatible amount.
+
+**Bought — add to fridge** opens a review of the amount actually purchased (which may differ from the planned amount). `POST /api/shopping-items/{item_id}/purchase` requires that positive amount and unit. After confirmation, one transaction records a durable owner/item receipt, adds to compatible known stock or creates a new known inventory row, and removes the shopping item. g/kg and ml/L convert; matching count units combine. Unknown or incompatible stock stays separate. Refilling a depleted row preserves its ID/date. Exceeding a fridge quantity limit returns409 without changing either collection. The entire shopping item leaves the list even if the confirmed amount differs from the plan.
+
+Each shopping item can be purchased once. Replaying the same item/amount after a lost response or reconnect returns success without adding again; a different amount on that completed item returns409. Concurrent confirmations cannot refill twice. Retrying the original confirmation is safe; a reload also shows the committed fridge/list state. **Cancel purchase** sends no write. Ordinary **Remove** only deletes the shopping item and never adds stock (the original US11 behavior). Only this new explicit confirmed action transfers stock. Ownership, sanitized errors and commit-before-success apply at both root and /api routes.
+
+Migration `0006_shopping_quantities` adds nullable shopping amount columns and a purchase receipt table; existing names, IDs, owners and unknown amounts are preserved. No provider, billing or historical course-report artifacts are changed. Version0.3.0.
+
+
+The collections overlay compatibility fixture is pinned to `b58f4f298091dad47486c6d29d49586de83c63ee`: current production host `a06303e` plus only the required0006 database migration. The old frozen929776c fixture has no shopping amount columns and cannot exercise this schema extension. The fixture contains no new purchase endpoint/frontend; the overlay continues to hash and protect all teammate source. Already-shared identical test files are retained rather than overwritten; differing existing tests are rejected. This separately checks the module against the prior host with the required storage upgrade, while integrated CI checks the complete new application.
+
+
+## Measured recipe deficits in shopping (#85/#86 extension)
+
+**Add missing ingredients** on a generated, saved or favorite recipe compares its full displayed serving quantities with fresh owned stock in the shopping transaction. For example, a recipe requiring2 pcs banana with1 pcs in the fridge adds1 pcs;200 ml milk with0.1 L in stock adds100 ml. Entirely absent or depleted ingredients use the full required amount. Duplicate compatible stock rows and recipe requirements are summed with decimal arithmetic before subtraction. Adding to shopping never changes stock or calls the AI provider.
+
+Mass uses g/kg, volume uses ml/L, and matching pcs/pack/bunch units are comparable; no cup, package-size or density guesses are made. Unknown stock or incompatible recipe/stock dimensions retain the prior name-presence fallback. Unknown or ambiguous absent-ingredient measurements are added name-only for manual review. Values too large for the bounded amount fields also remain name-only.
+
+Automatic additions fill an unknown shopping amount and ensure the maximum of an existing compatible planned amount and the new deficit. They never sum repeated requests or reduce an already larger amount. A previously entered incompatible shopping unit is preserved for review. Manual re-addition with an explicit amount still replaces the planned amount intentionally. The optional read-only shopping-shortages callback preserves older collection integrations, which continue using names when no quantity adapter is provided. No additional database migration is needed beyond0006.
+
+The **Bought — add to fridge** review defaults to this computed missing quantity. The user can confirm the actual purchased amount, which is transferred atomically with the durable purchase receipt and shopping removal; the #87 SQLite overlap fix is retained.

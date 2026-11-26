@@ -17,7 +17,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-TEAM_REVISION = "929776ccc51d914084ebb49d5997942c51c64b58"
+TEAM_REVISION = "b58f4f298091dad47486c6d29d49586de83c63ee"
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -74,7 +74,12 @@ def main():
         if not target.is_relative_to(team):
             parser.error("Overlay target escapes the disposable checkout")
         if target.exists() and not relative.startswith("backend/src/fridgely_collections/"):
-            parser.error("Refusing to overwrite an existing teammate test")
+            if digest(target) != digest(source):
+                parser.error("Refusing to overwrite an existing teammate test")
+            # Current team hosts already contain these identical shared tests.
+            # Keep their tracked bytes untouched and include them in evidence.
+            overlays[relative] = digest(source)
+            continue
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
         overlays[relative] = digest(source)
