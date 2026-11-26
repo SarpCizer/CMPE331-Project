@@ -26,12 +26,21 @@ def load(base):
     index=read(root/'evidence-index.json')
     if index['source_revision']!=revision or index['ci_run_id']!=config['ci_run_id']:
         raise ValueError('Follow-up evidence source/run mismatch')
+    required={'ci-jobs.json','integrated/postgresql-load.json','integrated/recipe-generation-load.json',
+        'integrated/backend-junit.xml','integrated/browser-junit.xml','integrated/backend-coverage.json',
+        'integrated/acceptance.log','integrated/http-security.log',
+        'local/non-ai-load.json','local/recipe-generation-load.json','zap/summary.json',
+        'sonar/source-identity.json','sonar/quality-gate.json','sonar/metrics.json',
+        'sonar/dashboard-capture.json','sonar/dashboard.png','coverage/coverage-gate.json','traceability/traceability.json'}
+    if not required.issubset(index['files']): raise ValueError('Required follow-up evidence is not indexed')
     for name, metadata in index['files'].items():
         path=(root/name).resolve()
         if not path.is_relative_to(root): raise ValueError('Unsafe follow-up evidence path')
         data=path.read_bytes()
         if len(data)!=metadata['bytes'] or hashlib.sha256(data).hexdigest()!=metadata['sha256']:
             raise ValueError('Follow-up evidence digest mismatch: '+name)
+    if read(root/'traceability/traceability.json')!=read(base/'coverage/traceability.json'):
+        raise ValueError('Follow-up assertion mapping differs from indexed evidence')
     jobs=read(root/'ci-jobs.json')
     if jobs['head_sha']!=revision or jobs['run_id']!=config['ci_run_id'] or len(jobs['jobs'])!=8 or any(j['conclusion']!='success' for j in jobs['jobs']):
         raise ValueError('Follow-up CI is incomplete')
@@ -39,6 +48,9 @@ def load(base):
         value=read(root/path)
         if value['revision']!=revision or (not path.startswith('local/') and value['passed'] is not True):
             raise ValueError('Follow-up measurement source/result mismatch: '+path)
+    zap=read(root/'zap/summary.json')
+    if zap['authenticated_successful_requests_observed']<=0 or zap['alerts_by_risk']['high'] or zap['alerts_by_risk']['medium']:
+        raise ValueError('Follow-up ZAP policy or authentication failed')
     sonar=read(root/'sonar/source-identity.json')
     if sonar['analysis_revision']!=revision or sonar['test_revision']!=revision or sonar['test_artifacts_reused']:
         raise ValueError('Follow-up Sonar source mismatch')
@@ -46,7 +58,7 @@ def load(base):
     expected={'bugs':('GT',0),'vulnerabilities':('GT',0),
         'coverage':('LT',90),'blocker_violations':('GT',0),'critical_violations':('GT',0)}
     conditions={c['metricKey']:c for c in gate.get('conditions',[])}
-    if gate.get('status')!='OK' or len(conditions)!=len(expected) or len(gate.get('conditions',[]))!=len(expected):
+    if gate.get('status')!='OK' or set(conditions)!=set(expected) or len(gate.get('conditions',[]))!=len(expected):
         raise ValueError('Follow-up Sonar conditions are incomplete')
     for name,(operator,threshold) in expected.items():
         item=conditions[name]
@@ -87,7 +99,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
     local=read(root/'local/non-ai-load.json')
     local_generation=read(root/'local/recipe-generation-load.json')
     zap=read(root/'zap/summary.json')
-    mapping=read(base/'coverage/traceability.json')
+    mapping=read(root/'traceability/traceability.json')
     backend=ET.parse(root/'integrated/backend-junit.xml').getroot()
     browser=ET.parse(root/'integrated/browser-junit.xml').getroot()
     def junit_count(element):
@@ -101,6 +113,13 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
     skipped=[case for case in backend.iter('testcase') if case.find('skipped') is not None]
     if backend_skipped!=3 or browser_skipped or any('test_planner_sqlite_race' not in case.get('classname','') for case in skipped):
         raise ValueError('Unexpected skipped follow-up tests')
+    def node_count(name):
+        text=(root/'integrated'/name).read_text(encoding='utf-8')
+        result={key:int(value) for key,value in re.findall(r'^[#\u2139] (tests|pass|fail|cancelled|skipped) (\d+)',text,re.MULTILINE)}
+        if result.get('tests',0)<=0 or result.get('pass')!=result['tests'] or any(result.get(k,1) for k in ['fail','cancelled','skipped']):
+            raise ValueError('Incomplete Node evidence: '+name)
+        return result['tests']
+    acceptance_count,http_count=node_count('acceptance.log'),node_count('http-security.log')
     figures=base/'figures';figures.mkdir(exist_ok=True)
     def figure(name,drawing):
         renderSVG.drawToFile(drawing,str(figures/name))
@@ -119,6 +138,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
     table(['Actual follow-up evidence','Result'],[
         ['PostgreSQL/backend JUnit',f'{backend_count} passed; {backend_skipped} SQLite-only interleaving cases skipped in PostgreSQL'],
         ['Browser JUnit',f'{browser_count} passed'],
+        ['Acceptance / real HTTP checks',f'{acceptance_count} / {http_count} passed'],
         ['CI delivery and analysis','All eight jobs successful; no earlier failed attempt counted as a pass'],
         ['ZAP authenticated requests',str(zap['authenticated_successful_requests_observed'])],
         ['ZAP high / medium',f'{zap["alerts_by_risk"]["high"]} / {zap["alerts_by_risk"]["medium"]}'],
@@ -130,7 +150,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         ['Backend statements','Backend branches','Frontend lines','Frontend branches','Frontend functions'],
         [coverage[k] for k in ['backend_statements','backend_branches','frontend_lines','frontend_branches','frontend_functions']],100))
     paragraph('Executing a line does not exercise every branch leaving it. A valid recipe can execute a validation line while leaving its malformed-output exit untested. The older local summary records 933/1016 statements (91.83%) and 136/184 branches (73.91%); the a59556e CI snapshot records 941/1026 statements (91.72%) and 143/188 branches (76.06%). These are different snapshots, not one combined result.')
-    paragraph('At a59556e the raw branch report identifies 45 missed exits. Seven are in provider response parsing (wrong message/content types, missing outputs, non-string text, missing credentials); five in frontend host routing with/without built assets; five in ordered-preference migration paths for different pre-existing schemas. Three security exits include invalid signing-key length, out-of-range token lifetime and an excessive-length token. Their exact source lines and raw pairs are preserved; this explains the gap rather than calling all lines fully tested.')
+    paragraph('At a59556e the raw branch report identifies 45 missed exits. Seven are in provider parsing/initialization, including missing outputs, malformed content, missing credentials and explicit failed status; five in frontend host routing with/without built assets; five in ordered-preference migration paths for different pre-existing schemas. Three security exits include invalid signing-key length, out-of-range token lifetime and an excessive-length token. The fixtures did not exercise every input shape or error exit. Exact source arcs are preserved; high statement coverage does not make these branches tested.')
     raw=read(root/'integrated/backend-coverage.json')
     missed=sorted(raw['files'].items(),key=lambda item:item[1]['summary']['missing_branches'],reverse=True)[:5]
     table(['Current file','Missed exits / example source arcs'],[
@@ -183,7 +203,9 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
 
     page();heading('Traceability and reproducible review',True)
     paragraph(f'All 48 approved acceptance criteria and nine NFRs map to concrete assertion locations. The {mapping["unique_physical_acceptance_ids"]} physical US-xx-Txx IDs are unique. Assertions are pinned to {mapping["assertion_revision"]}; the validation run verifies that the mapped test files are unchanged in the follow-up source. A shared scenario is acceptable when each row names its relevant verification, rather than repeating a whole-case ID as coverage proof.')
-    paragraph(f'[Detailed AC/NFR matrix]({REPO}/blob/fix/sarp-report-reproducibility/docs/tests/coverage/traceability.md) contains the criterion, case, exact assertion, immutable source link, purpose and scope. The CSV and JSON preserve all 57 rows. Mapping completeness is not an assertion of 100% code coverage or live-provider safety.')
+    paragraph(f'[Detailed AC/NFR matrix]({REPO}/blob/{revision}/docs/tests/coverage/traceability.md) contains the criterion, case, exact assertion, immutable source link, purpose and scope. The CSV and JSON preserve all 57 rows. Mapping completeness is not an assertion of 100% code coverage or live-provider safety.')
+    if config.get('evidence_revision'):
+        paragraph(f'[Retained raw evidence index]({REPO}/blob/{config["evidence_revision"]}/docs/tests/{config["evidence_root"]}/evidence-index.json) records SHA-256 and byte lengths for this follow-up bundle. Raw results remain separate from historical a59556e evidence.','small')
     table(['Requirement group','Specific evidence'],[
         ['US-01–03 / NFR-01–02','Account/JWT/preferences assertions; every personal method and foreign owner IDs; salted hashes/seeded secret inspection; bounded login windows.'],
         ['US-04–06 / NFR-05–07','Addition timestamp and date display; empty/owned inventory; isolated deletion; widths/keyboard/axe; two-process persistence.'],

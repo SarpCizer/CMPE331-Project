@@ -1,0 +1,23 @@
+{
+  "revision": "19aa28197b078287f04cae9ef946f5fa49b85215",
+  "observed_at_utc": "2026-11-26T21:06:51.264813+00:00",
+  "tool": "OWASP ZAP",
+  "image": "ghcr.io/zaproxy/zaproxy:2.17.0",
+  "image_digest": "[\"ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af\"]",
+  "scan_type": "authenticated OpenAPI API active scan, four-minute active budget",
+  "target": "http://127.0.0.1:8094",
+  "scanner_exit_code": 3,
+  "http_requests_observed": 0,
+  "authenticated_successful_requests_observed": 0,
+  "alerts_by_risk": {
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "informational": 0
+  },
+  "alert_rules": [],
+  "policy": "No untriaged high or medium alerts; retain low/informational findings for review.",
+  "tokens_and_passwords_redacted": true,
+  "production_target": false,
+  "passed": false
+}

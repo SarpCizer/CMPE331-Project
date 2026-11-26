@@ -1,0 +1,9 @@
+{
+  "source_revision": "19aa28197b078287f04cae9ef946f5fa49b85215",
+  "run_id": 45895103131,
+  "job_id": 140167072921,
+  "outcome": "SETUP_FAILED_NO_SCAN",
+  "cause": "ZAP helper reached its own API over IPv6 loopback; the configured allowlist only admitted IPv4 loopback.",
+  "fix": "Permit IPv4 and both IPv6 loopback spellings only; preserve loopback binding.",
+  "counted_as_security_pass": false
+}

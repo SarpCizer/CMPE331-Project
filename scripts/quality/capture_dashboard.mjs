@@ -15,6 +15,7 @@ try {
     await page.getByRole('textbox', { name: /login|username/i }).fill('admin');
     await page.locator('input[type="password"]').fill(process.env.SONAR_ADMIN_PASSWORD);
     await page.getByRole('button', { name: /log in|sign in/i }).click();
+    await page.locator('input[type="password"]').waitFor({ state: 'detached' });
     await page.goto(base + '/dashboard?id=fridgely');
     await page.waitForLoadState('networkidle');
   }

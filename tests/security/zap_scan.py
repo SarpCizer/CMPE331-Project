@@ -54,12 +54,16 @@ def scan(args):
             '-e', 'ZAP_AUTH_HEADER_SITE', IMAGE, 'sh', '-c',
             'mkdir -p /zap/wrk && exec zap-api-scan.py "$@"', 'zap-api-scan.py', '-t', args.base + '/api/openapi.json',
             '-f', 'openapi', '-J', 'zap-report.json', '-r', 'zap-report.html', '-I', '-T', '5', '-P', '8095',
-            '-z', '-host 127.0.0.1 -config api.addrs.addr.name=127.0.0.1 -config api.addrs.addr.regex=false -config ascan.maxScanDurationInMins=4']
+            '-z', '-host 127.0.0.1 -config api.addrs.addr.name=(127[.]0[.]0[.]1|::1|0:0:0:0:0:0:0:1) -config api.addrs.addr.regex=true -config ascan.maxScanDurationInMins=4']
         code, scanner_log = 3, ''
         try:
             completed = subprocess.run(command, env=environment, stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT, text=True, timeout=600)
+                stderr=subprocess.STDOUT, text=True, timeout=900)
             code, scanner_log = completed.returncode, completed.stdout
+        except subprocess.TimeoutExpired as error:
+            partial = error.stdout or ''
+            scanner_log = (partial.decode('utf-8', errors='replace') if isinstance(partial, bytes) else partial)
+            scanner_log += '\nScanner exceeded its fifteen-minute outer time budget; not a passing scan.\n'
         finally:
             # Copy only scanner output; the container never mounts the source checkout.
             for name in ('zap-report.json', 'zap-report.html'):

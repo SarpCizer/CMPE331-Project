@@ -126,7 +126,7 @@ def export():
     story, markdown = [], []
 
     def markup(text):
-        escaped = html.escape(str(text))
+        escaped = html.escape(str(text).replace('\u2011','-').replace('\u2013','-').replace('\u2014','-'))
         return re.sub(r'\[([^\]]+)\]\((https://[^)]+)\)', r'<link href="\2" color="#245d42">\1</link>', escaped)
 
     def paragraph(text, kind='body'):
@@ -250,7 +250,8 @@ def export():
     paragraph('[Fridgely on Render](https://fridgely-web.onrender.com) runs the original repository on the FREE plan. Deploy dep-dc2uq60473hc73bfhqs0 reached LIVE at a59556e via new_commit. On 24 November at 20:06 UTC, root, health, OpenAPI, Swagger and referenced JS/CSS returned 200. Six read-only checks used no account credentials or inference. This establishes the feature branch CI-to-deployment path; main deployment is not claimed.')
 
     page()
-    heading('Delivery evidence and remaining work', True)
+    heading('Historical delivery evidence and actions', True)
+    paragraph('This page records the a59556e checkpoint as of 24 November 2026. Its pending decisions and draft-PR statuses are historical, not a description of current main. The instructor-review follow-up has its own source and status.', 'small')
     paragraph(f'Source-only ZIP: {config["zip_source_files"]} manifest source files. CRC, every file length/hash and declared Git blobs were verified; two independent builds were byte-identical. The generic contribution placeholder is absent. ZIP SHA-256: {config["zip_sha256"]}')
     paragraph('The matching source archive is the source-archive artifact of CI run 45474025963. Raster evidence and report PDFs are deliberately outside the source-only ZIP. Pair this PDF with that exact archive; do not substitute the historical #60 / 90529bb package.')
     heading('TDD and independent tooling review')
@@ -321,7 +322,8 @@ def export():
     pdf = out / 'Fridgely-Software-Test-Report.pdf'
     doc = SimpleDocTemplate(str(pdf), pagesize=A4, rightMargin=48, leftMargin=48,
                            topMargin=45, bottomMargin=55,
-                           title='Fridgely Software Testing Report - a59556e', author='Berfin Gökgöz')
+                           title='Fridgely Software Testing Report - historical baseline and review corrections',
+                           author='Berfin Gökgöz; corrections by Sarp Çizer with Codex assistance')
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
     text = '\n'.join(markdown)
     (out / 'Fridgely-Software-Test-Report.md').write_text(text, encoding='utf-8')
