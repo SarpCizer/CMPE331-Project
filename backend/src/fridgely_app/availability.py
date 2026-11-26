@@ -16,18 +16,25 @@ _UNITS = {'g': ('mass', Decimal(1)), 'kg': ('mass', Decimal(1000)),
 _AMOUNT = re.compile(r'\s*(\d+(?:\.\d+)?)\s*(g|kg|ml|l|pcs|pack|bunch)?\s*', re.I)
 
 
-def _amount(text):
+def _measurement(text):
+    """Read the shared numeric value, dimension and original recognized unit."""
     match = _AMOUNT.fullmatch(text or '')
     if not match:
         return None
     quantity = Decimal(match[1])
-    unit = _UNITS.get((match[2] or 'pcs').lower())
+    source_unit = (match[2] or 'pcs').lower()
+    unit = _UNITS.get(source_unit)
     if unit is None:
         return None
     dimension, scale = unit
     if quantity <= 0 or (dimension in {'pcs', 'pack', 'bunch'} and quantity != quantity.to_integral_value()):
         return None
-    return dimension, quantity * scale
+    return dimension, quantity * scale, source_unit
+
+
+def _amount(text):
+    measured = _measurement(text)
+    return measured[:2] if measured is not None else None
 
 
 def _requirements_snapshot(session, owner, measurements):

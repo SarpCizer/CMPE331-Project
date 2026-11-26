@@ -19,7 +19,7 @@ from fridgely_collections.ports import AccountPrincipal
 from fridgely_collections.repository import dialect_insert
 from fridgely_collections.schemas import DTO, Identifier, RecipeDTO, ShoppingItemDTO, ingredient_name
 from fridgely_recipes.service import RecipeError, requested_recipe
-from .availability import _amount, _UNITS, requirements_shopping_items
+from .availability import _measurement, _UNITS, requirements_shopping_items
 from .models import Account
 
 Meal = Annotated[str, StringConstraints(strict=True, pattern=r'^dish-(?:[1-9]|1[0-9]|20)$')]
@@ -83,15 +83,13 @@ def scaled_measurements(recipe, servings):
     ratio = Fraction(servings, recipe.servings)
     for index, name in enumerate(recipe.ingredients):
         text = recipe.ingredientAmounts[index] if recipe.ingredientAmounts else None
-        parsed = _amount(text)
+        parsed = _measurement(text)
         if parsed is None:
             result.append((name, None)); display.append(None)
             continue
-        dimension, amount = parsed
+        dimension, amount, raw_unit = parsed
         amount = Fraction(amount) * ratio
         result.append((name, (dimension, amount)))
-        raw_unit = text.split()[-1].lower()
-        raw_unit = raw_unit if raw_unit in _UNITS else 'pcs'
         number = amount / Fraction(_UNITS[raw_unit][1])
         unit = 'L' if raw_unit == 'l' else raw_unit
         display.append(f'{float(number):.6g} {unit}')
