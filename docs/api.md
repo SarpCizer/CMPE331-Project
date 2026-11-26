@@ -80,3 +80,42 @@ Mass uses g/kg, volume uses ml/L, and matching pcs/pack/bunch units are comparab
 Automatic additions fill an unknown shopping amount and ensure the maximum of an existing compatible planned amount and the new deficit. They never sum repeated requests or reduce an already larger amount. A previously entered incompatible shopping unit is preserved for review. Manual re-addition with an explicit amount still replaces the planned amount intentionally. The optional read-only shopping-shortages callback preserves older collection integrations, which continue using names when no quantity adapter is provided. No additional database migration is needed beyond0006.
 
 The **Bought — add to fridge** review defaults to this computed missing quantity. The user can confirm the actual purchased amount, which is transferred atomically with the durable purchase receipt and shopping removal; the #87 SQLite overlap fix is retained.
+
+
+## Weekly meal planner (#88)
+
+All operations require the verified JWT subject and are also available at the
+original root paths. `weekStart` is an ISO Monday date. Day indexes are 0–6.
+User-added slot keys `dish-1` through `dish-20` identify independently planned
+dishes, with no fixed meal categories. Each dish has an integer `servings` of
+1–20. The frontend sends the user's local Monday for every operation.
+
+| Route | Behavior |
+| --- | --- |
+| `GET /api/weekly-plan?weekStart=2026-11-23` | Owned week, including recipes, ordered steps, planned servings and scaledAmounts |
+| `GET /api/weekly-plan/recipes` | Up to 100 owned saved/generated recipes for reuse, ordered by title and ID |
+| `PUT /api/weekly-plan/{day}/{meal}` | `{weekStart, recipeId, servings}` saves an owned recipe in one slot |
+| `DELETE /api/weekly-plan/{day}/{meal}?weekStart=2026-11-23` | Clears one owned slot, preserving a revision against stale generation |
+| `POST /api/weekly-plan/{day}/{meal}/generate` | `{weekStart, dish, servings}` creates a requested recipe and atomically saves its slot |
+| `POST /api/weekly-plan/shopping-items` | `{weekStart}` scales and aggregates all dishes, subtracts stock once, adds deficits |
+
+Typed dishes use the existing configured provider with current dietary/allergen
+preferences, requested name and exact portions. An empty fridge is allowed here:
+the plan may require shopping. Provider calls happen outside SQL transactions;
+invalid, excluded, timed-out or unavailable results never partially save a recipe
+or replace the prior plan. A slot changed during generation returns 409 and the
+UI refreshes the saved week. A valid recipe and slot commit together before 200.
+Selecting or rescaling saved recipes does not call the provider.
+
+Shopping uses exact fractional arithmetic for portion scaling before subtracting
+owned stock. Compatible g/kg, ml/L and matching count units are combined. Whole
+items are rounded up once after aggregating the week; mass/volume deficits round
+up to 0.001 of the selected shopping unit. Unknown or incompatible measurements
+are returned in `needsReview`; missing unknown amounts remain name-only. Larger
+existing shopping amounts are kept. Repeating the same request is not additive.
+Changing/removing a plan does not automatically delete old shopping entries.
+Planning never reserves or deducts fridge stock, and does not mark dishes cooked.
+
+Migration `0007_weekly_meal_plans` adds only the owner/week/day/slot table, composite
+owner/recipe FK, portion and slot constraints and revisioned cleared slots. It
+preserves existing accounts, inventory, recipes, favorites and shopping rows.

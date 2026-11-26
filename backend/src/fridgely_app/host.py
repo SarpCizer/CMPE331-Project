@@ -17,6 +17,7 @@ from .documentation import install_documentation
 from .security import utc_now
 from .cooking import cooking_router
 from .purchases import purchase_router
+from .meal_planner import planner_router
 
 
 def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_provider=None,
@@ -38,6 +39,8 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
         core=CoreCallbacks(recipes.store.find_owned, inventory_names, inventory_for_recipe, recipe_shopping_items), clock=clock)
     api.include_router(recipes.router)
     api.include_router(collections.router)
+    api.include_router(planner_router(api.state.authentication.require_account,
+        collections.service._transaction, collections.service._recipe, clock, recipes.store, recipes.generation))
     api.include_router(purchase_router(api.state.sessions, api.state.authentication.require_account, clock))
     api.include_router(cooking_router(api.state.sessions, api.state.authentication.require_account, recipes.store))
 
@@ -77,7 +80,7 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
 
         @api.get('/{path:path}', include_in_schema=False)
         def frontend(path: str):
-            if path not in {'','fridge','recipes','shopping','favorites','history','preferences'}:
+            if path not in {'','fridge','recipes','shopping','favorites','history','preferences','weekly-plan'}:
                 return JSONResponse({'error':'Not found'},status_code=404)
             return FileResponse(built / 'index.html')
 

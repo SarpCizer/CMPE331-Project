@@ -24,6 +24,8 @@ class GenerationInput:
     dietary: tuple[str, ...]
     allergens: tuple[str, ...]
     amounts: tuple[tuple[str, float | None, str | None], ...] = ()
+    requested_dish: str | None = None
+    requested_servings: int | None = None
 
 
 class RecipeProvider(Protocol):
@@ -82,3 +84,17 @@ class RecipeGenerationService:
         recipes = validate_batch(candidates, data.allergens)
         await run_in_threadpool(self.insert_batch, owner_id, recipes)
         return recipes
+
+
+async def requested_recipe(data: GenerationInput, provider, timeout_seconds):
+    """Generate one measured requested dish; callers own the atomic save/plan transaction."""
+    try:
+        async with asyncio.timeout(timeout_seconds):
+            candidates = await provider.generate(data)
+    except Exception:
+        raise RecipeError(503, 'The recipe service is temporarily unavailable. Try again or choose a saved recipe.', retryable=True) from None
+    from .provider import recipe_batch
+    recipes = validate_batch(recipe_batch({'recipes': candidates}), data.allergens)
+    if len(recipes) != 1 or recipes[0].servings != data.requested_servings:
+        raise RecipeError(502, 'The recipe service did not return the requested portions. Please try again.')
+    return recipes[0]

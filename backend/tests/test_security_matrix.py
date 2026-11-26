@@ -33,6 +33,12 @@ ROUTES = [
     ("POST", "/favorites", {"recipeId": "{recipe}"}),
     ("GET", "/favorites", None), ("DELETE", "/favorites/{recipe}", None),
     ("GET", "/history", None),
+    ("GET", "/weekly-plan", None),
+    ("GET", "/weekly-plan/recipes", None),
+    ("POST", "/weekly-plan/{day}/{meal}/generate", {"weekStart":"2026-11-23", "dish":"Pasta", "servings":2}),
+    ("PUT", "/weekly-plan/{day}/{meal}", {"weekStart": "2026-11-23", "recipeId": "{recipe}"}),
+    ("DELETE", "/weekly-plan/{day}/{meal}", None),
+    ("POST", "/weekly-plan/shopping-items", {"weekStart": "2026-11-23"}),
 ]
 RECIPE = {"title": "Rice bowl", "ingredients": ["rice", "tomato"],
     "steps": ["Cook rice", "Add tomato"], "cookingMinutes": 20,
@@ -106,7 +112,7 @@ def matrix(request, tmp_path_factory):
             assert shopping.status_code == 201
             assert client.post("/favorites", headers=headers, json={"recipeId": recipe["id"]}).status_code == 200
             if account is harness.alice:
-                harness.ids = {"inventory": added.json()["id"], "recipe": recipe["id"],
+                harness.ids = {"day": 0, "meal": "dish-1", "inventory": added.json()["id"], "recipe": recipe["id"],
                     "shopping": shopping.json()["id"]}
         claims = {"sub": harness.alice.id, "iat": int(clock.timestamp()) - 100,
             "exp": int(clock.timestamp()) + 3600, "aud": AUDIENCE, "iss": ISSUER}
@@ -134,7 +140,7 @@ def test_every_protected_method_rejects_invalid_tokens_without_writes(matrix, pr
 
 
 @pytest.mark.parametrize("prefix", ["", "/api"], ids=["root", "api"])
-@pytest.mark.parametrize("method,path,body", [row for row in ROUTES if "{" in row[1] or row[0:2] == ("POST", "/favorites")])
+@pytest.mark.parametrize("method,path,body", [row for row in ROUTES if any(key in row[1] for key in ("{inventory}", "{shopping}", "{recipe}")) or row[0:2] == ("POST", "/favorites") or row[0] == "PUT" and row[1].startswith("/weekly-plan/")])
 def test_foreign_url_and_body_ids_are_denied_without_writes(matrix, prefix, method, path, body):
     before = snapshot(matrix)
     response = send(matrix, prefix, method, path, body, matrix.bob.token)

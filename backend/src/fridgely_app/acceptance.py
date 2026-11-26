@@ -24,7 +24,8 @@ def emit(value):
 
 class NodeProvider:
     async def generate(self, data):
-        emit({'kind':'provider', 'input':asdict(data)})
+        emit({'kind':'provider', 'input':{key:value for key,value in asdict(data).items()
+            if not key.startswith('requested_') or value is not None}})
         message = json.loads(await asyncio.to_thread(sys.stdin.readline))
         if message.get('kind') != 'provider-result' or not message.get('ok'):
             raise RuntimeError('Controlled provider failure')

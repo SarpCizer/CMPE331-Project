@@ -64,9 +64,11 @@ def install_documentation(api, frontend_dir):
                     statuses[409] = 'Purchase was already recorded with other amounts or stock limit reached'
                 if path.endswith('/cook'):
                     statuses[409] = 'Stock changed, insufficient stock or confirmation conflict'
-                if path == '/recipes/generate':
+                if path.endswith('/generate'):
                     statuses[422] = 'Generated batch rejected by dietary or allergen validation'
                     statuses[502] = 'Invalid provider response'
+                if path.startswith('/weekly-plan/') and path.endswith('/generate'):
+                    statuses[409] = 'Planned meal changed during recipe generation'
                 for status, description in statuses.items():
                     responses[str(status)] = {'description':description,
                         'content':{'application/json':{'schema':error_schema}}}
