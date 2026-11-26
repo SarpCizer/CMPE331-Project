@@ -334,7 +334,7 @@ test("failed generation keeps previous results and hides provider diagnostics", 
   await page
     .getByRole("button", { name: "Generate recipes", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("Recipes are ready");
+  await expect(page.getByRole("status").filter({hasText:"Recipes are ready"})).toContainText("Recipes are ready");
 });
 
 for (const width of [360, 768, 1440]) {
