@@ -37,7 +37,7 @@ def custom(tmp_path,request):
         owner=client.post('/api/accounts',json=credentials).json()['id']
         token=client.post('/api/sessions',json=credentials).json()['token']
         headers={'Authorization':f'Bearer {token}'}
-        yield SimpleNamespace(client=client,headers=headers,state=state,sessions=app.state.sessions,owner=owner)
+        yield SimpleNamespace(client=client,headers=headers,state=state,sessions=app.state.sessions,owner=owner,database=request.param)
 
 
 def generate(c,dish='Tomato sauce pasta',servings=4):
