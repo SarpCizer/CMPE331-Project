@@ -1,7 +1,10 @@
 """Login guessing must be bounded without revealing whether an account exists."""
 from datetime import timedelta
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
+from fastapi import HTTPException
+from fridgely_app.login_throttle import LoginThrottle
 
 from test_accounts_database import core, user, PASSWORD
 
@@ -48,3 +51,34 @@ def test_successful_signin_resets_only_the_account_guess_bucket(core):
     for _ in range(5):
         assert attempt(core).status_code == 401
     assert attempt(core).status_code == 429
+
+
+def test_simultaneous_guesses_cannot_reserve_more_than_the_allowed_window(core):
+    throttle = LoginThrottle(lambda: core.state.now)
+    def reserve(_):
+        try:
+            throttle.reserve('same-client', 'same-account@example.test')
+            return True
+        except HTTPException as error:
+            assert error.status_code == 429
+            return False
+    with ThreadPoolExecutor(max_workers=20) as pool:
+        allowed = list(pool.map(reserve, range(40)))
+    assert sum(allowed) == 5
+
+
+def test_rotating_accounts_is_bounded_and_expired_buckets_release_capacity(core):
+    throttle = LoginThrottle(lambda: core.state.now, source_limit=3, max_buckets=4)
+    for number in range(3):
+        throttle.reserve('same-client', f'account-{number}@example.test')
+        throttle.succeeded('same-client', f'account-{number}@example.test')
+    with pytest.raises(HTTPException) as denied:
+        throttle.reserve('same-client', 'another@example.test')
+    assert denied.value.status_code == 429
+    # A different source remains usable. At capacity, new keys fail closed.
+    throttle.reserve('other-client', 'other@example.test')
+    with pytest.raises(HTTPException) as full:
+        throttle.reserve('third-client', 'third@example.test')
+    assert full.value.status_code == 429
+    core.state.now += timedelta(seconds=61)
+    throttle.reserve('third-client', 'third@example.test')

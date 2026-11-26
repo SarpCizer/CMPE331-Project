@@ -72,7 +72,7 @@ jobs:
       - name: Install pinned report dependencies
         run: python -m pip install -r scripts/tests/requirements-report.txt
       - name: Verify clean PDF exports, source labels and Windows evidence bytes
-        run: python -B -m unittest discover -s scripts/tests -p test_export_report.py -v
+        run: python -B -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - name: Package the exact checked-out commit twice and compare bytes
         run: |
           archive_revision="$(git rev-parse HEAD)"
