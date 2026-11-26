@@ -217,7 +217,7 @@ def planner_router(require_account, transact, recipe_lookup, clock, store, gener
             else:
                 statement = update(WeeklyMeal).where(WeeklyMeal.owner_id==owner, WeeklyMeal.week_start==week,
                     WeeklyMeal.day==day, WeeklyMeal.meal==meal, WeeklyMeal.revision==prior).values(revision=claim)
-            if session.execute(statement).rowcount != 1:
+            if session.execute(statement.returning(WeeklyMeal.revision)).scalar_one_or_none() != claim:
                 raise CollectionError(409, 'This meal changed while its recipe was being created. Refresh the week and try again.')
             store.insert_in_session(session, owner, [recipe])
             session.flush()
