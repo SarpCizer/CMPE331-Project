@@ -208,3 +208,23 @@ def test_openai_is_still_the_default_provider(cloudflare_host, monkeypatch):
     assert outbound.headers["Authorization"] == "Bearer test-openai-token"
     schema = json.loads(outbound.content)["text"]["format"]["schema"]
     assert "ingredientAmounts" in schema["properties"]["recipes"]["items"]["required"]
+
+
+def test_weekly_requested_dish_reaches_cloudflare_with_independent_portions(cloudflare_host):
+    state=cloudflare_host
+    state.respond=lambda: cloudflare_result({'recipes':[{**RECIPE,'servings':4}]})
+    with TestClient(state.new_app()) as client:
+        headers=sign_in(client)
+        before=client.get('/api/inventory',headers=headers).json()
+        response=client.post('/api/weekly-plan/0/dish-1/generate',headers=headers,
+            json={'weekStart':'2026-11-23','dish':'Tomato sauce pasta','servings':4})
+        assert response.status_code==200
+        assert response.json()['entries'][0]['servings']==4
+        assert client.get('/api/inventory',headers=headers).json()==before
+    request,=state.requests
+    payload=json.loads(request.content)
+    data=json.loads(payload['messages'][1]['content'])
+    assert data['requestedDish']=='Tomato sauce pasta' and data['requestedServings']==4
+    assert data['allergens']==['peanut']
+    assert 'exactly one recipe' in payload['messages'][0]['content']
+    assert 'not a restriction' in payload['messages'][0]['content']

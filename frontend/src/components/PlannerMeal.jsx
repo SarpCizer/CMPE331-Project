@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function PlannerMeal({ day, index, meal, label, entry, recipes, busy, save, generate, openRecipe }) {
+export default function PlannerMeal({ day, index, meal, label, entry, recipes, busy, save, generate, openRecipe, remove }) {
   const [portions, setPortions] = useState(entry?.servings || 1);
   const [dish, setDish] = useState('');
   const [invalid, setInvalid] = useState('');
@@ -13,7 +13,12 @@ export default function PlannerMeal({ day, index, meal, label, entry, recipes, b
     return ok;
   }
   return <div className="min-w-0 rounded-xl bg-[#f6f8f3] p-4" aria-label={`${day} ${label}`}>
-    <h4 className="mb-3 font-semibold">{label}</h4>
+    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <h4 className="font-semibold">{label}</h4>
+      <button type="button" className="btn-text" disabled={busy} aria-label={`Remove dish for ${day} ${label}`} onClick={async () => {
+        if (await remove()) { setDish(''); setPortions(1); setInvalid(''); }
+      }}>Remove dish</button>
+    </div>
     <label htmlFor={`${id}-portions`}>Portions</label>
     <input id={`${id}-portions`} type="number" min="1" max="20" step="1" value={portions} disabled={busy}
       aria-describedby={invalid ? `${id}-error` : undefined} aria-invalid={!!invalid}

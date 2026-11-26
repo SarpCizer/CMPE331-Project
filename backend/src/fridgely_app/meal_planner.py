@@ -2,14 +2,14 @@
 from dataclasses import replace
 from datetime import date, timedelta
 from fractions import Fraction
-from typing import Annotated, Literal
+from typing import Annotated
 import unicodedata
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Path
 from fastapi.responses import JSONResponse
 from pydantic import Field, StringConstraints, field_validator
-from sqlalchemy import Date, Integer, String, select, update
+from sqlalchemy import Date, Integer, String, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from starlette.concurrency import run_in_threadpool
 
@@ -22,9 +22,8 @@ from fridgely_recipes.service import RecipeError, requested_recipe
 from .availability import _amount, _UNITS, requirements_shopping_items
 from .models import Account
 
-Meal = Literal['breakfast', 'lunch', 'dinner', 'dessert']
+Meal = Annotated[str, StringConstraints(strict=True, pattern=r'^dish-(?:[1-9]|1[0-9]|20)$')]
 Portions = Annotated[int, Field(ge=1, le=20)]
-_MEAL_ORDER = {'breakfast': 0, 'lunch': 1, 'dinner': 2, 'dessert': 3}
 
 
 class PlannerBase(DeclarativeBase):
@@ -123,7 +122,7 @@ def _entries(session, owner, week, lookup):
     rows = session.scalars(select(WeeklyMeal).where(WeeklyMeal.owner_id == owner,
         WeeklyMeal.week_start == week, WeeklyMeal.recipe_id.is_not(None))).all()
     cache, entries = {}, []
-    for row in sorted(rows, key=lambda value: (value.day, _MEAL_ORDER[value.meal])):
+    for row in sorted(rows, key=lambda value: (value.day, int(value.meal[5:]))):
         if row.recipe_id not in cache:
             cache[row.recipe_id] = lookup(session, owner, row.recipe_id)
         recipe = cache[row.recipe_id]

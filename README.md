@@ -2,12 +2,32 @@
 
 A responsive kitchen application with a React client, a FastAPI host and durable
 PostgreSQL/SQLite storage. Accounts, saved preferences, fridge entries, recipe
-generation, shopping, favorites and viewed history share the same verified JWT
+generation, shopping, favorites, weekly plans and viewed history share the same verified JWT
 identity and owner-qualified database.
 
 The fridge supports manually entered ingredient names, quantities, units and addition dates.
-Receipt OCR, expiry alerts, automatic quantity arithmetic, automatic inventory deduction and
-native mobile applications are outside this reviewed scope.
+Confirmed cooking deducts reviewed quantities; confirmed shopping purchases refill the fridge.
+Receipt OCR, expiry alerts and native mobile applications are outside this reviewed scope.
+
+## Weekly meal planner
+
+Open **Weekly meal planner** in the kitchen menu. Each day starts with one optional
+field. Choose a saved recipe or type a dish (for example, tomato sauce pasta), set
+its portions, then select **Create recipe & plan**. Use **+ Add dish** to add another
+dish such as brownie to the same day. There are no fixed breakfast/lunch/dinner
+categories. Each dish independently supports 1–20 portions, with up to 20 dishes
+per day. Expand **Ingredients & preparation** for scaled amounts and ordered steps.
+A saved dish can be reused and rescaled without another provider request.
+
+**Generate weekly shopping list** scales and totals every planned dish, subtracts
+current fridge quantities once, and adds the missing amounts to the existing list.
+For example, two required bananas minus one in the fridge adds one banana. It
+preserves larger quantities already on the shopping list and does not reserve or
+deduct stock. Whole items are rounded up only after aggregation; unknown or
+incompatible measurements are explicitly flagged for review. Planning does not
+automatically remove prior shopping entries when a meal is changed or removed.
+New dish creation uses the existing configured server-side AI provider; provider
+outages or quota exhaustion preserve the saved plan and allow saved-recipe reuse.
 
 ## Run the integrated application
 

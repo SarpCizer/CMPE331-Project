@@ -269,3 +269,40 @@ test('US-15-T03 reject an authentic token after its expiry', async t => {
   }
 });
 
+
+test('weekly planner scales separate user-added dishes and subtracts fridge stock once', async t => {
+  const measured = [{title:'Banana shake',ingredients:['banana','milk'],ingredientAmounts:['2 pcs','200 ml'],
+    steps:['Blend and serve.'],cookingMinutes:3,caloriesPerServing:100,servings:2}];
+  const c=await context(t,measured), token=await c.user();
+  await c.expect('POST','/inventory',{name:'banana',quantity:1,unit:'pcs'},token,201);
+  const before=await c.read('/inventory',token), [recipe]=await c.generate(token);
+  for (const meal of ['dish-1','dish-2']) await c.expect('PUT',`/weekly-plan/0/${meal}`,
+    {weekStart:'2026-11-23',recipeId:recipe.id,servings:1},token);
+  let result=await c.expect('POST','/weekly-plan/shopping-items',{weekStart:'2026-11-23'},token);
+  assert.equal(result.shopping.find(x=>x.name==='banana').quantity,1);
+  const plan=await c.expect('PUT','/weekly-plan/1/dish-1',
+    {weekStart:'2026-11-23',recipeId:recipe.id,servings:4},token);
+  assert.deepEqual(plan.entries.map(x=>x.servings),[1,1,4]);
+  assert.deepEqual(plan.entries[0].scaledAmounts,['1 pcs','100 ml']);
+  assert.deepEqual(plan.entries[2].scaledAmounts,['4 pcs','400 ml']);
+  assert.equal(plan.entries[2].recipe.steps[0],'Blend and serve.');
+  result=await c.expect('POST','/weekly-plan/shopping-items',{weekStart:'2026-11-23'},token);
+  assert.equal(result.shopping.find(x=>x.name==='banana').quantity,5);
+  assert.deepEqual(await c.read('/inventory',token),before);
+  assert.equal(c.calls.length,1);
+});
+
+test('weekly typed dish carries requested portions and preserves plan when provider is unavailable', async t => {
+  const output=[{title:'Tomato sauce pasta',ingredients:['pasta','tomato'],ingredientAmounts:['400 g','4 pcs'],
+    steps:['Cook pasta.','Prepare tomato sauce.','Combine and serve.'],cookingMinutes:20,caloriesPerServing:300,servings:4}];
+  const c=await context(t,output), token=await c.user();
+  const plan=await c.expect('POST','/weekly-plan/0/dish-1/generate',
+    {weekStart:'2026-11-23',dish:'Tomato sauce pasta',servings:4},token);
+  assert.equal(plan.entries[0].servings,4);
+  assert.equal(c.calls[0].requested_dish,'Tomato sauce pasta');
+  assert.equal(c.calls[0].requested_servings,4);
+  c.setFailure(new Error('Controlled provider outage'));
+  await c.expect('POST','/weekly-plan/0/dish-1/generate',
+    {weekStart:'2026-11-23',dish:'Brownie',servings:1},token,503);
+  assert.deepEqual(await c.read('/weekly-plan?weekStart=2026-11-23',token),plan);
+});

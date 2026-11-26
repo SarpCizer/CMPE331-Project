@@ -4,7 +4,6 @@ import Icon from '../components/Icon';
 import PlannerMeal from '../components/PlannerMeal';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const meals = [['breakfast','Breakfast'], ['lunch','Lunch'], ['dinner','Main meal'], ['dessert','Dessert']];
 function monday(value) {
   const date = new Date(`${value}T12:00:00Z`);
   date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
@@ -25,6 +24,7 @@ export default function WeeklyPlan() {
   const [week, setWeek] = useState(currentWeek);
   const [plan, setPlan] = useState({ entries: [] });
   const [catalog, setCatalog] = useState([]);
+  const [drafts, setDrafts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retry, setRetry] = useState(0);
@@ -33,7 +33,7 @@ export default function WeeklyPlan() {
   current.current = week;
   useEffect(() => {
     let active = true;
-    setLoading(true); setError(''); setResult(null);
+    setLoading(true); setError(''); setResult(null); setDrafts({});
     Promise.all([api(`/weekly-plan?weekStart=${week}`), api('/weekly-plan/recipes')]).then(([value, saved]) => {
       if (active) { setPlan(value); setCatalog(saved); }
     }).catch(failure => { if (active) {
@@ -60,7 +60,10 @@ export default function WeeklyPlan() {
       try { return await api(`/weekly-plan/${day}/${meal}/generate`, {
         method: 'POST', body: { weekStart: requested, dish, servings } }); }
       catch (failure) {
-        if (failure.status === 409) setRetry(value => value + 1);
+        if (failure.status === 409) {
+          failure.message = 'This dish changed while its recipe was being created. The saved week has been refreshed.';
+          setRetry(value => value + 1);
+        }
         throw failure;
       }
     }, 'Recipe created and saved to your week.');
@@ -70,9 +73,28 @@ export default function WeeklyPlan() {
     }
     return !!value;
   }
+  function slots(day) {
+    const keys = [...new Set([...plan.entries.filter(entry => entry.day === day).map(entry => entry.meal), ...(drafts[day] || [])])];
+    return keys.length ? keys.sort((a,b) => Number(a.slice(5)) - Number(b.slice(5))) : ['dish-1'];
+  }
+  function addDish(day) {
+    const keys = slots(day);
+    const next = Array.from({ length:20 }, (_,i) => `dish-${i+1}`).find(key => !keys.includes(key));
+    if (next) setDrafts(value => ({ ...value, [day]: [...keys,next] }));
+  }
+  async function removeDish(day, meal, entry) {
+    if (entry) {
+      const requested = week;
+      const value = await run(() => api(`/weekly-plan/${day}/${meal}?weekStart=${requested}`, { method:'DELETE' }), 'Dish removed from your week.');
+      if (!value || current.current !== requested) return false;
+      setPlan(value); setResult(null);
+    }
+    setDrafts(value => ({ ...value, [day]: slots(day).filter(key => key !== meal) }));
+    return true;
+  }
   return <section className="panel">
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div><h2>A week of good food.</h2><p className="mb-0 text-sm">Choose a saved recipe or request a dish. Set portions separately for every meal, including a main meal and dessert on the same day.</p></div>
+      <div><h2>A week of good food.</h2><p className="mb-0 text-sm">Choose a saved recipe or request a dish. Add more dishes with + and set portions separately for each one.</p></div>
       <span className="rounded-lg bg-[#e8f0e7] px-3 py-2 text-sm text-green">{loading ? 'Loading…' : `${plan.entries.length} planned ${plan.entries.length === 1 ? 'meal' : 'meals'}`}</span>
     </div>
     <div className="mb-5 flex flex-wrap items-end gap-3">
@@ -89,12 +111,15 @@ export default function WeeklyPlan() {
         {days.map((day, index) => <section key={day} aria-label={`${day} meal plan`} className="rounded-2xl border border-line p-4">
           <h3 className="mb-4 flex items-center gap-2"><Icon name="calendar" />{day}</h3>
           <div className="grid grid-cols-2 gap-4 mobile:grid-cols-1 tablet:grid-cols-1">
-            {meals.map(([meal,label]) => {
+            {slots(index).map((meal, position) => {
               const entry = plan.entries.find(item => item.day === index && item.meal === meal);
-              return <PlannerMeal key={`${week}-${meal}`} day={day} index={index} meal={meal} label={label} entry={entry}
-                recipes={recipes} busy={busy} save={save} generate={generate} openRecipe={openRecipe} />;
+              return <PlannerMeal key={`${week}-${meal}`} day={day} index={index} meal={meal} label={`Dish ${position+1}`} entry={entry}
+                recipes={recipes} busy={busy} save={save} generate={generate} openRecipe={openRecipe}
+                remove={() => removeDish(index,meal,entry)} />;
             })}
           </div>
+          <button type="button" className="btn-secondary mt-4" disabled={busy || slots(index).length >= 20}
+            aria-label={`+ Add dish for ${day}`} onClick={() => addDish(index)}>+ Add dish</button>
         </section>)}
       </div>
       <div className="mt-6 rounded-xl bg-[#e8f0e7] p-4">

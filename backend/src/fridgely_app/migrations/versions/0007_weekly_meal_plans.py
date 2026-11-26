@@ -19,7 +19,7 @@ def upgrade():
         sa.ForeignKeyConstraint(['owner_id', 'recipe_id'], ['recipes.owner_id', 'recipes.id'], ondelete='CASCADE'),
         sa.CheckConstraint('(recipe_id IS NULL AND servings IS NULL) OR (recipe_id IS NOT NULL AND servings IS NOT NULL AND servings >= 1 AND servings <= 20)', name='ck_weekly_servings'),
         sa.CheckConstraint('day >= 0 AND day <= 6', name='ck_weekly_day'),
-        sa.CheckConstraint("meal IN ('breakfast','lunch','dinner','dessert')", name='ck_weekly_meal'))
+        sa.CheckConstraint("meal IN (" + ",".join(f"'dish-{i}'" for i in range(1,21)) + ")", name='ck_weekly_meal'))
 
 
 def downgrade():

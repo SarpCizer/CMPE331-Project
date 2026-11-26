@@ -112,7 +112,7 @@ def matrix(request, tmp_path_factory):
             assert shopping.status_code == 201
             assert client.post("/favorites", headers=headers, json={"recipeId": recipe["id"]}).status_code == 200
             if account is harness.alice:
-                harness.ids = {"day": 0, "meal": "dinner", "inventory": added.json()["id"], "recipe": recipe["id"],
+                harness.ids = {"day": 0, "meal": "dish-1", "inventory": added.json()["id"], "recipe": recipe["id"],
                     "shopping": shopping.json()["id"]}
         claims = {"sub": harness.alice.id, "iat": int(clock.timestamp()) - 100,
             "exp": int(clock.timestamp()) + 3600, "aud": AUDIENCE, "iss": ISSUER}

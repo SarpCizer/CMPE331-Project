@@ -26,8 +26,8 @@ def test_week_persists_preparation_and_totals_subtract_stock_once(kitchen):
     rid = recipe(kitchen, ['banana', 'milk'], ['1 pcs', '100 ml'])
     before = kitchen.stock()
     assert get(kitchen).json() == {'weekStart': WEEK, 'entries': []}
-    assert put(kitchen, 0, 'dinner', rid).status_code == 200
-    result = put(kitchen, 1, 'breakfast', rid)
+    assert put(kitchen, 0, 'dish-1', rid).status_code == 200
+    result = put(kitchen, 1, 'dish-1', rid)
     assert result.status_code == 200
     entries = result.json()['entries']
     assert len(entries) == 2
@@ -45,16 +45,16 @@ def test_week_persists_preparation_and_totals_subtract_stock_once(kitchen):
     assert kitchen.stock() == before
     assert get(kitchen, '2026-11-30').json()['entries'] == []
     assert get(kitchen, headers=kitchen.bob).json()['entries'] == []
-    assert put(kitchen, 0, 'dinner', rid, headers=kitchen.bob).status_code == 404
-    removed = kitchen.client.delete('/api/weekly-plan/0/dinner', params={'weekStart': WEEK}, headers=kitchen.alice)
+    assert put(kitchen, 0, 'dish-1', rid, headers=kitchen.bob).status_code == 404
+    removed = kitchen.client.delete('/api/weekly-plan/0/dish-1', params={'weekStart': WEEK}, headers=kitchen.alice)
     assert removed.status_code == 200 and len(removed.json()['entries']) == 1
     assert kitchen.stock() == before
 
 
-@pytest.mark.parametrize('week,day,meal', [('2026-11-24',0,'dinner'), ('not-a-date',0,'dinner'),
-    (WEEK,7,'dinner'), (WEEK,-1,'dinner'), (WEEK,0,'snack')])
+@pytest.mark.parametrize('week,day,meal', [('2026-11-24',0,'dish-1'), ('not-a-date',0,'dish-1'),
+    (WEEK,7,'dish-1'), (WEEK,-1,'dish-1'), (WEEK,0,'snack')])
 def test_invalid_plan_never_changes_saved_meals(kitchen, week, day, meal):
-    assert put(kitchen, 0, 'dinner', kitchen.recipe_id).status_code == 200
+    assert put(kitchen, 0, 'dish-1', kitchen.recipe_id).status_code == 200
     before = get(kitchen).json()
     assert put(kitchen, day, meal, kitchen.recipe_id, week).status_code == 400
     assert get(kitchen).json() == before
@@ -64,7 +64,7 @@ def test_empty_week_and_unknown_amounts_are_explicit(kitchen):
     assert shopping(kitchen).status_code == 400
     kitchen.add('egg', 1)
     rid = recipe(kitchen, ['egg', 'salt'], ['1 cup', 'to taste'])
-    assert put(kitchen, 6, 'lunch', rid).status_code == 200
+    assert put(kitchen, 6, 'dish-3', rid).status_code == 200
     result = shopping(kitchen).json()
     assert set(result['needsReview']) == {'egg', 'salt'}
     assert [x['name'] for x in result['shopping']] == ['salt']
@@ -74,10 +74,10 @@ def test_empty_week_and_unknown_amounts_are_explicit(kitchen):
 def test_other_day_edits_and_other_week_plans_are_preserved(kitchen):
     from concurrent.futures import ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=2) as pool:
-        results = list(pool.map(lambda day: put(kitchen, day, 'dinner', kitchen.recipe_id), [0,1]))
+        results = list(pool.map(lambda day: put(kitchen, day, 'dish-1', kitchen.recipe_id), [0,1]))
     assert all(r.status_code == 200 for r in results)
     assert len(get(kitchen).json()['entries']) == 2
-    assert put(kitchen, 0, 'lunch', kitchen.recipe_id, '2026-11-30').status_code == 200
+    assert put(kitchen, 0, 'dish-3', kitchen.recipe_id, '2026-11-30').status_code == 200
     assert len(get(kitchen).json()['entries']) == 2
     assert len(get(kitchen, '2026-11-30').json()['entries']) == 1
 
@@ -85,7 +85,7 @@ def test_other_day_edits_and_other_week_plans_are_preserved(kitchen):
 def test_shopping_failure_rolls_back_all_weekly_items(kitchen):
     from sqlalchemy import event
     from sqlalchemy.exc import SQLAlchemyError
-    assert put(kitchen, 0, 'dinner', kitchen.recipe_id).status_code == 200
+    assert put(kitchen, 0, 'dish-1', kitchen.recipe_id).status_code == 200
     attempts=[]
     def fail(_connection,_cursor,statement,_params,_context,_many):
         if statement.startswith('INSERT INTO shopping_items'):
@@ -134,10 +134,10 @@ def test_plan_upgrade_preserves_legacy_collections(tmp_path,database):
             cleanup.dispose()
 
 
-def test_independent_main_and_dessert_portions_scale_before_combining(kitchen):
+def test_independent_dish_portions_scale_before_combining(kitchen):
     kitchen.add('egg', 1)
     # Base recipe:2 servings,150g rice and2 eggs. Plan1 serving plus4 servings.
-    for meal, servings in [('dinner',1),('dessert',4)]:
+    for meal, servings in [('dish-1',1),('dish-2',4)]:
         response = kitchen.client.put(f'/api/weekly-plan/0/{meal}',headers=kitchen.alice,
             json={'weekStart':WEEK,'recipeId':kitchen.recipe_id,'servings':servings})
         assert response.status_code == 200
@@ -160,7 +160,7 @@ def test_fractional_counts_round_once_after_whole_week_aggregation(kitchen):
     SqlRecipeStore(kitchen.client.app.state.sessions).insert_batch(owner,[RecipeDTO(id=rid,title='Three portions',
         ingredients=['egg'],ingredientAmounts=['1 pcs'],steps=['Prepare.'],cookingMinutes=5,caloriesPerServing=100,servings=3)])
     for day in range(3):
-        assert kitchen.client.put(f'/api/weekly-plan/{day}/dinner',headers=kitchen.alice,
+        assert kitchen.client.put(f'/api/weekly-plan/{day}/dish-1',headers=kitchen.alice,
             json={'weekStart':WEEK,'recipeId':rid,'servings':1}).status_code == 200
     item,=shopping(kitchen).json()['shopping']
     assert item['name']=='egg' and item['quantity']==1

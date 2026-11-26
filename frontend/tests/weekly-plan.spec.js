@@ -23,12 +23,13 @@ async function requestDish(scope, dish, portions) {
   await expect(scope.getByText(`Planned: ${portions} ${portions === 1 ? 'portion' : 'portions'}`, { exact: false })).toBeVisible();
 }
 
-for (const width of [360,1440]) test(`different portions, main and dessert, preparation and weekly deficits at ${width}px`, async ({ page }) => {
+for (const width of [360,1440]) test(`user-added dishes, independent portions, preparation and weekly deficits at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 950 });
   const kitchen = await setup(page, [{ name: 'rice', quantity: .1, unit: 'kg' }, { name: 'egg', quantity: 1, unit: 'pcs' }]);
   const before = await kitchen.stock();
-  const main = card(page,'Monday','Main meal'), dessert = card(page,'Monday','Dessert');
+  const main = card(page,'Monday','Dish 1'), dessert = card(page,'Monday','Dish 2');
   await requestDish(main,'Tomato sauce pasta',1);
+  await page.getByRole('button', { name:'+ Add dish for Monday',exact:true }).click();
   await requestDish(dessert,'Rice pudding',4);
   await main.getByText('Ingredients & preparation', { exact: true }).click();
   await expect(main).toContainText('rice · 100 g');
@@ -47,8 +48,8 @@ for (const width of [360,1440]) test(`different portions, main and dessert, prep
   await page.getByRole('button', { name: 'Generate weekly shopping list', exact: true }).click();
   await expect(page.getByText('Weekly shopping list updated.', { exact: true })).toBeVisible();
   const shopping = await (await page.request.get('/api/shopping-items', { headers: kitchen.headers })).json();
-  expect(shopping.map(({ name,quantity,unit }) => ({ name,quantity,unit }))).toEqual([
-    { name:'rice',quantity:400,unit:'g' }, { name:'egg',quantity:4,unit:'pcs' }]);
+  expect(shopping.map(({ name,quantity,unit }) => ({ name,quantity,unit })).sort((a,b)=>a.name.localeCompare(b.name))).toEqual([
+    { name:'egg',quantity:4,unit:'pcs' }, { name:'rice',quantity:400,unit:'g' }]);
   await page.getByRole('button', { name: 'Generate weekly shopping list', exact: true }).click();
   await expect(page.getByText('Weekly shopping list updated.', { exact: true })).toBeVisible();
   expect(await (await page.request.get('/api/shopping-items', { headers: kitchen.headers })).json()).toEqual(shopping);
@@ -59,7 +60,7 @@ for (const width of [360,1440]) test(`different portions, main and dessert, prep
 
 test('saved dishes scale per day without calling AI and clearing preserves the catalog', async ({ page }) => {
   await setup(page);
-  const main = card(page,'Monday','Main meal');
+  const main = card(page,'Monday','Dish 1');
   await requestDish(main,'Pasta',4);
   const rid = await main.getByLabel('Saved recipe', { exact:true }).inputValue();
   let aiCalls=0;
@@ -69,7 +70,7 @@ test('saved dishes scale per day without calling AI and clearing preserves the c
   await expect(main).toContainText('Planned: 1 portion');
   await main.getByText('Ingredients & preparation', { exact:true }).click();
   await expect(main).toContainText('rice · 100 g');
-  const tuesday=card(page,'Tuesday','Lunch');
+  const tuesday=card(page,'Tuesday','Dish 1');
   await tuesday.getByLabel('Portions', { exact:true }).fill('4');
   await tuesday.getByLabel('Saved recipe', { exact:true }).selectOption(rid);
   await expect(tuesday).toContainText('Planned: 4 portions');
@@ -87,7 +88,7 @@ test('saved dishes scale per day without calling AI and clearing preserves the c
 
 test('invalid portions and unavailable requested dish leave existing meals intact', async ({ page }) => {
   await setup(page);
-  const main = card(page,'Monday','Main meal');
+  const main = card(page,'Monday','Dish 1');
   await main.getByLabel('Portions', { exact:true }).fill('0');
   await main.getByLabel('Or request a dish', { exact:true }).fill('Pasta');
   await main.getByRole('button', { name:/^Create recipe & plan/ }).click();
@@ -98,25 +99,25 @@ test('invalid portions and unavailable requested dish leave existing meals intac
   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
   await expect(main).toContainText('Planned: 1 portion');
   await expect(main.getByLabel('Or request a dish', { exact:true })).toHaveValue('provider-failure');
-  await page.route('**/api/weekly-plan/0/dinner', route => route.fulfill({ status:503, json:{ error:'Plan could not be saved.' } }));
+  await page.route('**/api/weekly-plan/0/dish-1', route => route.fulfill({ status:503, json:{ error:'Plan could not be saved.' } }));
   await main.getByLabel('Portions', { exact:true }).fill('3');
   await main.getByRole('button', { name:'Update portions', exact:true }).click();
-  await expect(page.getByRole('alert')).toContainText('Plan could not be saved');
+  await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
   await expect(main).toContainText('Planned: 1 portion');
 });
 
 test('weekly load failure retries and stale generation refreshes the saved plan', async ({ page }) => {
   await page.route('**/api/weekly-plan?*', route => route.fulfill({ status:503,json:{ error:'Weekly storage unavailable' } }));
   await setup(page);
-  await expect(page.getByRole('alert')).toContainText('Weekly storage unavailable');
+  await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
   await page.unroute('**/api/weekly-plan?*');
   await page.getByRole('button', { name:'Retry weekly plan',exact:true }).click();
-  const main = card(page,'Monday','Main meal');
+  const main = card(page,'Monday','Dish 1');
   await requestDish(main,'Pasta',2);
   await page.route('**/api/weekly-plan/*/*/generate', route => route.fulfill({ status:409,json:{ error:'Meal changed. Refresh the week.' } }));
   await main.getByLabel('Or request a dish', { exact:true }).fill('New pasta');
   await main.getByRole('button', { name:/^Create recipe & plan/ }).click();
-  await expect(page.getByRole('alert')).toContainText('Meal changed');
+  await expect(page.getByRole('alert')).toContainText('This dish changed');
   await expect(main).toContainText('Planned: 2 portions');
 });
 
@@ -124,7 +125,7 @@ test('unknown measures are flagged and expired planner sessions sign out', async
   const kitchen=await setup(page,[{name:'tomato',quantity:2,unit:'pcs'}]);
   const recipes=await (await page.request.post('/api/recipes/generate',{headers:kitchen.headers,json:{}})).json();
   await page.reload();
-  const main=card(page,'Monday','Main meal');
+  const main=card(page,'Monday','Dish 1');
   await main.getByLabel('Saved recipe',{exact:true}).selectOption(recipes[1].id);
   await main.getByText('Ingredients & preparation',{exact:true}).click();
   await expect(main).toContainText('Amount needs review');
@@ -133,4 +134,23 @@ test('unknown measures are flagged and expired planner sessions sign out', async
   await page.route('**/api/weekly-plan?*',route=>route.fulfill({status:401,json:{error:'Session expired'}}));
   await page.getByRole('button',{name:'Next week',exact:true}).click();
   await expect(page.getByRole('button',{name:'Sign in',exact:true})).toBeVisible();
+});
+
+test('plus and remove manage only user-chosen dishes for each day', async ({ page }) => {
+  await setup(page);
+  const monday=page.getByRole('region',{name:'Monday meal plan',exact:true});
+  await expect(monday.getByLabel('Portions',{exact:true})).toHaveCount(1);
+  await monday.getByRole('button',{name:'+ Add dish for Monday',exact:true}).click();
+  const second=card(page,'Monday','Dish 2');
+  await requestDish(second,'Brownie',4);
+  await expect(card(page,'Tuesday','Dish 1')).toBeVisible();
+  await expect(card(page,'Tuesday','Dish 2')).toHaveCount(0);
+  await second.getByRole('button',{name:'Remove dish for Monday Dish 2',exact:true}).click();
+  await expect(monday.getByLabel('Portions',{exact:true})).toHaveCount(1);
+  const first=card(page,'Monday','Dish 1');
+  await first.getByLabel('Or request a dish',{exact:true}).fill('Not saved yet');
+  await first.getByRole('button',{name:'Remove dish for Monday Dish 1',exact:true}).click();
+  await expect(first.getByLabel('Or request a dish',{exact:true})).toHaveValue('');
+  await page.reload();
+  await expect(page.getByText('0 planned meals',{exact:true})).toBeVisible();
 });
