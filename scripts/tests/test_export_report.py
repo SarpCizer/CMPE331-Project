@@ -1,5 +1,6 @@
 """Check that report exports cannot relabel evidence from another revision."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -127,6 +128,22 @@ class ReportEvidenceTests(unittest.TestCase):
 
 
 class EvidenceCheckoutTests(unittest.TestCase):
+    def test_every_indexed_follow_up_file_is_retained_in_the_commit(self):
+        config = json.loads((ROOT / 'docs/tests/review-follow-up.json').read_text(encoding='utf-8'))
+        bundle = Path('docs/tests') / config['evidence_root']
+        index = json.loads((ROOT / bundle / 'evidence-index.json').read_text(encoding='utf-8'))
+        git = shutil.which('git')
+        self.assertIsNotNone(git)
+        for name, expected in index['files'].items():
+            path = (bundle / name).as_posix()
+            result = subprocess.run(
+                [git, '-c', f'safe.directory={ROOT}', '-C', str(ROOT), 'show', f'HEAD:{path}'],
+                capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, f'Indexed evidence absent from committed source: {path}')
+            self.assertEqual(len(result.stdout), expected['bytes'], path)
+            self.assertEqual(hashlib.sha256(result.stdout).hexdigest(), expected['sha256'], path)
+
     def test_hashed_evidence_retains_exact_bytes_with_autocrlf_enabled(self):
         git = shutil.which('git')
         self.assertIsNotNone(git, 'Git is required to verify checkout reproducibility')
