@@ -41,13 +41,13 @@ for (const width of [360, 1440])
       "I'm Lazy",
       "High Protein",
       "Sweet Cravings",
-      "Low Budget",
       "Quick & Easy",
       "Healthy",
     ])
       await expect(
         moods.getByRole("button", { name: new RegExp(label) }),
       ).toBeVisible();
+    await expect(moods.getByRole("button", { name: /Low Budget/ })).toHaveCount(0);
     const lazy = moods.getByRole("button", { name: /I'm Lazy/ });
     await lazy.focus();
     await page.keyboard.press("Space");
@@ -91,7 +91,6 @@ for (const width of [360, 1440])
     for (const [id, label] of [
       ["high-protein", "High Protein"],
       ["sweet", "Sweet Cravings"],
-      ["budget", "Low Budget"],
       ["quick", "Quick & Easy"],
       ["healthy", "Healthy"],
     ]) {

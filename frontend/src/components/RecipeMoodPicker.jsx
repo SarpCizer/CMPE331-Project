@@ -18,12 +18,6 @@ export const recipeMoods = [
     hint: "A little sweet moment.",
   },
   {
-    id: "budget",
-    label: "Low Budget",
-    emoji: "🪙",
-    hint: "Make the most of your fridge.",
-  },
-  {
     id: "quick",
     label: "Quick & Easy",
     emoji: "⏱️",
