@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from dataclasses import dataclass, replace
 from typing import Callable, Protocol
 from uuid import uuid4
@@ -48,7 +49,10 @@ def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[Recip
             for name in recipe.ingredients:
                 ingredient_name(name)
             recipes.append(recipe)
-        except (ValidationError, CollectionError):
+        except (ValidationError, CollectionError) as error:
+            if isinstance(error, ValidationError):
+                first = error.errors(include_input=False, include_context=False)[0]
+                logging.getLogger(__name__).warning("Recipe validation rejected field=%s code=%s", first["loc"][0] if first["loc"] else "recipe", first["type"])
             raise RecipeError(502, "The recipe service returned an invalid response.") from None
 
     exclusions = {name.strip().casefold() for name in allergens}
