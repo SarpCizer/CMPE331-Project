@@ -60,8 +60,6 @@ export default function RecipesPage() {
       <SurpriseWheel
         key={visibleRecipes.map((recipe) => recipe.id).join(",")}
         visibleRecipes={visibleRecipes}
-        api={api}
-        run={run}
         busy={busy}
         openRecipe={openRecipe}
       />

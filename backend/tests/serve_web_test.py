@@ -21,6 +21,19 @@ class FixtureProvider:
                 'caloriesPerServing': 200, 'servings': data.requested_servings}]
         if 'provider-failure' in data.ingredients:
             raise RuntimeError('Controlled provider outage')
+        if 'wheel-fixture' in data.ingredients:
+            # Three current cards: two need manual unit review (salt is in packs).
+            return [
+                {'title':'Wheel eggplant rice','ingredients':['rice','eggplant','salt'],
+                 'ingredientAmounts':['100 g','1 pcs','1 pinch'],'steps':['Cook rice and eggplant.'],
+                 'cookingMinutes':20,'caloriesPerServing':200,'servings':1},
+                {'title':'Wheel baked potatoes','ingredients':['potatoes','salt'],
+                 'ingredientAmounts':['200 g','2 g'],'steps':['Bake potatoes.'],
+                 'cookingMinutes':25,'caloriesPerServing':200,'servings':1},
+                {'title':'Wheel banana smoothie','ingredients':['banana','milk'],
+                 'ingredientAmounts':['2 pcs','200 ml'],'steps':['Blend.'],
+                 'cookingMinutes':5,'caloriesPerServing':100,'servings':1},
+            ]
         if 'banana' in data.ingredients:
             return [{'title':'Banana shake','ingredients':['banana','milk','sugar'],
                 'ingredientAmounts':['2 pcs','200 ml','20 g'],'steps':['Blend.'],

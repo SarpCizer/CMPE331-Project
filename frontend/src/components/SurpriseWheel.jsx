@@ -10,17 +10,15 @@ const colors = [
 ];
 export default function SurpriseWheel({
   visibleRecipes = [],
-  api,
-  run,
   busy,
   openRecipe,
 }) {
-  const [recipes, setRecipes] = useState([]),
-    [selected, setSelected] = useState(null),
+  // The wheel and the cards intentionally share one current generation.
+  // Availability is reviewed in recipe details and confirmed cooking, not here.
+  const recipes = visibleRecipes;
+  const [selected, setSelected] = useState(null),
     [spinning, setSpinning] = useState(false),
-    [rotation, setRotation] = useState(0),
-    [loaded, setLoaded] = useState(false),
-    [notice, setNotice] = useState("");
+    [rotation, setRotation] = useState(0);
   const alive = useRef(true),
     timer = useRef(null),
     angle = useRef(0),
@@ -32,70 +30,31 @@ export default function SurpriseWheel({
       clearTimeout(timer.current);
     };
   }, []);
-  // The server checks ownership, preferences and measured stock. The page
-  // supplies the current displayed batch, excluding historical saved recipes.
-  async function eligibleRecipes() {
-    const items = await run(() => api("/surprise-recipes"), "");
-    const visibleIds = new Set(visibleRecipes.map((recipe) => recipe.id));
-    return Array.isArray(items)
-      ? items.filter((recipe) => visibleIds.has(recipe.id))
-      : items;
-  }
-  async function refresh() {
-    const items = await eligibleRecipes();
-    if (Array.isArray(items) && alive.current) {
-      setRecipes(items);
-      setLoaded(true);
-      setSelected(null);
-      setNotice("");
-    }
-  }
-  async function spin() {
-    if (lock.current || !visibleRecipes.length) return;
-    lock.current = true;
-    const items = await eligibleRecipes();
-    if (!alive.current) {
-      lock.current = false;
-      return;
-    }
-    if (!Array.isArray(items)) {
-      lock.current = false;
-      return;
-    }
-    setRecipes(items);
-    setLoaded(true);
+  function refresh() {
     setSelected(null);
-    setNotice("");
-    if (!items.length) {
-      lock.current = false;
-      return;
-    }
+    angle.current = 0;
+    setRotation(0);
+  }
+  function spin() {
+    if (lock.current || busy || !recipes.length) return;
+    lock.current = true;
     const values = new Uint32Array(1);
     crypto.getRandomValues(values);
-    const index = Math.floor((values[0] / 4294967296) * items.length);
-    const target = 360 - ((index + 0.5) * 360) / items.length;
+    const index = Math.floor((values[0] / 4294967296) * recipes.length);
+    const chosen = recipes[index];
+    const target = 360 - ((index + 0.5) * 360) / recipes.length;
     angle.current += 1080 + ((target - (angle.current % 360) + 360) % 360);
+    setSelected(null);
     setRotation(angle.current);
     setSpinning(true);
-    const finish = async () => {
-      const fresh = await eligibleRecipes();
-      if (alive.current) {
-        if (Array.isArray(fresh)) {
-          const chosen = fresh.find((item) => item.id === items[index].id);
-          setSelected(chosen || null);
-          if (!chosen) {
-            setRecipes(fresh);
-            setNotice(
-              "Your fridge changed. Spin again with the updated recipes.",
-            );
-          }
-        } else setNotice("The final fridge check failed. Please try again.");
-        setSpinning(false);
-      }
-      lock.current = false;
-    };
     timer.current = setTimeout(
-      finish,
+      () => {
+        if (alive.current) {
+          setSelected(chosen);
+          setSpinning(false);
+        }
+        lock.current = false;
+      },
       matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 2200,
     );
   }
@@ -107,9 +66,9 @@ export default function SurpriseWheel({
       <span className="eyebrow">LET YOUR FRIDGE DECIDE</span>
       <h2>Surprise me.</h2>
       <p>
-        A little spin, a good meal. Only recipes displayed below and fully
-        covered by your current measured fridge stock enter the wheel. Spinning
-        uses no AI requests and does not use up ingredients.
+        Every recipe shown below has a place on the wheel. Spin to choose one,
+        then review ingredients and quantities before cooking. Spinning uses no
+        AI requests and does not use up ingredients.
       </p>
       <div className="flex flex-wrap items-center gap-8">
         <div
@@ -167,9 +126,7 @@ export default function SurpriseWheel({
             Refresh wheel recipes
           </button>
           <div role="status" aria-live="polite" className="mt-4">
-            {notice ? (
-              <p>{notice}</p>
-            ) : selected ? (
+            {selected ? (
               <>
                 <h3>{selected.title}</h3>
                 <p>
@@ -180,25 +137,23 @@ export default function SurpriseWheel({
                 <button
                   type="button"
                   className="btn-secondary"
-                  disabled={busy || spinning || !visibleRecipes.length}
+                  disabled={busy || spinning}
                   onClick={() => openRecipe(selected.id)}
                 >
                   View selected recipe
                 </button>
               </>
-            ) : loaded && !recipes.length ? (
-              <p>
-                No fully stocked recipes in the displayed results. Generate
-                recipes above or restock ingredients. Unknown amounts must be
-                measured before a recipe can enter the wheel.
-              </p>
             ) : spinning ? (
-              <p>Checking your fridge and picking a recipe…</p>
+              <p>Choosing from the recipes shown below…</p>
+            ) : recipes.length ? (
+              <p>
+                {recipes.length} {recipes.length === 1 ? "recipe" : "recipes"}{" "}
+                from your current results ready to spin.
+              </p>
             ) : (
               <p>
-                {loaded
-                  ? `${recipes.length} recipes ready to spin.`
-                  : "Generate recipes above, then spin among the fully stocked recipes displayed below."}
+                Generate recipes above to fill the wheel with the same recipes
+                shown below.
               </p>
             )}
           </div>
