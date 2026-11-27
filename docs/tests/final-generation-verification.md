@@ -8,19 +8,23 @@ are release conditions; this document does not itself assert they occurred.
 
 The existing Cloudflare 70B model, JSON schema, ingredient measurement rules,
 whole-batch validation, owner-scoped transaction and 28-second deadline remain.
-For a normal request with at least six fridge entries, two complementary groups
-of three run concurrently. **The target remains six complete suggestions**, not
-three. Both calls receive every ingredient, known quantity, dietary preference,
-allergen exclusion and selected mood. Alternating priorities encourage different
-main ingredients, including recently added food. They are JSON food data, never
-system instructions. Restrictions take priority over ingredient coverage.
-Small pantries still request six through one call; a requested weekly dish still
-uses one call with its exact requested portion count. OpenAI's existing port is
-unchanged. Exact duplicate recipe content is removed; different preparations
-with the same title are retained. AI may return fewer distinct valid dishes than
-requested; the application never pads the list with invented or incomplete food.
+Normal generation has **no numeric recipe target or recipe-count cap**. It asks
+for as many useful, complete, distinct dishes as the available variety supports.
+It never pads the list with unsuitable suggestions. For a pantry of at least six
+entries, complementary requests run concurrently; one group per roughly four
+pantry entries, up to four concurrent provider calls. This bounds request
+fan-out, not the number of returned recipes. Both older and newly added items
+receive priority attention. All calls receive the full pantry, known amounts,
+dietary preferences, allergens and selected mood as JSON data. Restrictions take
+priority over ingredient coverage. Small pantries use one call without a numeric
+recipe target. A requested weekly dish still uses one call with its exact portion
+count. OpenAI's existing port retains its contract and now also receives the
+count-free variety instructions. Exact duplicate content is removed; different
+preparations with the same title remain. Every returned valid recipe is retained,
+including batches larger than six. AI responses and free-tier token/time limits
+are finite; this is not a promise to enumerate every theoretically possible dish.
 
-A failed request cancels its sibling. The service deadline cancels both. An
+A failed request cancels sibling requests. The service deadline cancels all requests. An
 invalid group, excluded allergen or invalid measurement rejects the complete
 request before any recipe insertion. Generation never changes fridge stock.
 This preserves validation; it is not a guarantee that AI food advice, calories,
@@ -28,7 +32,7 @@ allergen safety or every cooking instruction is independently verified. The UI
 continues to label time/calories as estimates and cooking quantities are reviewed
 before stock deduction.
 
-Two calls repeat input tokens and consume more of the existing free AI allowance.
+Concurrent calls repeat input tokens and consume more of the existing free AI allowance.
 No model downgrade, paid plan, billing change or automatic paid fallback is used.
 The 28-second limit is not increased. Real speed depends on provider load and
 must be measured after the approved source is deployed. Mock concurrency alone
@@ -40,39 +44,41 @@ The first two new tests failed against main
 `6bb06ba441aeed1e27a2a421e09756507ca8598f`: **2 failed in 0.75 seconds**.
 The overlap barrier timed out with serial generation; complementary group data
 was absent. The red commit is `27d330d2b6471b362b8ab55c2bd549b7184a39cf`.
-Implementation is retained separately as `f96863ce5ae4d79c202487ac6af4e4377a1f7708`. The following local application/test sources are byte-identical to that commit.
+The user subsequently requested removal of the numeric target. A new test failed
+against `9cb54bc88130f5454af48c5e53ca535da037d4cd` (1 failed in 0.18 seconds),
+retained in `5bcfdbbd41d960c786cff721c916b74cf9778347`. It requires pantry-driven
+fan-out, count-free instructions and retention of 16 distinct returned recipes.
+The earlier implementation was `f96863ce5ae4d79c202487ac6af4e4377a1f7708`;
+its results are a preceding checkpoint, not final-source measurements.
 
-Local execution on the implementation working tree: **600 backend tests passed,
-393 PostgreSQL variants skipped** because no TEST_DATABASE_URL was supplied.
-The CI job executes those variants against PostgreSQL 17; local skips are not
-counted as passes. White-box coverage from that local run: **93.60% statements,
-84.21% branches** (1712/1829 statements; 352/418 branches). Provider: 94.01%
-statements / 87.50% branches; login throttle: 100% / 100%. The report explains
-remaining branch gaps below; there is no claim of complete path coverage.
+At that preceding checkpoint: 600 local backend passes, 393 PostgreSQL variants
+skipped; 93.60% statement / 84.21% branch coverage; 32 acceptance, 12 HTTP,
+51 browser and 20 report regressions passed, and frontend build passed. No UI,
+HTTP contract, database schema or report-export code changed after these checks.
+Final-head PostgreSQL, application coverage, acceptance/browser, security/load and
+mutation results are published by CI on the PR. Local PostgreSQL skips are not
+counted as passes. Controlled provider results are distinct from actual cloud
+checks. There is no claim of complete path coverage.
 
-The targeted seeded mutation experiment has a passing **77-test baseline** and
-**14/14 killed mutants**, zero survivors, invalid mutants or timeouts. Changes
-include disabled parallelism, lost group diversity/deduplication, wrong units,
-ignored quantities, acceptance of zero amounts, empty-fridge/provider calls,
-ignored allergen/time limits and weakened login limits/expiry/reset. Mutants run
-in isolated temporary source copies; an import-origin check prevents accidentally
-testing the original checkout. This **100% score applies only to these 14 seeded
-faults**, not the whole project or all possible mutations. It uses controlled
-providers, never production credentials or real AI calls.
-
-Reproduce the source-pinned campaign:
+The targeted seeded mutation campaign uses a passing baseline and 14 isolated
+source faults: disabled parallelism, lost group diversity/deduplication, wrong
+units, ignored quantities, acceptance of zero amounts, empty-fridge calls,
+ignored allergen/time limits and weakened login limits/expiry/reset. Each mutant
+runs in a temporary source copy with an import-origin check. Its score applies
+only to these selected faults, not all project code or every possible mutation.
+No production credentials or real provider calls are used in this campaign.
 
 ```sh
 python scripts/quality/mutation.py --revision "$(git rev-parse HEAD)" --output test-results/mutation.json
 ```
 
-The integrated workflow uploads `mutation-evidence-<source SHA>` alongside its
-existing coverage, PostgreSQL/container, HTTP acceptance, browser, load, ZAP,
-SonarQube, secret and dependency scan artifacts. Final immutable run IDs, measured
-live latency, recipe counts and deployment source must be recorded on the PR and
-#40 after execution. Historical measurements must not be relabelled as this run.
-**32 functional acceptance, 12 real HTTP isolation, 51 browser and 20 report/export/traceability regression tests passed locally**, and the production frontend build passed. The browser run used an isolated SQLite host with a controlled provider. Black-box validation covers observable HTTP/user behavior; provider mocks are
-identified separately from the bounded actual-cloud verification.
+The integrated workflow uploads `mutation-evidence-<source SHA>` alongside
+coverage, PostgreSQL/container, HTTP acceptance, browser, load, ZAP, SonarQube,
+secret and dependency artifacts. Final immutable run IDs, current coverage,
+mutation counts, measured live latency, recipe counts and exact deployment source
+are recorded on the PR and #40 after execution. Historical measurements must not
+be relabelled as final-source testing. Mock concurrency alone is not evidence of
+a live speed improvement.
 
 ## Yeşim's #67 feedback: item-by-item reconciliation
 

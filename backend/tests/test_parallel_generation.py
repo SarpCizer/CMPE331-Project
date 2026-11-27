@@ -30,7 +30,7 @@ def test_large_fridge_groups_overlap_and_keep_full_input_and_all_recipe_fields()
             assert body['ingredients']==list(names)
             assert body['dietary']==['vegetarian'] and body['allergens']==['peanut']
             assert len(body['availableAmounts'])==8
-            assert 'three distinct' in payload['messages'][0]['content']
+            assert 'no fixed recipe count' in payload['messages'][0]['content']
             assert payload['max_tokens']==3200
         for recipe in result:
             assert recipe['steps']==RECIPE['steps'] and recipe['ingredientAmounts']==RECIPE['ingredientAmounts']

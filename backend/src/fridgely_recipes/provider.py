@@ -40,7 +40,9 @@ def recipe_instructions(data):
             'cookingMinutes must estimate the full preparation and cooking time, not just active cooking.')
     if not data.requested_dish:
         return (
-            "Generate six distinct recipe suggestions, with different main ingredients and preparations. "
+            "Generate distinct recipe suggestions with different main ingredients and preparations; "
+            "there is no fixed recipe count. Offer as many useful, complete, varied dishes as this pantry "
+            "supports without repeating near-identical dishes or padding with unsuitable suggestions. "
             "Keep each recipe compact: at most eight ingredients and five short cooking steps. "
             "Return only the JSON object, with no markdown or commentary. "
             "Plan the batch using the entire inventory, not just the first few entries. "
@@ -224,9 +226,10 @@ class CloudflareRecipeProvider:
 
         # Both groups see the full pantry. Alternating priorities spread attention
         # across recent and earlier entries without removing cooking context.
+        group_count = min(4, (len(data.ingredients) + 3) // 4)
         async with asyncio.TaskGroup() as group:
-            tasks = [group.create_task(self._generate_group(data, data.ingredients[offset::2]))
-                     for offset in range(2)]
+            tasks = [group.create_task(self._generate_group(data, data.ingredients[offset::group_count]))
+                     for offset in range(group_count)]
         batches = [task.result() for task in tasks]
         if any(not batch for batch in batches):
             return None
@@ -243,11 +246,11 @@ class CloudflareRecipeProvider:
         instructions = recipe_instructions(data)
         body = json.loads(recipe_input(data))
         if priorities is not None:
-            instructions = instructions.replace("Generate six distinct", "Generate three distinct", 1)
             instructions += (
                 " For this complementary group, prioritize the priorityIngredients data when compatible "
                 "with dietary/allergen restrictions. Use the entire pantry as supporting ingredients. "
-                "Make each of the three recipes a different dish; keep all required amounts and steps."
+                "Explore different practical dishes for the suitable priority ingredients, with no fixed recipe count. "
+                "Stop when further suggestions would repeat dishes or violate restrictions. Keep all amounts and steps."
             )
             body["priorityIngredients"] = priorities
         response = await self.client.post(

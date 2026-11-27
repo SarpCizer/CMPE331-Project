@@ -27,7 +27,7 @@ SERVICE_TESTS = ['backend/tests/test_recipe_integration.py', 'backend/tests/test
 # One syntactically valid change per mutant, selected before measuring results.
 MUTANTS = [
     ('M01', PROVIDER, 'len(data.ingredients) < 6', 'len(data.ingredients) < 600', PARALLEL_TESTS),
-    ('M02', PROVIDER, 'for offset in range(2)', 'for offset in range(1)', PARALLEL_TESTS),
+    ('M02', PROVIDER, 'for offset in range(group_count)', 'for offset in range(1)', PARALLEL_TESTS),
     ('M03', PROVIDER, 'if signature not in seen:', 'if True:', PARALLEL_TESTS),
     ('M04', PROVIDER, 'body["priorityIngredients"] = priorities', 'body["priorityIngredients"] = data.ingredients', PARALLEL_TESTS),
     ('M05', PROVIDER, "return format(number.normalize(), 'f') + ' ' + unit", "return format(number.normalize(), 'f') + ' g'", METRIC_TESTS),
