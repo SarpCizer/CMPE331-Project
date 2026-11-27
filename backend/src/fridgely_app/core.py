@@ -1,4 +1,5 @@
 from datetime import timezone
+import unicodedata
 from typing import Annotated, Literal
 from uuid import uuid4
 
@@ -7,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator, model_validator
 from email_validator import validate_email
-from sqlalchemy import delete, literal, select, text, union_all
+from sqlalchemy import delete, literal, select, text, union_all, update
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette.exceptions import HTTPException
 
@@ -35,6 +36,17 @@ class Credentials(Command):
         return validate_email(value, check_deliverability=False, test_environment=True).normalized
 
 
+class PasswordChange(Command):
+    currentPassword: Annotated[StrictStr, Field(min_length=1, max_length=1024)]
+    newPassword: Annotated[StrictStr, Field(min_length=12, max_length=1024)]
+
+    @model_validator(mode='after')
+    def changed(self):
+        if self.currentPassword == self.newPassword:
+            raise ValueError('Choose a different password')
+        return self
+
+
 class PreferenceCommand(Command):
     dietary: Annotated[list[Annotated[StrictStr, Field(min_length=1, max_length=128)]], Field(max_length=100)]
     allergens: Annotated[list[Annotated[StrictStr, Field(min_length=1, max_length=128)]], Field(max_length=100)]
@@ -42,8 +54,8 @@ class PreferenceCommand(Command):
     @field_validator('dietary', 'allergens')
     @classmethod
     def nonblank(cls, values):
-        if any(not value.strip() for value in values):
-            raise ValueError('Blank preference')
+        if any(not value.strip() or any(unicodedata.category(char) == 'Cc' and char not in '\t\r\n' for char in value) for value in values):
+            raise ValueError('Invalid preference')
         return values
 
 
@@ -125,6 +137,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
     sessions = session_factory(engine)
     authentication = Authentication(sessions, jwt_secret, clock, token_lifetime)
     login_throttle = LoginThrottle(clock)
+    password_throttle = LoginThrottle(clock)
     app = FastAPI(title='Fridgely API', version='0.6.0', docs_url=None, redoc_url=None,
         description='Accounts, owned fridge inventory, preferences, recipes and personal collections. '
             'Register and sign in, then authorize requests using the returned bearer token.',
@@ -175,7 +188,23 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
                 row.password_hash = hash_password(command.password)
                 session.commit()
             login_throttle.succeeded(source, command.email)
-            return {'token':authentication.issue(row.id)}
+            return {'token':authentication.issue(row.id, row.auth_version)}
+
+    @router.put('/profile/password', status_code=204, tags=['Accounts'])
+    def change_password(command: PasswordChange, request: Request, user: AccountPrincipal = Depends(principal)):
+        source = request.client.host if request.client else 'unknown'
+        password_throttle.reserve(source, user.account_id)
+        with sessions.begin() as session:
+            row = session.scalar(select(Account).where(Account.id == user.account_id).with_for_update())
+            if row is None or not authentication.verify_password(row.password_hash, command.currentPassword):
+                raise HTTPException(400)
+            changed = session.execute(update(Account).where(Account.id == user.account_id,
+                Account.password_hash == row.password_hash, Account.auth_version == row.auth_version)
+                .values(password_hash=hash_password(command.newPassword), auth_version=Account.auth_version + 1))
+            if changed.rowcount != 1:
+                raise HTTPException(409)
+        password_throttle.succeeded(source, user.account_id)
+        return Response(status_code=204)
 
     @router.get('/profile/preferences', response_model=PreferenceCommand, tags=['Preferences'])
     def get_preferences(user: AccountPrincipal = Depends(principal)):

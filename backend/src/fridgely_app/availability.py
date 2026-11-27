@@ -3,7 +3,6 @@ from collections import defaultdict
 from decimal import Decimal
 from fractions import Fraction
 from math import ceil
-import re
 
 from sqlalchemy import select
 
@@ -13,16 +12,34 @@ from .models import InventoryEntry
 _UNITS = {'g': ('mass', Decimal(1)), 'kg': ('mass', Decimal(1000)),
           'ml': ('volume', Decimal(1)), 'l': ('volume', Decimal(1000)),
           **{u: (u, Decimal(1)) for u in ('pcs', 'pack', 'bunch')}}
-_AMOUNT = re.compile(r'\s*(\d+(?:\.\d+)?)\s*(g|kg|ml|l|pcs|pack|bunch)?\s*', re.I)
+
+
+def _number_end(value):
+    end = 0
+    while end < len(value) and value[end].isdecimal():
+        end += 1
+    if end == 0:
+        return None
+    if end < len(value) and value[end] == '.':
+        end += 1
+        fraction_start = end
+        while end < len(value) and value[end].isdecimal():
+            end += 1
+        if end == fraction_start:
+            return None
+    return end
 
 
 def _measurement(text):
-    """Read the shared numeric value, dimension and original recognized unit."""
-    match = _AMOUNT.fullmatch(text or '')
-    if not match:
+    """Parse the bounded metric/count grammar in linear time, without backtracking."""
+    if not isinstance(text, str) or len(text) > 64:
         return None
-    quantity = Decimal(match[1])
-    source_unit = (match[2] or 'pcs').lower()
+    value = text.strip()
+    end = _number_end(value)
+    if end is None:
+        return None
+    quantity = Decimal(value[:end])
+    source_unit = value[end:].strip().lower() or 'pcs'
     unit = _UNITS.get(source_unit)
     if unit is None:
         return None

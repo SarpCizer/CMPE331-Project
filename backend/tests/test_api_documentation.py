@@ -18,10 +18,13 @@ def test_openapi_describes_real_routes_authentication_and_errors(tmp_path):
         assert schema == client.get('/openapi.json').json()
         assert schema['info']['title'] == 'Fridgely API'
         assert schema['servers'] == [{'url':'/api'}]
-        assert set(schema['paths']) == {'/accounts','/sessions','/profile/preferences','/inventory',
+        assert set(schema['paths']) == {'/accounts','/sessions','/profile/password','/profile/preferences','/inventory',
             '/inventory/{item_id}','/health','/recipes/generate','/recipes/{recipe_id}',
             '/recipes/{recipe_id}/shopping-items','/shopping-items','/shopping-items/{item_id}',
             '/favorites','/favorites/{recipe_id}','/history','/recipes/{recipe_id}/cook','/shopping-items/{item_id}/purchase','/weekly-plan','/weekly-plan/{day}/{meal}','/surprise-recipes','/weekly-plan/shopping-items','/weekly-plan/recipes','/weekly-plan/{day}/{meal}/generate'}
+        rotation = schema['paths']['/profile/password']['put']
+        assert rotation['security'] == [{'BearerAuth': []}]
+        assert {'204','400','401','409','429','503'} <= rotation['responses'].keys()
         planner = schema['paths']['/weekly-plan/{day}/{meal}/generate']['post']
         assert {'400','401','409','422','502','503'} <= planner['responses'].keys()
         purchase = schema['paths']['/shopping-items/{item_id}/purchase']['post']

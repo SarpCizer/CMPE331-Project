@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import ChangePassword from "../components/ChangePassword";
 import FieldError from "../components/FieldError";
 import { formatPreferences } from "../preferences";
 import { focusInvalid, preferenceField } from "../utils/forms";
@@ -97,6 +98,9 @@ function Preferences({ value, run, api }) {
 }
 
 export default function PreferencesPage() {
-  const { data, api, run } = useOutletContext();
-  return <Preferences value={data.preferences} api={api} run={run} />;
+  const { data, api, run, clearSession } = useOutletContext();
+  return <>
+    <Preferences value={data.preferences} api={api} run={run} />
+    <ChangePassword api={api} run={run} clearSession={clearSession} />
+  </>;
 }

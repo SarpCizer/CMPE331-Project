@@ -89,7 +89,7 @@ def scan(args):
         risk = Counter(int(alert['riskcode']) for alert in alerts)
         digest = subprocess.run(['docker', 'image', 'inspect', IMAGE, '--format', '{{json .RepoDigests}}'],
             capture_output=True, text=True)
-        passed = code in {0, 2} and path.is_file() and authenticated > 0 and total > 0 and not risk[3] and not risk[2]
+        passed = code in {0, 2} and path.is_file() and authenticated > 0 and total > 0 and not risk[3] and not risk[2] and not risk[1]
         summary = {'revision': args.revision, 'observed_at_utc': datetime.now(timezone.utc).isoformat(),
             'tool': 'OWASP ZAP', 'image': IMAGE, 'image_digest': digest.stdout.strip(),
             'scan_type': 'authenticated OpenAPI API active scan, four-minute active budget',
@@ -99,7 +99,7 @@ def scan(args):
             'alert_rules': [{'rule': alert.get('pluginid'), 'name': alert.get('name'),
                 'risk': alert.get('riskdesc'), 'confidence': alert.get('confidence'),
                 'instances': len(alert.get('instances', []))} for alert in alerts],
-            'policy': 'No untriaged high or medium alerts; retain low/informational findings for review.',
+            'policy': 'No high, medium or low alerts; retain informational observations without suppressing rules.',
             'tokens_and_passwords_redacted': True, 'production_target': False, 'passed': passed}
         (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
         print(json.dumps({'passed': passed, 'alerts': summary['alerts_by_risk'], 'authenticated_requests': authenticated}))

@@ -39,10 +39,10 @@ class Authentication:
         # A missing account follows the same expensive verification path as a bad password.
         self.dummy_hash = hash_password(token_urlsafe(32))
 
-    def issue(self, account_id):
+    def issue(self, account_id, auth_version=0):
         now = int(self.clock().timestamp())
         return jwt.encode({'sub':account_id, 'iat':now, 'exp':now+self.lifetime,
-            'iss':ISSUER, 'aud':AUDIENCE}, self.secret, algorithm='HS256')
+            'iss':ISSUER, 'aud':AUDIENCE, 'ver':auth_version}, self.secret, algorithm='HS256')
 
     def verify_password(self, encoded, password):
         try:
@@ -70,9 +70,9 @@ class Authentication:
                     or not isinstance(claims['sub'], str) or not claims['sub']):
                 raise ValueError('Invalid claims')
             with self.sessions() as session:
-                account = session.scalar(select(Account.id).where(Account.id == claims['sub']))
-            if not account:
-                raise ValueError('Missing account')
-            return AccountPrincipal(account)
+                account = session.execute(select(Account.id, Account.auth_version).where(Account.id == claims['sub'])).first()
+            if not account or type(claims.get('ver', 0)) is not int or claims.get('ver', 0) != account.auth_version:
+                raise ValueError('Missing account or revoked session')
+            return AccountPrincipal(account.id)
         except (jwt.InvalidTokenError, ValueError, TypeError, KeyError):
             raise denied from None

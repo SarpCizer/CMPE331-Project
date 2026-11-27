@@ -18,6 +18,7 @@ from fridgely_app.security import AUDIENCE, ISSUER, PASSWORDS
 
 
 ROUTES = [
+    ("PUT", "/profile/password", {"currentPassword":"synthetic-current", "newPassword":"synthetic-replacement"}),
     ("GET", "/profile/preferences", None),
     ("PUT", "/profile/preferences", {"dietary": [], "allergens": []}),
     ("GET", "/inventory", None), ("POST", "/inventory", {"name": "intrusion"}),

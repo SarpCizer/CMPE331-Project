@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import logging
@@ -39,7 +40,9 @@ def recipe_instructions(data):
             'cookingMinutes must estimate the full preparation and cooking time, not just active cooking.')
     if not data.requested_dish:
         return (
-            "Generate six distinct recipe suggestions, with different main ingredients and preparations. "
+            "Generate distinct recipe suggestions with different main ingredients and preparations; "
+            "there is no fixed recipe count. Offer as many useful, complete, varied dishes as this pantry "
+            "supports without repeating near-identical dishes or padding with unsuitable suggestions. "
             "Keep each recipe compact: at most eight ingredients and five short cooking steps. "
             "Return only the JSON object, with no markdown or commentary. "
             "Plan the batch using the entire inventory, not just the first few entries. "
@@ -217,16 +220,49 @@ class CloudflareRecipeProvider:
         self.url = f"{CLOUDFLARE_API_URL}/accounts/{account}/ai/run/{CLOUDFLARE_RECIPE_MODEL}"
 
     async def generate(self, data: GenerationInput) -> object:
+        # Keep small pantries and requested weekly dishes on one provider call.
+        if data.requested_dish or len(data.ingredients) < 6:
+            return await self._generate_group(data)
+
+        # Both groups see the full pantry. Alternating priorities spread attention
+        # across recent and earlier entries without removing cooking context.
+        group_count = min(4, (len(data.ingredients) + 3) // 4)
+        async with asyncio.TaskGroup() as group:
+            tasks = [group.create_task(self._generate_group(data, data.ingredients[offset::group_count]))
+                     for offset in range(group_count)]
+        batches = [task.result() for task in tasks]
+        if any(not batch for batch in batches):
+            return None
+        recipes, seen = [], set()
+        for batch in batches:
+            for recipe in batch:
+                signature = json.dumps(recipe, sort_keys=True, ensure_ascii=False)
+                if signature not in seen:
+                    seen.add(signature)
+                    recipes.append(recipe)
+        return recipes
+
+    async def _generate_group(self, data: GenerationInput, priorities=None) -> object:
+        instructions = recipe_instructions(data)
+        body = json.loads(recipe_input(data))
+        if priorities is not None:
+            instructions += (
+                " For this complementary group, prioritize the priorityIngredients data when compatible "
+                "with dietary/allergen restrictions. Use the entire pantry as supporting ingredients. "
+                "Explore different practical dishes for the suitable priority ingredients, with no fixed recipe count. "
+                "Stop when further suggestions would repeat dishes or violate restrictions. Keep all amounts and steps."
+            )
+            body["priorityIngredients"] = priorities
         response = await self.client.post(
             self.url,
             headers={"Authorization": f"Bearer {self.api_token}"},
             json={
                 "messages": [
-                    {"role": "system", "content": recipe_instructions(data)},
-                    {"role": "user", "content": recipe_input(data)},
+                    {"role": "system", "content": instructions},
+                    {"role": "user", "content": json.dumps(body, ensure_ascii=False)},
                 ],
                 "response_format": {"type": "json_schema", "json_schema": RESPONSE_FORMAT["schema"]},
-                "max_tokens": 2400 if data.requested_dish else 4800,
+                "max_tokens": 3200 if priorities is not None else (2400 if data.requested_dish else 4800),
             },
         )
         response.raise_for_status()
