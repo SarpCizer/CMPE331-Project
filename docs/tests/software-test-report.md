@@ -296,7 +296,7 @@ All 48 approved acceptance criteria and nine NFRs map to concrete assertion loca
 
 [Detailed AC/NFR matrix](https://github.com/SarpCizer/CMPE331-Project/blob/fafd3fdbfa0d8ccd2ff7679282687142615e0aed/docs/tests/coverage/traceability.md) contains the criterion, case, exact assertion, immutable source link, purpose and scope. The CSV and JSON preserve all 57 rows. Mapping completeness is not an assertion of 100% code coverage or live-provider safety.
 
-[Retained raw evidence index](https://github.com/SarpCizer/CMPE331-Project/blob/e0f74ca469231b3a98320967ccc0daab79af25bc/docs/tests/evidence/review94-fafd3fd/evidence-index.json) records SHA-256 and byte lengths for this follow-up bundle. Raw results remain separate from historical a59556e evidence.
+[Retained raw evidence index](https://github.com/SarpCizer/CMPE331-Project/blob/40f112e62e18047413b72b20a4e0732d5201f422/docs/tests/evidence/review94-fafd3fd/evidence-index.json) records SHA-256 and byte lengths for this follow-up bundle. Raw results remain separate from historical a59556e evidence.
 
 | Requirement group | Specific evidence |
 | --- | --- |
