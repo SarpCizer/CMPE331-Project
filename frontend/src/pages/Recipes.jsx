@@ -13,6 +13,7 @@ export default function RecipesPage() {
   const stocked = data.inventory.filter(
     (item) => item.quantity == null || item.quantity > 0,
   );
+  const visibleRecipes = stocked.length ? generated : [];
   return (
     <>
       <section className="panel bg-[#eaf0e6]">
@@ -56,7 +57,14 @@ export default function RecipesPage() {
           Edit your preferences
         </Link>
       </section>
-      <SurpriseWheel api={api} run={run} busy={busy} openRecipe={openRecipe} />
+      <SurpriseWheel
+        key={visibleRecipes.map((recipe) => recipe.id).join(",")}
+        visibleRecipes={visibleRecipes}
+        api={api}
+        run={run}
+        busy={busy}
+        openRecipe={openRecipe}
+      />
       {!stocked.length ? (
         <Empty icon="fridge" title="Start with an ingredient">
           Add something to your fridge before asking for recipes.
