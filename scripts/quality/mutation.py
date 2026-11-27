@@ -20,6 +20,11 @@ ROOT = Path(__file__).resolve().parents[2]
 PROVIDER = 'backend/src/fridgely_recipes/provider.py'
 SERVICE = 'backend/src/fridgely_recipes/service.py'
 LOGIN = 'backend/src/fridgely_app/login_throttle.py'
+SECURITY = 'backend/src/fridgely_app/security.py'
+HOST = 'backend/src/fridgely_app/host.py'
+CORE = 'backend/src/fridgely_app/core.py'
+AVAILABILITY = 'backend/src/fridgely_app/availability.py'
+SECURITY_TESTS = ['backend/tests/test_final_security.py']
 PARALLEL_TESTS = ['backend/tests/test_parallel_generation.py']
 METRIC_TESTS = ['backend/tests/test_metric_recipe_amounts.py', 'backend/tests/test_generation_output_reliability.py']
 LOGIN_TESTS = ['backend/tests/test_login_throttle.py']
@@ -40,6 +45,10 @@ MUTANTS = [
     ('M12', LOGIN, 'events[0] <= now - self.window', 'events[0] >= now - self.window', LOGIN_TESTS),
     ('M13', LOGIN, "self._buckets.pop(('account', source, email), None)", "self._buckets.get(('account', source, email), None)", LOGIN_TESTS),
     ('M14', LOGIN, 'if retry or len(self._buckets)', 'if False or len(self._buckets)', LOGIN_TESTS),
+    ('M15', SECURITY, "claims.get('ver', 0) != account.auth_version", 'False', SECURITY_TESTS),
+    ('M16', HOST, "response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'", "response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'", SECURITY_TESTS),
+    ('M17', CORE, "unicodedata.category(char) == 'Cc'", 'False', SECURITY_TESTS),
+    ('M18', AVAILABILITY, 'len(text) > 64', 'len(text) > 6400', SECURITY_TESTS),
 ]
 
 
@@ -102,7 +111,7 @@ def campaign(revision):
             print(f'{identity}: {result["status"]}', flush=True)
     counts = {status: sum(row['status'] == status for row in rows) for status in ('killed', 'survived', 'invalid', 'timeout')}
     denominator = counts['killed'] + counts['survived']
-    return {'revision': revision, 'scope': '14 seeded source mutations in recipe validation/concurrency and login throttling',
+    return {'revision': revision, 'scope': '18 seeded source mutations in recipe validation/concurrency, password revocation, input/security headers and login throttling',
             'whole_project_mutation_coverage': False, 'real_provider_used': False, 'baseline': baseline,
             'source_sha256': {name: hashlib.sha256(text.encode()).hexdigest() for name, text in files.items()},
             'counts': counts, 'score': counts['killed'] / denominator if denominator else None, 'mutants': rows,

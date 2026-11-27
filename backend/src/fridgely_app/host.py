@@ -62,6 +62,7 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
         response.headers['Cache-Control'] = 'no-store'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Referrer-Policy'] = 'same-origin'
+        response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
             "connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'")

@@ -29,6 +29,7 @@ class Account(CoreBase):
     id: Mapped[str] = mapped_column(String(128), primary_key=True)
     email: Mapped[str] = mapped_column(String(254), unique=True)
     password_hash: Mapped[str] = mapped_column(Text)
+    auth_version: Mapped[int] = mapped_column(Integer, default=0, server_default='0')
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 

@@ -60,6 +60,9 @@ def install_documentation(api, frontend_dir):
                     statuses[404] = 'Owned resource not found'
                 if path == '/accounts':
                     statuses[409] = 'Account already exists'
+                if path == '/profile/password':
+                    statuses[409] = 'Password changed concurrently; sign in again'
+                    statuses[429] = 'Too many password change attempts'
                 if path.endswith('/purchase'):
                     statuses[409] = 'Purchase was already recorded with other amounts or stock limit reached'
                 if path.endswith('/cook'):

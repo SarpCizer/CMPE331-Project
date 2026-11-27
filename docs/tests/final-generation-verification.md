@@ -60,12 +60,12 @@ mutation results are published by CI on the PR. Local PostgreSQL skips are not
 counted as passes. Controlled provider results are distinct from actual cloud
 checks. There is no claim of complete path coverage.
 
-The targeted seeded mutation campaign uses a passing baseline and 14 isolated
+The targeted seeded mutation campaign uses a passing baseline and 18 isolated
 source faults: disabled parallelism, lost group diversity/deduplication, wrong
 units, ignored quantities, acceptance of zero amounts, empty-fridge calls,
 ignored allergen/time limits and weakened login limits/expiry/reset. Each mutant
 runs in a temporary source copy with an import-origin check. Its score applies
-only to these selected faults, not all project code or every possible mutation.
+only to these selected faults (including password revocation, preference controls, bounded parsing and CORP headers), not all project code or every possible mutation.
 No production credentials or real provider calls are used in this campaign.
 
 ```sh
@@ -129,3 +129,26 @@ one bounded-regex MAJOR Sonar finding, and the process-local login throttle's
 single-worker scope. The final CI may change these findings; use its actual
 exports rather than assuming zero findings. The frozen course package is not
 replaced and no course-platform submission or instructor acceptance is claimed.
+
+## Final security follow-up requested by Berfin
+
+The 12 security regressions first failed against `97a562a` (12 failed in 1.48s)
+and are retained in `ab3e80c154e312dc831a6a824ca89633c69cdaf0`. The implementation
+adds current-password reauthentication, owner-qualified atomic password updates,
+legacy-compatible session-version migration, old-session revocation, a rate limit
+and a labelled responsive Preferences form. No administrator can read passwords.
+[Account storage and authorized access](../cloud/account-records.md) distinguishes
+registered users from anonymous visitors and browser warnings from proven breaches.
+
+Preference control characters now fail validation with HTTP 400 before reaching
+SQL. Tests reproduced these failures without changing saved preferences; the
+historical scanner's exact 503 request payload was not retained, so its old cause
+is not retroactively asserted. CORP is explicitly same-origin for app, API and
+error responses. The flagged amount regex is replaced by a bounded linear parser.
+The new ZAP policy fails on any high, medium **or low** alert, with all rules and
+informational observations still retained. Final scan evidence must show the
+result; code changes alone do not prove that a scanner finding disappeared.
+
+The final Software Testing Report is generated after source-pinned CI and live
+verification, includes current graphs/dashboard and links raw evidence. Historical
+reports, failures and frozen submission artifacts remain separately labelled.

@@ -52,7 +52,7 @@ def test_password_change_requires_authentication_and_does_not_expose_accounts(co
     assert core.client.get('/accounts').status_code in (404,405)
 
 
-@pytest.mark.parametrize('value',['\x00vegan','ve\x00gan','\x01','vegan\nraw','\x7f'])
+@pytest.mark.parametrize('value',['\x00vegan','ve\x00gan','\x01','vegan\x01raw','\x7f'])
 def test_control_characters_in_preferences_are_validation_errors_not_storage_errors(core,value):
     _, headers = user(core.client)
     before=core.client.get('/profile/preferences',headers=headers).json()
@@ -71,3 +71,42 @@ def test_same_origin_resource_policy_on_pages_api_and_errors(tmp_path):
 
 def test_measurement_parser_rejects_overlong_legacy_input_before_number_conversion():
     assert _measurement('1'*65+' g') is None
+
+
+def test_security_migration_preserves_existing_accounts_and_legacy_sessions(tmp_path):
+    import jwt
+    from sqlalchemy import text
+    from fridgely_app.database import make_engine, migrate
+    from fridgely_app.core import create_core_app
+    from fridgely_app.security import ISSUER, AUDIENCE, utc_now
+    from test_accounts_database import SECRET
+
+    url=f'sqlite:///{tmp_path}/upgrade.db'
+    engine=make_engine(url)
+    migrate(engine,'0007_weekly_meal_plans')
+    with engine.begin() as connection:
+        connection.execute(text("INSERT INTO accounts(id,email,password_hash,created_at) VALUES ('legacy','legacy@example.test',:hash,CURRENT_TIMESTAMP)"),
+            {'hash':PASSWORDS.hash(PASSWORD)})
+        connection.execute(text("INSERT INTO account_preferences(owner_id) VALUES ('legacy')"))
+    now=int(utc_now().timestamp())
+    token=jwt.encode({'sub':'legacy','iat':now,'exp':now+3600,'iss':ISSUER,'aud':AUDIENCE},SECRET,algorithm='HS256')
+    migrate(engine)
+    migrate(engine)
+    app=create_core_app(database_url=url,jwt_secret=SECRET)
+    with TestClient(app) as client:
+        headers={'Authorization':'Bearer '+token}
+        assert client.get('/inventory',headers=headers).status_code == 200
+        assert client.put('/profile/password',headers=headers,json={'currentPassword':PASSWORD,'newPassword':NEW_PASSWORD}).status_code == 204
+        assert client.get('/inventory',headers=headers).status_code == 401
+        with app.state.sessions() as session:
+            row=session.get(Account,'legacy')
+            assert row.email == 'legacy@example.test' and row.auth_version == 1
+    app.state.engine.dispose()
+    engine.dispose()
+
+
+def test_supported_multiline_preferences_are_preserved_exactly(core):
+    _, headers = user(core.client)
+    values={'dietary':['line\nbreak', 'tab\tvalue'], 'allergens':[]}
+    assert core.client.put('/profile/preferences',headers=headers,json=values).json() == values
+    assert core.client.get('/profile/preferences',headers=headers).json() == values
