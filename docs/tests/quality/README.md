@@ -4,9 +4,11 @@
 
 The historical zero-issue scans below retain their original revisions. The
 follow-up uses evaluated server conditions and a separate zero-hotspot policy;
-it does not describe every finding as fixed. Source `19aa281` analysis passed
-the five server conditions (96.0% aggregate coverage; zero bugs, vulnerabilities,
-BLOCKER and CRITICAL issues), while its dashboard-capture step failed separately.
+it does not describe every finding as fixed. The completed source `fafd3fd` analysis and dashboard capture passed in
+[run 45899635960](https://github.com/SarpCizer/CMPE331-Project/actions/runs/45899635960).
+Its five evaluated server conditions report 96.0% aggregate coverage and zero
+bugs, vulnerabilities, BLOCKER and CRITICAL issues; security hotspots are zero.
+Earlier dashboard-capture failures remain retained as failed attempts.
 
 That analysis retains one **open MAJOR python:S8786** finding in
 `backend/src/fridgely_app/availability.py:16`: the amount regex may backtrack
@@ -44,3 +46,19 @@ validated against the exported issue-key set; only those exact historical
 fingerprints are scoped. No broad source/test/report directory is excluded.
 
 Dependency audits cover the locked Python packages and pnpm graph. “No known vulnerabilities” is time-bound and does not establish absence of application flaws. `secret-canary-scan.json` checks named synthetic diagnostic strings in the exported successful logs; it is not a generic secret-scanning guarantee. No real passwords, JWTs, database URLs or provider credentials belong in this folder.
+
+## Evidence-identifier secret-scan triage
+
+The full-history Gitleaks 8.30.1 scan flagged thirteen identifiers introduced by
+the immutable evidence commit `e0f74ca469231b3a98320967ccc0daab79af25bc`:
+twelve actual Git blob object IDs and one Sonar-assigned issue UUID. Each Git ID
+was verified with `git rev-parse` and `git cat-file -t` at both measured
+revisions; the UUID matches the hash-verified CI issue export. They are
+identifiers, not authentication credentials.
+
+[The triage attestation](../evidence/review94-secret-triage.json) records each
+exact commit/path/rule/line fingerprint and source-line hash. Only those
+fingerprints are appended to `.gitleaksignore`; no rule or directory is
+excluded. Raw evidence bytes are preserved, including original scanner HTML
+and log whitespace. Default detectors and the synthetic-credential negative
+canary remain enabled.

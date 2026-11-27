@@ -11,5 +11,6 @@
     "90004": "The CORP header is absent. Bearer authentication, CSP and no-store are separate protections; explicit cross-origin resource policy remains header-hardening follow-up.",
     "10111": "The scanner identified synthetic registration/sign-in operations. This informational classification does not report a leaked credential.",
     "10049": "Cache-Control: no-store is intentional for personal API data; this is an informational observation."
-  }
+  },
+  "evidence_revision": "e0f74ca469231b3a98320967ccc0daab79af25bc"
 }

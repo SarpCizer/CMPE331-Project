@@ -48,3 +48,19 @@ a38b8b4417884a0c547e28f8f84b99f3c8fed8b5:backend/docs/verification.json:generic-
 # Synthetic JWT fixture in the observed tests-only RED commit for #81.
 # Never used for a real account/provider; current tests generate keys at runtime.
 7cfd1f449cfb47f1cc459d1995bc782821780407:backend/tests/test_recipe_consumption.py:generic-api-key:19
+
+# Verified Git blob IDs and Sonar issue UUID in the immutable #94 evidence commit.
+# See docs/tests/evidence/review94-secret-triage.json; no credential/rule/directory exclusion.
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/sonar/issues.json:generic-api-key:4
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:52
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:60
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:69
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:71
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:122
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:180
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:188
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:197
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:199
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:250
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:cloudflare-api-key:70
+e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:cloudflare-api-key:198
