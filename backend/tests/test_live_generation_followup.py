@@ -71,6 +71,15 @@ def test_toasting_seeds_does_not_require_bread():
     assert recipe.steps==candidate['steps']
 
 
+def test_legacy_seasoning_that_needs_manual_measure_review_can_still_be_displayed():
+    # Existing wheel cards deliberately support legacy amounts that cannot yet
+    # be converted into cooking deductions. The production provider adapter
+    # separately rejects nonmetric new AI output before it reaches this layer.
+    candidate={**RECIPE,'ingredients':['rice','salt'],'ingredientAmounts':['150 g','1 pinch']}
+    recipe,=validate_batch([candidate],())
+    assert recipe.ingredientAmounts==candidate['ingredientAmounts']
+
+
 def test_kilogram_salt_dose_is_not_accepted_as_a_measured_recipe():
     candidate={**RECIPE,'ingredients':['rice','salt'],'ingredientAmounts':['150 g','1 kg']}
     with pytest.raises(RecipeError):validate_batch([candidate],())
