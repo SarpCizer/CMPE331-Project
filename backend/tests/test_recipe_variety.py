@@ -30,10 +30,11 @@ def test_six_suggestions_keep_every_stocked_ingredient_including_recent_fish(clo
     assert len(data['ingredients'])==14 and data['ingredients'][-1]=='fish'
     assert {'name':'fish','quantity':2,'unit':'pcs'} in data['availableAmounts']
     assert data['dietary']==['vegan'] and data['allergens']==['peanut']
-    assert 'six distinct' in instructions
+    assert ('three distinct' if provider=='cloudflare' else 'six distinct') in instructions
     assert 'main ingredients' in instructions and 'end of the inventory' in instructions
     assert 'restrictions take priority' in instructions
-    assert payload['max_tokens' if provider=='cloudflare' else 'max_output_tokens']==4800
+    assert payload['max_tokens' if provider=='cloudflare' else 'max_output_tokens']==(3200 if provider=='cloudflare' else 4800)
+    assert len(cloudflare_host.requests)==(2 if provider=='cloudflare' else 1)
 
 
 def test_weekly_dish_keeps_single_recipe_guidance():

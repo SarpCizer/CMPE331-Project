@@ -55,3 +55,101 @@ def test_failed_parallel_group_cancels_its_sibling():
                 await asyncio.wait_for(provider.generate(GenerationInput(tuple('abcdefgh'),(),())),1)
         assert cancelled.is_set()
     asyncio.run(scenario())
+
+
+def test_service_deadline_cancels_both_requests_and_writes_nothing():
+    from fridgely_recipes.service import RecipeGenerationService, RecipeError
+
+    async def scenario():
+        started = []
+        cancelled = []
+        writes = []
+
+        async def respond(request):
+            started.append(request)
+            try:
+                await asyncio.sleep(10)
+            finally:
+                cancelled.append(request)
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            provider = CloudflareRecipeProvider(client, account_id='synthetic', api_token='synthetic')
+            service = RecipeGenerationService(
+                lambda owner: GenerationInput(tuple('abcdefgh'), (), ()), provider,
+                lambda *args: writes.append(args), timeout_seconds=.05,
+            )
+            with pytest.raises(RecipeError) as failure:
+                await service.generate('owner')
+        assert failure.value.status == 503 and failure.value.retryable
+        assert len(started) == len(cancelled) == 2
+        assert writes == []
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('bad_recipe, expected_status', [
+    ({**RECIPE, 'steps': []}, 502),
+    ({**RECIPE, 'ingredients': ['peanut'], 'ingredientAmounts': ['10 g']}, 422),
+    ({**RECIPE, 'ingredientAmounts': ['1 cup', '2 pcs']}, 502),
+])
+def test_one_bad_group_rejects_every_recipe_before_saving(bad_recipe, expected_status):
+    from fridgely_recipes.service import RecipeGenerationService, RecipeError
+
+    async def scenario():
+        writes = []
+
+        def respond(request):
+            data = json.loads(json.loads(request.content)['messages'][1]['content'])
+            recipe = RECIPE if data['priorityIngredients'][0] == 'a' else bad_recipe
+            return httpx.Response(200, json={'success': True, 'result': {'response': {'recipes': [recipe]}}})
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            provider = CloudflareRecipeProvider(client, account_id='synthetic', api_token='synthetic')
+            service = RecipeGenerationService(
+                lambda owner: GenerationInput(tuple('abcdefgh'), (), ('peanut',)), provider,
+                lambda *args: writes.append(args),
+            )
+            with pytest.raises(RecipeError) as failure:
+                await service.generate('owner')
+        assert failure.value.status == expected_status
+        assert writes == []
+
+    asyncio.run(scenario())
+
+
+def test_duplicate_results_do_not_hide_distinct_preparations_with_same_title():
+    async def scenario():
+        requests = []
+
+        def respond(request):
+            requests.append(request)
+            other = {**RECIPE, 'steps': ['Bake the rice and tomato']}
+            return httpx.Response(200, json={'success': True, 'result': {'response': {'recipes': [RECIPE, other]}}})
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            result = await CloudflareRecipeProvider(client, account_id='synthetic', api_token='synthetic').generate(
+                GenerationInput(tuple('abcdefgh'), (), ()))
+        assert len(requests) == 2
+        assert result == [RECIPE, {**RECIPE, 'steps': ['Bake the rice and tomato']}]
+
+    asyncio.run(scenario())
+
+
+def test_requested_weekly_dish_with_large_fridge_uses_one_request():
+    async def scenario():
+        requests = []
+
+        def respond(request):
+            requests.append(json.loads(request.content))
+            return httpx.Response(200, json={'success': True, 'result': {'response': {'recipes': [RECIPE]}}})
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            result = await CloudflareRecipeProvider(client, account_id='synthetic', api_token='synthetic').generate(
+                GenerationInput(tuple('abcdefgh'), (), (), requested_dish='Tomato rice', requested_servings=2))
+        payload, = requests
+        body = json.loads(payload['messages'][1]['content'])
+        assert body['requestedServings'] == 2 and body['requestedDish'] == 'Tomato rice'
+        assert 'priorityIngredients' not in body and payload['max_tokens'] == 2400
+        assert result == [RECIPE]
+
+    asyncio.run(scenario())
