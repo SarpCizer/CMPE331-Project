@@ -8,9 +8,27 @@ import xml.etree.ElementTree as ET
 from reportlab.graphics import renderSVG
 from reportlab.graphics.shapes import Drawing, Line, Rect, String
 from reportlab.lib import colors
-from reportlab.platypus import Image, Spacer
+from reportlab.platypus import Flowable, Image, Spacer
 
 REPO='https://github.com/SarpCizer/CMPE331-Project'
+
+
+class DashboardViewport(Flowable):
+    """Embed the original capture, displaying its upper metrics viewport."""
+    def __init__(self,path):
+        super().__init__()
+        self.picture=Image(str(path))
+        scale=499/self.picture.imageWidth
+        self.picture.drawWidth=499
+        self.picture.drawHeight=self.picture.imageHeight*scale
+        self.width,self.height=499,self.picture.drawHeight*.8
+
+    def draw(self):
+        self.canv.saveState()
+        area=self.canv.beginPath();area.rect(0,0,self.width,self.height)
+        self.canv.clipPath(area,stroke=0)
+        self.picture.drawOn(self.canv,0,self.height-self.picture.drawHeight)
+        self.canv.restoreState()
 
 
 def read(path):
@@ -93,7 +111,8 @@ def bars(title, labels, values, maximum, suffix='%', threshold=None):
         y=drawing.height-43-index*31
         drawing.add(String(0,y+4,label,fontName='Report',fontSize=8))
         drawing.add(Rect(left,y,width,16,fillColor=colors.HexColor('#e9f1e7'),strokeColor=None))
-        drawing.add(Rect(left,y,width*value/maximum,16,fillColor=colors.HexColor('#387559'),strokeColor=None))
+        color='#b74f33' if threshold is not None and value>threshold else '#387559'
+        drawing.add(Rect(left,y,width*value/maximum,16,fillColor=colors.HexColor(color),strokeColor=None))
         drawing.add(String(left+width+6,y+4,f'{value:.2f}{suffix}',fontName='Report',fontSize=8))
     if threshold is not None:
         x=left+width*threshold/maximum
@@ -140,6 +159,7 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         markdown.extend([f'![{name}](figures/{name})',''])
 
     page();heading('Instructor review follow-up',True)
+    paragraph(config.get('correction_date','Instructor-review correction'), 'small')
     paragraph(f'Corrections by Sarp Çizer with Codex assistance. Historical pages retain a59556e measurements. Follow-up CI source: {revision}. Local benchmarks retain their actual {config.get("local_source_revision",revision)} revision; measured source equivalence is explained below. This branch has not been merged or deployed by this correction.')
     paragraph(f'[Follow-up CI run {run}]({REPO}/actions/runs/{run}) | [Source {short}]({REPO}/commit/{revision}) | [Review corrections PR #94]({REPO}/pull/94)')
     table(['Review item','Concrete correction'],[
@@ -156,6 +176,12 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         ['ZAP authenticated requests',str(zap['authenticated_successful_requests_observed'])],
         ['ZAP high / medium',f'{zap["alerts_by_risk"]["high"]} / {zap["alerts_by_risk"]["medium"]}'],
     ],[245,254])
+    if (root/'local/sqlite-interleaving-source.json').is_file():
+        sqlite=read(root/'local/sqlite-interleaving-source.json')
+        paragraph(f'Separate SQLite run at {sqlite["source_revision"][:7]}: {sqlite["passed"]} interleaving cases passed, with {sqlite["skipped_postgresql_variants"]} PostgreSQL variants skipped locally. This complements the CI engine-specific skips; skipped cases are not reclassified as passes.','small')
+    heading('Current browser inventory')
+    suites=browser.findall('testsuite')
+    paragraph('; '.join(f'[{suite.get("name")} ({suite.get("tests")} cases)]({REPO}/blob/{revision}/frontend/tests/{suite.get("name")})' for suite in suites)+'. File names and counts come from the actual follow-up JUnit; this inventory is separate from the four-file historical snapshot.', 'small')
     paragraph('Test-first history is retained: the missing sign-in limit and incomplete Sonar conditions failed before their implementation commits. Added display assertions verify the actual saved addition date, estimate labels, calories and servings. Tests use disposable databases and controlled providers; no production attack or load was performed.','small')
 
     page();heading('Coverage: results and missed branches',True)
@@ -193,32 +219,25 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
     paragraph(f'Ten users, one-second think time, 60 measured seconds, controlled 200ms provider: CI completed {generation["steady"]["requests"]} HTTP requests with {generation["steady"]["errors"]} errors. The experimental 2,000ms p95 gate is separate from the non-AI 500ms NFR. Accepted recipes persisted and inventory remained unchanged.')
     times=[row['seconds'] for row in generation['concurrent_timeouts']['results']]
     paragraph(f'Five simultaneous stalled-provider requests returned retryable 503 in {min(times):.2f}–{max(times):.2f}s, within the 30s requirement. All five providers were cancelled at the configured 28s deadline; no partial recipe rows or stock changes occurred. External model calls: zero.')
+    heading('Authenticated security assessment')
     paragraph('Login guessing is now bounded before expensive hashing: five failed attempts per account/transport-client per minute, plus 200 total attempts per transport client. HTTP 429 includes Retry-After. Known/unknown account, expiry, spoofed header, parallel reservation and memory-cap regressions pass. This process-local control resets on restart and needs shared atomic storage before deploying multiple workers/replicas.')
     risk=zap['alerts_by_risk']
-    paragraph(f'OWASP ZAP {zap["image"]} completed an authenticated OpenAPI active scan with a four-minute active budget against a disposable loopback host: {zap["http_requests_observed"]} observed requests, including {zap["authenticated_successful_requests_observed"]} protected successful requests. Alerts: {risk["high"]} high, {risk["medium"]} medium, {risk["low"]} low and {risk["informational"]} informational. The raw report retains every rule and its instances; no failed setup attempt is treated as a clean scan.')
+    paragraph(f'OWASP ZAP {zap["image"]} completed an authenticated OpenAPI active scan with a four-minute active budget against a disposable loopback host: {zap["http_requests_observed"]} observed requests, including {zap["authenticated_successful_requests_observed"]} protected successful requests. Alert groups: {risk["high"]} high, {risk["medium"]} medium, {risk["low"]} low and {risk["informational"]} informational. The raw report retains each group and its individual instances; failed setup attempts are not counted as clean scans.')
     for alert in zap['alert_rules']:
-        paragraph(f'ZAP {alert["rule"]}: {alert["name"]} — {alert["risk"]}; {alert["instances"]} instances. '+config.get('zap_triage',{}).get(str(alert['rule']),'See retained alert evidence and review scope.'),'small')
+        triage=config.get('zap_triage',{})
+        paragraph(f'ZAP {alert["rule"]}: {alert["name"]} — {alert["risk"]}; {alert["instances"]} instances. '+triage.get(str(alert['rule'])+'|'+alert['risk'],triage.get(str(alert['rule']),'See retained alert evidence and review scope.')),'small')
     paragraph('The scanner complements four targeted probes, the owner/method JWT matrix and dependency/secret checks. Bounded active scanning is not a complete penetration audit. Synthetic credentials are redacted; no production host, paid resource or live inference was used.','small')
 
     page();heading('Sonar: actual evaluated dashboard',True)
-    paragraph(f'Actual ephemeral server UI, captured after analysis of {short}. The screenshot is not a recreated dashboard. Its durable raw metrics, configured gate and observed condition values are retained with the same source identity. The temporary loopback URL is not a public persistent service.','small')
-    image=Image(str(root/'sonar/dashboard.png'))
-    scale=min(499/image.imageWidth,420/image.imageHeight)
-    image.drawWidth,image.drawHeight=image.imageWidth*scale,image.imageHeight*scale
-    image.hAlign='CENTER';story.extend([image,Spacer(1,9)])
+    paragraph(f'Upper viewport of the actual ephemeral Sonar UI after analysis of {short}. The original full capture is embedded unchanged and retained with the raw metrics and gate conditions; this layout displays the summary and coverage cards. The temporary loopback URL is not a persistent public service. Community Build has limited injection analysis; the dynamic scan and ownership tests are complementary.','small')
+    image=DashboardViewport(root/'sonar/dashboard.png')
+    story.extend([image,Spacer(1,9)])
     markdown.extend([f'![Actual Sonar dashboard]({config["evidence_root"]}/sonar/dashboard.png)',''])
     gate=read(root/'sonar/quality-gate.json')['projectStatus']
     table(['Evaluated metric','Error condition','Observed'],[
         [item['metricKey'],item['comparator']+' '+item['errorThreshold'],item['actualValue']]
         for item in gate['conditions']
     ],[235,120,144])
-    findings=read(root/'sonar/issues.json')['issues']
-    paragraph(f'Current scan: {len(findings)} open issue(s). The quality gate is a threshold decision, not a claim of zero findings.','small')
-    for finding in findings:
-        paragraph(f'{finding["rule"]}, {finding["severity"]}: {finding["component"].replace("fridgely:","")}:{finding.get("line","-")}. '+
-            ('The amount regex has a backtracking warning. Public IngredientAmount DTOs are limited to 64 characters, bounding ordinary inputs; a linear parser remains follow-up work. This is retained as an open maintainability/performance finding, not classified as a false positive.' if finding['rule']=='python:S8786' else finding['message']), 'small')
-    paragraph('The historical twelve javascript:S2970 BLOCKER alerts were false positives: the custom HTTP helper already called Node assert.equal, but its name expect triggered Jest matcher analysis. Renaming it assertResponse corrected framework detection while retaining assertions. It did not fix twelve security vulnerabilities. Original exports and the mitigation register remain preserved.','small')
-
     page();heading('Traceability and reproducible review',True)
     paragraph(f'All 48 approved acceptance criteria and nine NFRs map to concrete assertion locations. The {mapping["unique_physical_acceptance_ids"]} physical US-xx-Txx IDs are unique. Assertions are pinned to {mapping["assertion_revision"]}; the validation run verifies that the mapped test files are unchanged in the follow-up source. A shared scenario is acceptable when each row names its relevant verification, rather than repeating a whole-case ID as coverage proof.')
     paragraph(f'[Detailed AC/NFR matrix]({REPO}/blob/{revision}/docs/tests/coverage/traceability.md) contains the criterion, case, exact assertion, immutable source link, purpose and scope. The CSV and JSON preserve all 57 rows. Mapping completeness is not an assertion of 100% code coverage or live-provider safety.')
@@ -230,6 +249,13 @@ def append(base, story, markdown, heading, paragraph, table, page, config, root)
         ['US-07–09 / NFR-04,08','Current provider inputs, allergen/malformed batch rejection, complete labelled details, unchanged collections and concurrent deadlines.'],
         ['US-10–15 / NFR-01,03,09','Missing-only/idempotent shopping, favorites/history, JWT/owner guards, source-qualified load, container/CI and historical HTTPS evidence.'],
     ],[157,342])
+    heading('Sonar findings and classification')
+    findings=read(root/'sonar/issues.json')['issues']
+    paragraph(f'Current scan: {len(findings)} open issue(s). The quality gate is a threshold decision, not a claim of zero findings.','small')
+    for finding in findings:
+        paragraph(f'{finding["rule"]}, {finding["severity"]}: {finding["component"].replace("fridgely:","")}:{finding.get("line","-")}. '+
+            ('The amount regex has a backtracking warning. Public IngredientAmount DTOs are limited to 64 characters, bounding ordinary inputs; a linear parser remains follow-up work. This remains an open performance finding, not a false positive.' if finding['rule']=='python:S8786' else finding['message']), 'small')
+    paragraph('The twelve historical javascript:S2970 BLOCKER alerts were false positives: a custom helper already called Node assert.equal, but its name expect triggered Jest matcher analysis. Renaming it assertResponse corrected framework detection while retaining assertions; it did not fix twelve security vulnerabilities. Original exports and the mitigation register are preserved.','small')
     heading('Rebuild and review status')
     paragraph('Install scripts/tests/requirements-report.txt, then run python scripts/tests/export_report.py. The exporter validates every indexed raw file, source/run identity, complete CI outcomes and evaluated Sonar conditions before publishing. It creates build/reports automatically; FRIDGELY_REPORT_OUTPUT can name a new nested folder. Follow-up figure data and dashboard images are embedded directly in this PDF.')
     paragraph('The retained failed initial ZAP setup is diagnostic evidence, not a passed test. Original course ZIP/PDF on the frozen delivery branch is unchanged. This corrected review copy requires independent review; no instructor approval, merge, production deployment or learn.bilgi upload is inferred from these results.')

@@ -1,0 +1,27 @@
+{
+  "name": "Fridgely measured release conditions",
+  "project": "fridgely",
+  "revision": "fafd3fdbfa0d8ccd2ff7679282687142615e0aed",
+  "conditions": {
+    "bugs": [
+      "GT",
+      "0"
+    ],
+    "vulnerabilities": [
+      "GT",
+      "0"
+    ],
+    "coverage": [
+      "LT",
+      "90"
+    ],
+    "blocker_violations": [
+      "GT",
+      "0"
+    ],
+    "critical_violations": [
+      "GT",
+      "0"
+    ]
+  }
+}

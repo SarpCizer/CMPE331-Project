@@ -176,11 +176,14 @@ def export():
     heading('Fridgely\nSoftware Testing Report', True)
     paragraph(config['report_date'] + ' | Prepared for the CMPE331 submission review', 'small')
     paragraph('Historical application snapshot; reproducibility/provenance correction dated ' + provenance['correction_date'] + '. Measurements retain their original source identities.', 'small')
-    heading('Verified integration candidate')
+    if follow_up:
+        heading('Latest review corrections: from page 9')
+        paragraph('The instructor-review results, AC/NFR assertion mapping, evaluated Sonar gate, standard authenticated scan and embedded result figures are in the follow-up. Earlier pages retain the explicitly dated a59556e snapshot.', 'small')
+    heading('Historical verified candidate')
     paragraph(config['release_status'])
     paragraph('Tested source: ' + rev)
     paragraph(f'[Exact-source CI run {run}]({REPO}/actions/runs/{run}) | [Source commit]({REPO}/commit/{rev}) | [ZIP verification, #48]({REPO}/issues/48#issuecomment-7143013023)')
-    paragraph('This report replaces the historical 25c111a evidence with the measured results for a59556e. A later report-only commit stores this document; it does not change which application source these tests exercised. A new selected application SHA requires matching evidence and a regenerated report.')
+    paragraph('The historical report replaced 25c111a evidence with measured a59556e results. This correction preserves that snapshot and separately identifies the instructor-review follow-up. Report-only commits do not change which application source each recorded test exercised.')
     table(['Verification layer', 'Recorded result'], [
         ['PostgreSQL / backend', f'{summary["backend"]["tests"]} passed; 0 skipped'],
         ['Requirement acceptance', f'{summary["acceptance"]["tests"]} passed'],
@@ -253,17 +256,17 @@ def export():
     heading('Historical delivery evidence and actions', True)
     paragraph('This page records the a59556e checkpoint as of 24 November 2026. Its pending decisions and draft-PR statuses are historical, not a description of current main. The instructor-review follow-up has its own source and status.', 'small')
     paragraph(f'Source-only ZIP: {config["zip_source_files"]} manifest source files. CRC, every file length/hash and declared Git blobs were verified; two independent builds were byte-identical. The generic contribution placeholder is absent. ZIP SHA-256: {config["zip_sha256"]}')
-    paragraph('The matching source archive is the source-archive artifact of CI run 45474025963. Raster evidence and report PDFs are deliberately outside the source-only ZIP. Pair this PDF with that exact archive; do not substitute the historical #60 / 90529bb package.')
+    paragraph('The archive for this historical checkpoint is in CI run 45474025963. Raster evidence and report PDFs were outside its source-only ZIP. That PDF/archive pairing belongs to a59556e; the instructor-review follow-up has its own source and does not replace the frozen course submission package.')
     heading('TDD and independent tooling review')
-    paragraph('[PR #66](' + REPO + '/pull/66) records the genuine RED sidecar regression at 282afeb and the GREEN fix at 39b7b54. Berfin independently reran all 8 packaging tests and both default/nested report exports and approved that exact head (review 6046700031). CI run 45476946238 passed all 7 jobs. Those are separate tooling results; the a59556e source archive job had 7 packaging regressions. #66 remains outside the tested application source of this report until merged and selected.')
+    paragraph('[PR #66](' + REPO + '/pull/66) records the genuine RED sidecar regression at 282afeb and the GREEN fix at 39b7b54. Berfin independently reran all 8 packaging tests and both default/nested report exports and approved that exact head (review 6046700031). CI run 45476946238 passed all 7 jobs. These are separate tooling results; the a59556e archive job had 7 packaging regressions. Later tooling changes do not retroactively change that application snapshot.')
     paragraph('This report refresh has its own RED regression, 5140116: the old exporter accepted a false all-zero source revision and wrote a PDF. The refreshed exporter rejects mismatched identities before publishing. It validates retained raw evidence hashes and checks backend/browser JUnit totals. No retroactive TDD claim is made for older implementation work.')
     heading('Reproduction and provenance')
     paragraph('Install scripts/tests/requirements-report.txt, then run python scripts/tests/export_report.py. Set FRIDGELY_REPORT_OUTPUT for another directory. Run python scripts/tests/test_export_report.py for source-identity and nested-output regressions. Inputs: docs/tests/report-input.json and its evidence_root; evidence-index.json records each retained file SHA-256 and all six downloaded artifact archive digests. No network, provider key or inference is required to export.')
     paragraph(f'[CI artifacts]({REPO}/actions/runs/{run}) | [Integration decision, #24]({REPO}/issues/24) | [Report review, #44]({REPO}/issues/44) | [Submission tracking, #48]({REPO}/issues/48)')
     heading('Open release decisions')
-    paragraph('1. The team / product owner must confirm the exact submission SHA in #24. Berfin supports the verified a59556e candidate; this does not substitute for other team members or owner approval. If #66 or another change is included, select the resulting source and regenerate its archive/evidence/report pairing.')
-    paragraph('2. Live recipe generation remains unverified. Draft #65 and the team Cloudflare Free account/credential configuration are separate work. After reviewed integration, validate generated recipes, missing-ingredient shopping and unchanged inventory using an authorized free account.')
-    paragraph('3. Independent report review and the actual learn.bilgi upload/receipt remain pending. Main was not merged; no paid resource or provider request was created by this work.')
+    paragraph('1. At this checkpoint the team / product owner had not selected the submission SHA in #24. Berfin proposed a59556e; remaining team/owner approval and any later source/archive/evidence pairing were separate decisions.')
+    paragraph('2. Live inference had not been verified for this snapshot. #65 was still draft and Cloudflare Free configuration was separate work. This historical status does not describe later deployments.')
+    paragraph('3. Independent report review and the learn.bilgi upload/receipt were pending at the checkpoint. These notes do not establish present approval or submission; the instructor-review follow-up states its own status.')
 
     page()
     heading('Reproducibility and evidence versions', True)
@@ -330,7 +333,11 @@ def export():
     (BASE / 'software-test-report.md').write_text(text, encoding='utf-8')
     shutil.copyfile(pdf, BASE / 'software-test-report.pdf')
     print(json.dumps({'pdf': str(pdf), 'source': rev, 'ci_run': run,
-                      'evidence_files_verified': len(index['files']), 'release_approval': 'pending'}))
+                      'evidence_files_verified': len(index['files']),
+                      'follow_up_source': follow_up[0]['source_revision'] if follow_up else None,
+                      'follow_up_ci_run': follow_up[0]['ci_run_id'] if follow_up else None,
+                      'follow_up_evidence_files_verified': len(read(follow_up[1] / 'evidence-index.json')['files']) if follow_up else 0,
+                      'release_approval': 'pending'}))
 
 
 if __name__ == '__main__':

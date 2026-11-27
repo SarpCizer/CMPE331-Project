@@ -1,0 +1,124 @@
+<testsuites id="" name="" tests="50" failures="0" skipped="0" errors="0" time="75.89630600000001">
+<testsuite name="completion.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="10" failures="0" skipped="0" time="18.687" errors="0">
+<testcase name="invalid fields explain the problem at the input without sending writes" classname="completion.spec.js" time="1.144">
+</testcase>
+<testcase name="a failed collection does not discard inventory or turn a committed write into failure" classname="completion.spec.js" time="0.92">
+</testcase>
+<testcase name="a slow collection does not block unrelated screens" classname="completion.spec.js" time="0.856">
+</testcase>
+<testcase name="a committed write is acknowledged even when its subsequent list refresh fails" classname="completion.spec.js" time="0.727">
+</testcase>
+<testcase name="an expired session wins over a simultaneous collection outage" classname="completion.spec.js" time="0.749">
+</testcase>
+<testcase name="recipe actions show modal errors, prevent duplicate writes and open the resulting shopping list" classname="completion.spec.js" time="1.474">
+</testcase>
+<testcase name="failed generation keeps previous results and hides provider diagnostics" classname="completion.spec.js" time="0.986">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 360px" classname="completion.spec.js" time="3.889">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 768px" classname="completion.spec.js" time="4.007">
+</testcase>
+<testcase name="validation and unavailable screens remain accessible at 1440px" classname="completion.spec.js" time="3.935">
+</testcase>
+</testsuite>
+<testsuite name="cooking.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="6" failures="0" skipped="0" time="8.556" errors="0">
+<testcase name="confirm cooking, red depleted stock, one-click shopping and refill survive reload" classname="cooking.spec.js" time="2.034">
+</testcase>
+<testcase name="ambiguous stock units require reviewed input, duplicates can be selected and zero skips" classname="cooking.spec.js" time="1.319">
+</testcase>
+<testcase name="lost response retries the same cooking confirmation without double deduction" classname="cooking.spec.js" time="1.378">
+</testcase>
+<testcase name="concurrent stock changes refresh available quantities with a cooking-specific error" classname="cooking.spec.js" time="1.135">
+</testcase>
+<testcase name="200 ml recipe usage converts to 0.2 L and legacy unknown stock is never guessed" classname="cooking.spec.js" time="1.095">
+</testcase>
+<testcase name="reload after a committed lost response replays the entire original confirmation including depleted stock" classname="cooking.spec.js" time="1.595">
+</testcase>
+</testsuite>
+<testsuite name="kitchen.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="8" failures="0" skipped="0" time="14.67" errors="0">
+<testcase name="public API documentation loads the actual schema and bearer authorization" classname="kitchen.spec.js" time="1.087">
+</testcase>
+<testcase name="real account, saved preferences, recipe details and collections survive reload and user switching" classname="kitchen.spec.js" time="2.872">
+</testcase>
+<testcase name="empty fridge and provider failure remain honest and retryable" classname="kitchen.spec.js" time="0.971">
+</testcase>
+<testcase name="core screens fit 360px and retain labelled controls" classname="kitchen.spec.js" time="1.099">
+</testcase>
+<testcase name="core screens fit 768px and retain labelled controls" classname="kitchen.spec.js" time="1.148">
+</testcase>
+<testcase name="core screens fit 1440px and retain labelled controls" classname="kitchen.spec.js" time="4.102">
+</testcase>
+<testcase name="keyboard skip link focuses the active main region" classname="kitchen.spec.js" time="0.551">
+</testcase>
+<testcase name="core kitchen actions work with keyboard-only input" classname="kitchen.spec.js" time="2.84">
+</testcase>
+</testsuite>
+<testsuite name="moods.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="3" failures="0" skipped="0" time="4.155" errors="0">
+<testcase name="mood recipes preserve stock and work at 360px" classname="moods.spec.js" time="1.645">
+</testcase>
+<testcase name="mood recipes preserve stock and work at 1440px" classname="moods.spec.js" time="1.713">
+</testcase>
+<testcase name="empty fridge, pending request and provider failure have honest mood states" classname="moods.spec.js" time="0.797">
+</testcase>
+</testsuite>
+<testsuite name="preferences-fidelity.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="2" failures="0" skipped="0" time="1.363" errors="0">
+<testcase name="saving API preferences without edits preserves exact strings, order and repeats" classname="preferences-fidelity.spec.js" time="0.721">
+</testcase>
+<testcase name="quoted preference edits preserve names and invalid quoting never sends a write" classname="preferences-fidelity.spec.js" time="0.642">
+</testcase>
+</testsuite>
+<testsuite name="quantities.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="2" failures="0" skipped="0" time="1.846" errors="0">
+<testcase name="manual quantities survive reload and edits can be saved or cancelled" classname="quantities.spec.js" time="1.04">
+</testcase>
+<testcase name="invalid quantities focus their own field, explain the error and send no write" classname="quantities.spec.js" time="0.806">
+</testcase>
+</testsuite>
+<testsuite name="shopping-quantity.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="7" failures="0" skipped="0" time="9.433" errors="0">
+<testcase name="shopping amounts and actual purchased quantities persist at 360px" classname="shopping-quantity.spec.js" time="1.559">
+</testcase>
+<testcase name="shopping amounts and actual purchased quantities persist at 1440px" classname="shopping-quantity.spec.js" time="1.608">
+</testcase>
+<testcase name="name-only shopping, validation, replacement and ordinary removal stay safe" classname="shopping-quantity.spec.js" time="1.149">
+</testcase>
+<testcase name="lost purchase response with retry never refills twice" classname="shopping-quantity.spec.js" time="0.773">
+</testcase>
+<testcase name="lost purchase response with reload never refills twice" classname="shopping-quantity.spec.js" time="0.811">
+</testcase>
+<testcase name="lost purchase response with changed amount never refills twice" classname="shopping-quantity.spec.js" time="0.809">
+</testcase>
+<testcase name="favorite adds measured deficits and bought amounts refill exactly enough stock" classname="shopping-quantity.spec.js" time="2.724">
+</testcase>
+</testsuite>
+<testsuite name="shortage.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="1" failures="0" skipped="0" time="2.071" errors="0">
+<testcase name="favorite recipe adds insufficient and absent ingredients, persists and permits removal" classname="shortage.spec.js" time="2.071">
+</testcase>
+</testsuite>
+<testsuite name="surprise.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="2" failures="0" skipped="0" time="2.442" errors="0">
+<testcase name="wheel uses only fully stocked recipes at 360" classname="surprise.spec.js" time="1.133">
+</testcase>
+<testcase name="wheel uses only fully stocked recipes at 1440" classname="surprise.spec.js" time="1.309">
+</testcase>
+</testsuite>
+<testsuite name="text-format.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="2" failures="0" skipped="0" time="1.912" errors="0">
+<testcase name="recipe introduction uses the singular for one ingredient" classname="text-format.spec.js" time="0.698">
+</testcase>
+<testcase name="recently viewed dates use the same English format as the fridge" classname="text-format.spec.js" time="1.214">
+</testcase>
+</testsuite>
+<testsuite name="weekly-plan.spec.js" timestamp="2026-11-26T21:43:52.853Z" hostname="" tests="7" failures="0" skipped="0" time="8.701" errors="0">
+<testcase name="user-added dishes, independent portions, preparation and weekly deficits at 360px" classname="weekly-plan.spec.js" time="2.311">
+</testcase>
+<testcase name="user-added dishes, independent portions, preparation and weekly deficits at 1440px" classname="weekly-plan.spec.js" time="2.342">
+</testcase>
+<testcase name="saved dishes scale per day without calling AI and clearing preserves the catalog" classname="weekly-plan.spec.js" time="0.966">
+</testcase>
+<testcase name="invalid portions and unavailable requested dish leave existing meals intact" classname="weekly-plan.spec.js" time="0.808">
+</testcase>
+<testcase name="weekly load failure retries and stale generation refreshes the saved plan" classname="weekly-plan.spec.js" time="0.676">
+</testcase>
+<testcase name="unknown measures are flagged and expired planner sessions sign out" classname="weekly-plan.spec.js" time="0.791">
+</testcase>
+<testcase name="plus and remove manage only user-chosen dishes for each day" classname="weekly-plan.spec.js" time="0.807">
+</testcase>
+</testsuite>
+</testsuites>

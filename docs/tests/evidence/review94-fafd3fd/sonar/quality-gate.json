@@ -1,0 +1,44 @@
+{
+  "projectStatus": {
+    "status": "OK",
+    "conditions": [
+      {
+        "status": "OK",
+        "metricKey": "coverage",
+        "comparator": "LT",
+        "errorThreshold": "90",
+        "actualValue": "96.0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "blocker_violations",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "actualValue": "0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "bugs",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "actualValue": "0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "critical_violations",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "actualValue": "0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "vulnerabilities",
+        "comparator": "GT",
+        "errorThreshold": "0",
+        "actualValue": "0"
+      }
+    ],
+    "ignoredConditions": false,
+    "caycStatus": "over-compliant"
+  }
+}

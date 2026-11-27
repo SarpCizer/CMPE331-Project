@@ -1,0 +1,1101 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Thu, 26 Nov 2026 21:41:06",
+	"created": "2026-11-26T21:41:06.948256420Z",
+	"insights":[
+		{
+			"level": "Medium",
+			"reason": "Exceeded High",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "87"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.method.DELETE",
+			"description": "Percentage of endpoints with method DELETE",
+			"statistic": "11"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "48"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.method.PATCH",
+			"description": "Percentage of endpoints with method PATCH",
+			"statistic": "2"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "34"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.method.PUT",
+			"description": "Percentage of endpoints with method PUT",
+			"statistic": "3"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "79"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://127.0.0.1:8094",
+			"key": "insight.response.slow",
+			"description": "Percentage of slow responses",
+			"statistic": "2"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "http://127.0.0.1:8094",
+			"@host": "127.0.0.1",
+			"@port": "8094",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-2",
+					"alert": "A Server Error response code was returned by the server",
+					"name": "A Server Error response code was returned by the server",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A response code of 503 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "3391",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences ()({dietary:[],allergens:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "503",
+							"otherinfo": ""
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "3895"
+				},
+				{
+					"pluginid": "90004",
+					"alertRef": "90004-1",
+					"alert": "Cross-Origin-Resource-Policy Header Missing or Invalid",
+					"name": "Cross-Origin-Resource-Policy Header Missing or Invalid",
+					"riskcode": "1",
+					"confidence": "2",
+					"riskdesc": "Low (Medium)",
+					"desc": "<p>Cross-Origin-Resource-Policy header is an opt-in header designed to counter side-channels attacks like Spectre. Resource should be specifically set as shareable amongst different origins.</p>",
+					"instances":[ 
+						{
+							"id": "101",
+							"uri": "http://127.0.0.1:8094/api/inventory",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "72",
+							"uri": "http://127.0.0.1:8094/api/openapi.json",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/openapi.json",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "51",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences",
+							"method": "GET",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "110",
+							"uri": "http://127.0.0.1:8094/api/inventory",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory ()({quantity,unit,name})",
+							"method": "POST",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "100",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences ()({dietary:[],allergens:[]})",
+							"method": "PUT",
+							"param": "Cross-Origin-Resource-Policy",
+							"attack": "",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>Ensure that the application/web server sets the Cross-Origin-Resource-Policy header appropriately, and that it sets the Cross-Origin-Resource-Policy header to 'same-origin' for all web pages.</p><p>'same-site' is considered as less secured and should be avoided.</p><p>If resources must be shared, set the header to 'cross-origin'.</p><p>If possible, ensure that the end user uses a standards-compliant and modern web browser that supports the Cross-Origin-Resource-Policy header (https://caniuse.com/mdn-http_headers_cross-origin-resource-policy).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Embedder-Policy</p>",
+					"cweid": "693",
+					"wascid": "14",
+					"sourceid": "9"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 404 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "8",
+							"uri": "http://127.0.0.1:8094/api/favorites/recipe_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites\/recipe_id",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2988",
+							"uri": "http://127.0.0.1:8094/api/favorites/recipe_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites\/recipe_id\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2",
+							"uri": "http://127.0.0.1:8094/api/inventory/item_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/item_id",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2983",
+							"uri": "http://127.0.0.1:8094/api/inventory/item_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/item_id\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "5",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3003",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3007",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "12",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal?weekStart=",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal (weekStart)",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "3008",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "239",
+							"uri": "http://127.0.0.1:8094",
+							"nodeName": "http:\/\/127.0.0.1:8094",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3006",
+							"uri": "http://127.0.0.1:8094/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "19",
+							"uri": "http://127.0.0.1:8094/13830922530524084",
+							"nodeName": "http:\/\/127.0.0.1:8094\/13830922530524084",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "295",
+							"uri": "http://127.0.0.1:8094/api",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3012",
+							"uri": "http://127.0.0.1:8094/api/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "20",
+							"uri": "http://127.0.0.1:8094/api/4198564267533416310",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/4198564267533416310",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3436",
+							"uri": "http://127.0.0.1:8094/api/actuator/health",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/actuator\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "21",
+							"uri": "http://127.0.0.1:8094/api/favorites/2714625205306552809",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites\/2714625205306552809",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "22",
+							"uri": "http://127.0.0.1:8094/api/inventory/1336536646154325296",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/1336536646154325296",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "298",
+							"uri": "http://127.0.0.1:8094/api/profile",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3013",
+							"uri": "http://127.0.0.1:8094/api/profile/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "23",
+							"uri": "http://127.0.0.1:8094/api/profile/2545861900469982331",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/2545861900469982331",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "301",
+							"uri": "http://127.0.0.1:8094/api/recipes",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3015",
+							"uri": "http://127.0.0.1:8094/api/recipes/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "24",
+							"uri": "http://127.0.0.1:8094/api/recipes/5957312139019386725",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/5957312139019386725",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "9",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3020",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "25",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/3074831027573735970",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/3074831027573735970",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "26",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/3880779435279166820",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/3880779435279166820",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "304",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3018",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "27",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/3329097482548783585",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/3329097482548783585",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "10",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan?weekStart=",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan (weekStart)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "308",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3023",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "29",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/3132084461707361836",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/3132084461707361836",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "310",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3025",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/6018499887809945163",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/6018499887809945163",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "28",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/277867710690544305",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/277867710690544305",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "33",
+							"uri": "http://127.0.0.1:8094/api/inventory/item_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/item_id ()({quantity,unit})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "3",
+							"uri": "http://127.0.0.1:8094/api/inventory/item_id",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/item_id ()({quantity,unit})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2986",
+							"uri": "http://127.0.0.1:8094/api/inventory/item_id/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory\/item_id\/ ()({quantity,unit})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "0",
+							"uri": "http://127.0.0.1:8094/api/accounts",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/accounts ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "148",
+							"uri": "http://127.0.0.1:8094/api/accounts",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/accounts ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "409",
+							"otherinfo": ""
+						},
+						{
+							"id": "2979",
+							"uri": "http://127.0.0.1:8094/api/accounts/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/accounts\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2647",
+							"uri": "http://127.0.0.1:8094/api/favorites",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites ()({recipeId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "7",
+							"uri": "http://127.0.0.1:8094/api/favorites",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites ()({recipeId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2989",
+							"uri": "http://127.0.0.1:8094/api/favorites/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/favorites\/ ()({recipeId})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "38",
+							"uri": "http://127.0.0.1:8094/api/inventory",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/inventory ()({quantity,unit,name})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "4",
+							"uri": "http://127.0.0.1:8094/api/recipes/generate",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/generate ()({John Doe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2981",
+							"uri": "http://127.0.0.1:8094/api/recipes/generate/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/generate\/ ()({John Doe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "16",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/cook",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/cook ()({requestId,items:[{inventoryId,quantity,unit}]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2995",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/cook/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/cook\/ ()({requestId,items:[{inventoryId,quantity,unit}]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "6",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/shopping-items",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/shopping-items ()({John Doe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2997",
+							"uri": "http://127.0.0.1:8094/api/recipes/recipe_id/shopping-items/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/recipes\/recipe_id\/shopping-items\/ ()({John Doe})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "105",
+							"uri": "http://127.0.0.1:8094/api/sessions",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "1",
+							"uri": "http://127.0.0.1:8094/api/sessions",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "315",
+							"uri": "http://127.0.0.1:8094/api/sessions",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "2991",
+							"uri": "http://127.0.0.1:8094/api/sessions/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "129",
+							"uri": "http://127.0.0.1:8094/api/shopping-items",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items ()({quantity,unit,name})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "125",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/purchase",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/purchase ()({quantity,unit})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "15",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/purchase",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/purchase ()({quantity,unit})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "3002",
+							"uri": "http://127.0.0.1:8094/api/shopping-items/item_id/purchase/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/shopping-items\/item_id\/purchase\/ ()({quantity,unit})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "13",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/generate",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/generate ()({weekStart,dish,servings})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2993",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/generate/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/generate\/ ()({weekStart,dish,servings})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/shopping-items",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/shopping-items ()({weekStart})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "3010",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/shopping-items/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/shopping-items\/ ()({weekStart})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2220",
+							"uri": "http://127.0.0.1:8094/computeMetadata/v1/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/computeMetadata\/v1\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2217",
+							"uri": "http://127.0.0.1:8094/latest/meta-data/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/latest\/meta-data\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2251",
+							"uri": "http://127.0.0.1:8094/metadata/instance",
+							"nodeName": "http:\/\/127.0.0.1:8094\/metadata\/instance ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2254",
+							"uri": "http://127.0.0.1:8094/metadata/v1",
+							"nodeName": "http:\/\/127.0.0.1:8094\/metadata\/v1 ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2227",
+							"uri": "http://127.0.0.1:8094/opc/v1/instance/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/opc\/v1\/instance\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2236",
+							"uri": "http://127.0.0.1:8094/opc/v2/instance/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/opc\/v2\/instance\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2257",
+							"uri": "http://127.0.0.1:8094/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/127.0.0.1:8094\/openstack\/latest\/meta_data.json ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2652",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences ()({dietary:[],allergens:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "11",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal ()({weekStart,recipeId,servings})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						},
+						{
+							"id": "2999",
+							"uri": "http://127.0.0.1:8094/api/weekly-plan/10/meal/",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/weekly-plan\/10\/meal\/ ()({weekStart,recipeId,servings})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "400",
+							"otherinfo": ""
+						}
+					],
+					"count": "77",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "25"
+				},
+				{
+					"pluginid": "10111",
+					"alertRef": "10111",
+					"alert": "Authentication Request Identified",
+					"name": "Authentication Request Identified",
+					"riskcode": "0",
+					"confidence": "1",
+					"riskdesc": "Informational (Low)",
+					"desc": "<p>The given request has been identified as an authentication request. The 'Other Info' field contains a set of key=value lines which identify any relevant fields. If the request is in a context which has an Authentication Method set to \"Auto-Detect\" then this rule will change the authentication to match the request identified.</p>",
+					"instances":[ 
+						{
+							"id": "17",
+							"uri": "http://127.0.0.1:8094/api/accounts",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/accounts ()({email,password})",
+							"method": "POST",
+							"param": "email",
+							"attack": "",
+							"evidence": "password",
+							"otherinfo": "userParam=email\nuserValue=zaproxy@example.com\npasswordParam=password"
+						},
+						{
+							"id": "18",
+							"uri": "http://127.0.0.1:8094/api/sessions",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions ()({email,password})",
+							"method": "POST",
+							"param": "email",
+							"attack": "",
+							"evidence": "password",
+							"otherinfo": "userParam=email\nuserValue=zaproxy@example.com\npasswordParam=password"
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>userParam=email</p><p>userValue=zaproxy@example.com</p><p>passwordParam=password</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/auth-req-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "4"
+				},
+				{
+					"pluginid": "10049",
+					"alertRef": "10049-1",
+					"alert": "Non-Storable Content",
+					"name": "Non-Storable Content",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The response contents are not storable by caching components such as proxy servers. If the response does not contain sensitive, personal or user-specific information, it may benefit from being stored and cached, to improve performance.</p>",
+					"instances":[ 
+						{
+							"id": "69",
+							"uri": "http://127.0.0.1:8094/api/openapi.json",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/openapi.json",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "no-store",
+							"otherinfo": ""
+						},
+						{
+							"id": "46",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "no-store",
+							"otherinfo": ""
+						},
+						{
+							"id": "44",
+							"uri": "http://127.0.0.1:8094/api/accounts",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/accounts ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "no-store",
+							"otherinfo": ""
+						},
+						{
+							"id": "48",
+							"uri": "http://127.0.0.1:8094/api/sessions",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/sessions ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "no-store",
+							"otherinfo": ""
+						},
+						{
+							"id": "96",
+							"uri": "http://127.0.0.1:8094/api/profile/preferences",
+							"nodeName": "http:\/\/127.0.0.1:8094\/api\/profile\/preferences ()({dietary:[],allergens:[]})",
+							"method": "PUT",
+							"param": "",
+							"attack": "",
+							"evidence": "PUT ",
+							"otherinfo": ""
+						}
+					],
+					"count": "5",
+					"systemic": true,
+					"solution": "<p>The content may be marked as storable by ensuring that the following conditions are satisfied:</p><p>The request method must be understood by the cache and defined as being cacheable (\"GET\", \"HEAD\", and \"POST\" are currently defined as cacheable)</p><p>The response status code must be understood by the cache (one of the 1XX, 2XX, 3XX, 4XX, or 5XX response classes are generally understood)</p><p>The \"no-store\" cache directive must not appear in the request or response header fields</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"private\" response directive must not appear in the response</p><p>For caching by \"shared\" caches such as \"proxy\" caches, the \"Authorization\" header field must not appear in the request, unless the response explicitly allows it (using one of the \"must-revalidate\", \"public\", or \"s-maxage\" Cache-Control response directives)</p><p>In addition to the conditions above, at least one of the following conditions must also be satisfied by the response:</p><p>It must contain an \"Expires\" header field</p><p>It must contain a \"max-age\" response directive</p><p>For \"shared\" caches such as \"proxy\" caches, it must contain a \"s-maxage\" response directive</p><p>It must contain a \"Cache Control Extension\" that allows it to be cached</p><p>It must have a status code that is defined as cacheable by default (200, 203, 204, 206, 300, 301, 404, 405, 410, 414, 501).</p>",
+					"otherinfo": "",
+					"reference": "<p>https://datatracker.ietf.org/doc/html/rfc7234</p><p>https://datatracker.ietf.org/doc/html/rfc7231</p><p>https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</p>",
+					"cweid": "524",
+					"wascid": "13",
+					"sourceid": "1"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

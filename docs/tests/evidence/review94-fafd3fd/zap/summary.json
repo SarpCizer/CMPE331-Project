@@ -1,0 +1,59 @@
+{
+  "revision": "fafd3fdbfa0d8ccd2ff7679282687142615e0aed",
+  "observed_at_utc": "2026-11-26T21:41:08.325989+00:00",
+  "tool": "OWASP ZAP",
+  "image": "ghcr.io/zaproxy/zaproxy:2.17.0",
+  "image_digest": "[\"ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af\"]",
+  "scan_type": "authenticated OpenAPI API active scan, four-minute active budget",
+  "target": "http://127.0.0.1:8094",
+  "scanner_exit_code": 0,
+  "http_requests_observed": 4129,
+  "authenticated_successful_requests_observed": 514,
+  "alerts_by_risk": {
+    "high": 0,
+    "medium": 0,
+    "low": 2,
+    "informational": 3
+  },
+  "alert_rules": [
+    {
+      "rule": "100000",
+      "name": "A Server Error response code was returned by the server",
+      "risk": "Low (High)",
+      "confidence": "3",
+      "instances": 1
+    },
+    {
+      "rule": "90004",
+      "name": "Cross-Origin-Resource-Policy Header Missing or Invalid",
+      "risk": "Low (Medium)",
+      "confidence": "2",
+      "instances": 5
+    },
+    {
+      "rule": "100000",
+      "name": "A Client Error response code was returned by the server",
+      "risk": "Informational (High)",
+      "confidence": "3",
+      "instances": 77
+    },
+    {
+      "rule": "10111",
+      "name": "Authentication Request Identified",
+      "risk": "Informational (Low)",
+      "confidence": "1",
+      "instances": 2
+    },
+    {
+      "rule": "10049",
+      "name": "Non-Storable Content",
+      "risk": "Informational (Medium)",
+      "confidence": "2",
+      "instances": 5
+    }
+  ],
+  "policy": "No untriaged high or medium alerts; retain low/informational findings for review.",
+  "tokens_and_passwords_redacted": true,
+  "production_target": false,
+  "passed": true
+}

@@ -1,0 +1,5 @@
+{
+  "status": "API_UNAVAILABLE",
+  "http_status": 400,
+  "meaning": "Use security_hotspots in metrics.json; detailed hotspot review is not inferred."
+}

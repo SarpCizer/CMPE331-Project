@@ -1,0 +1,40 @@
+✔ US-01-T01 register without email verification (884.87918ms)
+✔ US-01-T02 reject duplicate email and invalid registration without creating an account (980.118071ms)
+✔ US-02-T01 accept correct credentials and reject incorrect credentials (966.611451ms)
+✔ US-03-T01 persist and clear preferences (899.722632ms)
+✔ US-04-T01 add an ingredient with addition timestamp (872.367297ms)
+✔ US-04-T02 reject a blank ingredient (877.910771ms)
+✔ US-05-T01 list own ingredients and preserve original dates (938.817334ms)
+✔ US-05-T02 list repeated ingredient names as separate entries (886.42903ms)
+✔ US-06-T01 delete only the selected ingredient (941.849523ms)
+✔ US-07-T01 send fridge and current preferences to provider without deducting inventory (1006.217255ms)
+✔ US-07 quantities reach the provider without changing inventory (1004.148515ms)
+✔ US-07 mood reaches the provider while the existing request shape remains compatible (983.698372ms)
+✔ US-07-T02 reject a batch containing a declared allergen conflict (922.921587ms)
+✔ US-07-T03 block recipe generation for an empty fridge (889.285903ms)
+✔ US-08-T01 return complete details using the application-assigned recipe ID (904.624245ms)
+✔ US-08-T02 reject empty cooking steps (876.400509ms)
+✔ US-08-T03 reject missing calories (907.555898ms)
+✔ US-08-T04 reject zero cooking time (912.965341ms)
+✔ US-08-T05 reject negative calories (904.886722ms)
+✔ US-08-T06 reject zero servings (902.81326ms)
+✔ US-08-T07 reject blank ingredient names (906.284893ms)
+✔ US-09-T01 return retryable provider error and preserve successful state snapshots (989.003099ms)
+✔ US-10-T01 add only missing ingredients and preserve item IDs on repeated actions (943.946582ms)
+✔ US-11-T01 manually add list and remove shopping items (930.479405ms)
+✔ US-12-T01 save favorites idempotently without inventory changes (1018.409944ms)
+✔ US-13-T01 remove a favorite while retaining viewed history (1125.591929ms)
+✔ US-14-T01 record views and update history in newest-first order (1148.485399ms)
+✔ US-15-T01 deny requests with no token or a malformed token (855.101948ms)
+✔ US-15-T02 isolate personal data and deny access to another users objects (1199.272183ms)
+✔ US-15-T03 reject an authentic token after its expiry (1006.794438ms)
+✔ weekly planner scales separate user-added dishes and subtracts fridge stock once (1070.038006ms)
+✔ weekly typed dish carries requested portions and preserves plan when provider is unavailable (1143.311916ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30850.623566

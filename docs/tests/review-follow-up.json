@@ -1,0 +1,15 @@
+{
+  "source_revision": "fafd3fdbfa0d8ccd2ff7679282687142615e0aed",
+  "local_source_revision": "6cc96e729eaf07d739bcedefee22fbb7ce4c45f9",
+  "ci_run_id": 45899635960,
+  "evidence_root": "evidence/review94-fafd3fd",
+  "correction_date": "2026-11-27 Europe/Istanbul",
+  "release_status": "Corrected review copy; no merge, instructor acceptance or course-platform upload inferred.",
+  "zap_triage": {
+    "100000|Low (High)": "One HTTP 503 on PUT /api/profile/preferences during active scanning. Its cause was not isolated; this remains an availability follow-up, not a repaired finding.",
+    "100000|Informational (High)": "Invalid/unauthorized probes produced expected 4xx responses. Their rejection is not proof that every business workflow is secure.",
+    "90004": "The CORP header is absent. Bearer authentication, CSP and no-store are separate protections; explicit cross-origin resource policy remains header-hardening follow-up.",
+    "10111": "The scanner identified synthetic registration/sign-in operations. This informational classification does not report a leaked credential.",
+    "10049": "Cache-Control: no-store is intentional for personal API data; this is an informational observation."
+  }
+}

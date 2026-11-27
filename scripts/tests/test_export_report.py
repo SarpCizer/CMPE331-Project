@@ -81,6 +81,30 @@ class ReportEvidenceTests(unittest.TestCase):
         for name in ['completion.spec.js', 'kitchen.spec.js', 'preferences-fidelity.spec.js', 'text-format.spec.js']:
             self.assertIn('/blob/a59556e366ffd65adf799bb8aa9bc47e95dea16e/frontend/tests/' + name, text)
 
+    def test_follow_up_preserves_actual_revisions_outcomes_and_result_figures(self):
+        config=json.loads((self.root/'docs/tests/review-follow-up.json').read_text(encoding='utf-8'))
+        result=self.export()
+        self.assertEqual(result.returncode,0,result.stderr)
+        metadata=json.loads(result.stdout)
+        self.assertEqual(metadata['follow_up_source'],config['source_revision'])
+        self.assertEqual(metadata['follow_up_ci_run'],config['ci_run_id'])
+        text=(self.root/'build/reports/Fridgely-Software-Test-Report.md').read_text(encoding='utf-8')
+        self.assertIn(config['source_revision'],text)
+        self.assertIn(config['local_source_revision'],text)
+        for phrase in ['48 approved acceptance criteria','nine NFRs','Current browser inventory','false positives']:
+            self.assertIn(phrase,text)
+        evidence=self.root/'docs/tests'/config['evidence_root']
+        local=json.loads((evidence/'local/non-ai-load.json').read_text(encoding='utf-8'))
+        self.assertIn('Local NFR-03 profile: '+('PASS' if local['passed'] else 'FAIL'),text)
+        issues=json.loads((evidence/'sonar/issues.json').read_text(encoding='utf-8'))['issues']
+        self.assertIn(f'Current scan: {len(issues)} open issue(s)',text)
+        if any(issue['rule']=='python:S8786' for issue in issues):
+            self.assertIn('open performance finding',text)
+        for name in ['review-coverage.svg','review-non-ai-performance.svg','review-generation-performance.svg']:
+            self.assertIn(name,text)
+            self.assertTrue((self.root/'docs/tests/figures'/name).is_file())
+        self.assertIn('sonar/dashboard.png',text)
+
     def test_other_revision_inventory_is_rejected_before_output_creation(self):
         path = self.root / 'docs/tests/report-provenance.json'
         data = json.loads(path.read_text(encoding='utf-8'))
