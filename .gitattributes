@@ -1,2 +1,7 @@
 # PDF cross-reference offsets require exact bytes on every checkout.
 *.pdf binary
+
+# Retained test evidence is verified by SHA-256: preserve its original bytes,
+# including on Windows checkouts with core.autocrlf=true.
+docs/tests/evidence/** -text
+docs/tests/non-func-tests/*.json -text

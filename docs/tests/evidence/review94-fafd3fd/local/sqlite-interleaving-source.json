@@ -1,0 +1,7 @@
+{
+  "source_revision": "32c73de367a75da38b9ec9297f160181b2e77ae0",
+  "database": "SQLite",
+  "passed": 3,
+  "skipped_postgresql_variants": 3,
+  "note": "This separate run covers the SQLite-only interleaving cases skipped in the PostgreSQL CI parameter. Its original output filename is not used as a source label."
+}

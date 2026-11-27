@@ -67,7 +67,11 @@ test("real account, saved preferences, recipe details and collections survive re
   const alice = await register(page);
   await page.getByLabel("Quantity", { exact: true }).fill("0.5");
   await page.getByLabel("Unit", { exact: true }).selectOption("kg");
+  const savedResponse = page.waitForResponse(response => response.url().endsWith('/api/inventory') && response.request().method() === 'POST' && response.status() === 201);
   await add(page, "rice");
+  const savedIngredient = await (await savedResponse).json();
+  const additionDate = await page.evaluate(value => new Intl.DateTimeFormat('en', {dateStyle:'medium'}).format(new Date(value)), savedIngredient.addedAt);
+  await expect(page.getByRole('listitem').filter({has:page.getByRole('button', {name:'Remove rice',exact:true})})).toContainText(`Added ${additionDate}`);
   await expect(page.getByText("· 0.5 kg", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "Preferences", exact: true }).click();
   await page.getByLabel("Dietary preferences").fill("vegan");
@@ -84,6 +88,8 @@ test("real account, saved preferences, recipe details and collections survive re
   await card.getByRole("button", { name: "View recipe" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("Estimated 25 minutes");
+  await expect(dialog).toContainText("320 kcal per serving · 2 servings");
+  await expect(card).toContainText("Time & calories are estimates");
   await expect(dialog.getByRole("listitem")).toContainText([
     "rice · 150 g",
     "tomato · 2 pcs",

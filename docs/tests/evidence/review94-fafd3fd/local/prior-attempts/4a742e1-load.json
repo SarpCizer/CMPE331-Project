@@ -1,0 +1,83 @@
+{
+  "started_utc": "2026-11-26T20:52:22.065723+00:00",
+  "revision": "4a742e1b2685d9fdbe0fd4f97c2e39a4f38671e2",
+  "environment": "Windows-x86_64-SQLite-one-worker",
+  "client": {
+    "system": "Windows",
+    "architecture": "AMD64",
+    "python": "3.12.14",
+    "cpu_count": 22
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 302.4840327999991,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 15436,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 1972.2455000010086,
+    "max_ms": 7131.36330000998,
+    "mean_ms": 717.0254271118451,
+    "statuses": {
+      "200": 15436
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 3859,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 2082.5001999910455,
+      "max_ms": 7131.36330000998,
+      "mean_ms": 809.1133776365973,
+      "statuses": {
+        "200": 3859
+      }
+    },
+    "profile": {
+      "requests": 3859,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1946.8198999966262,
+      "max_ms": 6031.24189999653,
+      "mean_ms": 688.054075382099,
+      "statuses": {
+        "200": 3859
+      }
+    },
+    "shopping": {
+      "requests": 3859,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1984.2041000083555,
+      "max_ms": 5239.060099993367,
+      "mean_ms": 699.6285648612093,
+      "statuses": {
+        "200": 3859
+      }
+    },
+    "favorites": {
+      "requests": 3859,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1866.1706000129925,
+      "max_ms": 5086.387300005299,
+      "mean_ms": 671.3056905674753,
+      "statuses": {
+        "200": 3859
+      }
+    }
+  },
+  "passed": false,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}

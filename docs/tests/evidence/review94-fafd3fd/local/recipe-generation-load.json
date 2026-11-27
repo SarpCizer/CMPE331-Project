@@ -1,0 +1,76 @@
+{
+  "revision": "6cc96e729eaf07d739bcedefee22fbb7ce4c45f9",
+  "started_utc": "2026-11-26T21:25:45.651211+00:00",
+  "completed_utc": "2026-11-26T21:27:20.964206+00:00",
+  "client": {
+    "system": "Windows",
+    "architecture": "AMD64",
+    "python": "3.12.14",
+    "cpu_count": 22
+  },
+  "environment": "Windows-x86_64-SQLite-one-worker-sequential-controlled-provider",
+  "database": "SQLite",
+  "scenario": {
+    "users": 10,
+    "configured_seconds": 60,
+    "measured_seconds": 61.15230129999691,
+    "think_seconds": 1,
+    "provider": "controlled 200 ms response; no external inference",
+    "requests_use_real_http_host": true
+  },
+  "steady": {
+    "requests": 465,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 419.08259999763686,
+    "max_ms": 525.930599993444,
+    "mean_ms": 306.1396505374784,
+    "statuses": {
+      "200": 465
+    }
+  },
+  "steady_thresholds": {
+    "p95_ms_max": 2000,
+    "error_rate_exclusive_max": 0.01
+  },
+  "concurrent_timeouts": {
+    "users": 5,
+    "deadline_seconds": 28,
+    "maximum_seconds": 30,
+    "results": [
+      {
+        "status": 503,
+        "seconds": 28.12793440000678,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.12849479999568,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.12757959999726,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.121158500012825,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.126220399994054,
+        "retryable": true
+      }
+    ],
+    "provider_cancellations": 5,
+    "passed": true
+  },
+  "inventory_unchanged": true,
+  "successful_recipes_persisted": 465,
+  "no_partial_recipe_on_timeout": true,
+  "malformed_success_responses": 0,
+  "external_model_calls": 0,
+  "passed": true
+}

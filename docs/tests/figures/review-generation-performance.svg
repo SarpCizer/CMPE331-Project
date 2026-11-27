@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="499" height="120" preserveAspectRatio="xMinYMin meet" viewBox="0 0 499 120" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="499" height="120"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-120)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="105" style="font-family: ReportBold; font-size: 10px;fill: rgb(9%,24%,18%); stroke:none;" transform="translate(0,210) scale(1,-1)">Controlled generation p95 | local 6cc96e7 / CI fafd3fd</text>
+			<text x="0" y="81" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,162) scale(1,-1)">Local SQLite, ten users</text>
+			<rect x="190" y="77" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="77" width="45.71810181792404" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="81" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,162) scale(1,-1)">419.08 ms</text>
+			<text x="0" y="50" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,100) scale(1,-1)">CI PostgreSQL, ten users</text>
+			<rect x="190" y="46" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="46" width="26.621472763636945" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="50" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,100) scale(1,-1)">244.03 ms</text>
+			<path d="M 408.181818,22 L 408.181818,94 Z" style="stroke: rgb(71%,30%,20%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="373.1818181818182" y="6" style="font-family: Report; font-size: 7px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,12) scale(1,-1)">Limit 2000 ms</text>
+		</g>
+	</g>
+</svg>

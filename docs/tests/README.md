@@ -5,14 +5,16 @@ measurements, code-quality evidence and review report for the integrated applica
 Read `software-test-report.md` or its PDF first. Screenshots are embedded in the PDF.
 
 For current assignment and integration status, read
-[Kerem's QA handoff](kerem-qa-handoff.md). The independently approved report #67
-is merged; its unchanged PDF/Markdown retain the tested `a59556e` application
-snapshot. Later source, live Cloudflare and new security-gate checks keep their
-own evidence identities. The checkpoints below are historical records.
+[Kerem's QA handoff](kerem-qa-handoff.md). Report #67 was merged before the
+instructor's [post-merge review](https://github.com/SarpCizer/CMPE331-Project/pull/67#issuecomment-7198211995).
+Its original application measurements belong to `a59556e`. The correction in
+[#94](https://github.com/SarpCizer/CMPE331-Project/pull/94) retains that historical
+baseline and identifies additional measurements separately. PR merge does not
+establish instructor acceptance. The checkpoints below are historical records.
 
 ## Evidence layout
 
-- `coverage/`: the 48-criterion CSV and story summary, Python coverage and mapped
+- `coverage/`: 48 AC and nine NFR mappings to concrete, immutable assertions; Python coverage and mapped
   frontend V8/LCOV summaries. Requirement mapping and source coverage are separate.
 - `non-func-tests/`: local SQLite and CI PostgreSQL five-minute load measurements,
   the default-provider timeout measurement, environment and interpretation notes.
@@ -47,7 +49,7 @@ external provider, not a replacement application. Then:
 API_BASE_URL=http://127.0.0.1:8000 node --test tests/fullstack/accounts-isolation.http.test.mjs
 pnpm --dir frontend test:e2e
 python tests/performance/non_ai_http.py --revision YOUR_REVIEWED_SHA --environment YOUR_TEST_ENVIRONMENT --output test-results/load.json
-python scripts/tests/build_traceability.py
+python scripts/tests/build_traceability.py --revision FULL_TEST_SOURCE_SHA
 ```
 
 Install the matching Playwright browser as described in the frontend README. Load
@@ -58,6 +60,12 @@ The GitHub Actions workflow supplies real PostgreSQL, collects runner artifacts
 and executes SonarQube on an ephemeral loopback-only server. Its exported JSON is
 the durable analysis evidence. The temporary server URL is not a persistent
 dashboard and no analysis credential is committed.
+
+The follow-up [security and load profile](security-and-load-profile.md) explains
+the bounded login window, authenticated ZAP scope, controlled recipe-generation
+concurrency, and source checks. Run these only against disposable test hosts.
+Measurement runners reject a revision that differs from Git HEAD or uncommitted
+application/test changes. Old raw results must never be relabelled.
 
 ## Review and submission history
 

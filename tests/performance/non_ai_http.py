@@ -13,8 +13,11 @@ from pathlib import Path
 import platform
 import secrets
 import time
+import sys
 
 import httpx
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'helpers'))
+from measured_source import verified_revision
 
 ROUTES = {'inventory':'/inventory','profile':'/profile/preferences',
           'shopping':'/shopping-items','favorites':'/favorites'}
@@ -104,6 +107,7 @@ if __name__=='__main__':
     parser.add_argument('--environment',required=True)
     parser.add_argument('--output',required=True)
     args=parser.parse_args()
+    args.revision=verified_revision(Path(__file__).resolve().parents[2],args.revision)
     if not (1<=args.users<=50 and 1<=args.entries<=100 and 1<=args.duration<=3600):
         parser.error('Users 1-50, entries 1-100 and duration 1-3600 are required')
     raise SystemExit(0 if asyncio.run(run(args)) else 1)

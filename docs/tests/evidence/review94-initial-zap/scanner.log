@@ -1,0 +1,97 @@
+Unable to find image 'ghcr.io/zaproxy/zaproxy:2.17.0' locally
+2.17.0: Pulling from zaproxy/zaproxy
+1b1d49a38a01: Pulling fs layer
+0a41632055c2: Pulling fs layer
+cd5f7553f81c: Pulling fs layer
+beff637b166d: Pulling fs layer
+c212a4ce8543: Pulling fs layer
+68fc7dda2d84: Pulling fs layer
+6173fb42a391: Pulling fs layer
+dee331ead96d: Pulling fs layer
+d76c7e4d4eed: Pulling fs layer
+41737c9a08d0: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+af3152b6af93: Pulling fs layer
+41b28138a536: Pulling fs layer
+e5ca1437e0c7: Pulling fs layer
+7829b3d60f05: Pulling fs layer
+f63a8bdddb02: Pulling fs layer
+3c5439d0ae62: Pulling fs layer
+39623f43dfaa: Pulling fs layer
+f26fc71eb93e: Pulling fs layer
+5ea75c5c7143: Pulling fs layer
+4f4fb700ef54: Already exists
+0a41632055c2: Download complete
+c212a4ce8543: Download complete
+68fc7dda2d84: Download complete
+beff637b166d: Download complete
+e5ca1437e0c7: Download complete
+41737c9a08d0: Download complete
+f26fc71eb93e: Download complete
+41b28138a536: Download complete
+d76c7e4d4eed: Download complete
+5ea75c5c7143: Download complete
+af3152b6af93: Download complete
+39623f43dfaa: Download complete
+7829b3d60f05: Download complete
+f63a8bdddb02: Download complete
+3c5439d0ae62: Download complete
+1b1d49a38a01: Download complete
+dee331ead96d: Download complete
+3c5439d0ae62: Pull complete
+cd5f7553f81c: Download complete
+cd5f7553f81c: Pull complete
+6173fb42a391: Download complete
+1b1d49a38a01: Pull complete
+4f4fb700ef54: Pull complete
+0a41632055c2: Pull complete
+68fc7dda2d84: Pull complete
+beff637b166d: Pull complete
+d76c7e4d4eed: Pull complete
+6173fb42a391: Pull complete
+41737c9a08d0: Pull complete
+af3152b6af93: Pull complete
+dee331ead96d: Pull complete
+41b28138a536: Pull complete
+5ea75c5c7143: Pull complete
+f63a8bdddb02: Pull complete
+e5ca1437e0c7: Pull complete
+7829b3d60f05: Pull complete
+39623f43dfaa: Pull complete
+f26fc71eb93e: Pull complete
+c212a4ce8543: Pull complete
+Digest: sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af
+Status: Downloaded newer image for ghcr.io/zaproxy/zaproxy:2.17.0
+2026-11-26 20:41:48,507 A file based option has been specified but the directory '/zap/wrk' is not mounted 
+Usage: zap-api-scan.py -t <target> -f <format> [options]
+    -t target         target API definition, OpenAPI or SOAP, local file or URL, e.g. https://www.example.com/openapi.json
+                      or target endpoint URL, GraphQL, e.g. https://www.example.com/graphql
+    -f format         openapi, soap, or graphql
+Options:
+    -h                print this help message
+    -c config_file    config file to use to INFO, IGNORE or FAIL warnings
+    -u config_url     URL of config file to use to INFO, IGNORE or FAIL warnings
+    -g gen_file       generate default config file(all rules set to WARN)
+    -r report_html    file to write the full ZAP HTML report
+    -w report_md      file to write the full ZAP Wiki(Markdown) report
+    -x report_xml     file to write the full ZAP XML report
+    -J report_json    file to write the full ZAP JSON document
+    -a                include the alpha passive scan rules as well
+    -d                show debug messages
+    -P                specify listen port
+    -D                delay in seconds to wait for passive scanning 
+    -i                default rules not in the config file to INFO
+    -I                do not return failure on warning
+    -l level          minimum level to show: PASS, IGNORE, INFO, WARN or FAIL, use with -s to hide example URLs
+    -n context_file   context file which will be loaded prior to scanning the target
+    -p progress_file  progress file which specifies issues that are being addressed
+    -s                short output format - dont show PASSes or example URLs
+    -S                safe mode this will skip the active scan and perform a baseline scan
+    -T                max time in minutes to wait for ZAP to start and the passive scan to run
+    -U user           username to use for authenticated scans - must be defined in the given context file
+    -O                the hostname or URL to override in the (remote) OpenAPI spec
+    -z zap_options    ZAP command line options e.g. -z "-config aaa=bbb -config ccc=ddd"
+    --hook            path to python file that define your custom hooks
+    --schema          GraphQL schema location, URL or file, e.g. https://www.example.com/schema.graphqls
+
+For more details see https://www.zaproxy.org/docs/docker/api-scan/

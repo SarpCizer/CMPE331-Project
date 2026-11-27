@@ -2,7 +2,7 @@ from datetime import timezone
 from typing import Annotated, Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, FastAPI, Response
+from fastapi import APIRouter, Depends, FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator, model_validator
@@ -17,6 +17,7 @@ from fridgely_collections.schemas import ingredient_name
 from .database import make_engine, session_factory
 from .models import Account, AllergenExclusion, DietaryPreference, InventoryEntry, Preferences
 from .security import Authentication, PASSWORDS, hash_password, utc_now
+from .login_throttle import LoginThrottle
 
 
 class Command(BaseModel):
@@ -123,6 +124,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
     engine = make_engine(database_url)
     sessions = session_factory(engine)
     authentication = Authentication(sessions, jwt_secret, clock, token_lifetime)
+    login_throttle = LoginThrottle(clock)
     app = FastAPI(title='Fridgely API', version='0.6.0', docs_url=None, redoc_url=None,
         description='Accounts, owned fridge inventory, preferences, recipes and personal collections. '
             'Register and sign in, then authorize requests using the returned bearer token.',
@@ -137,7 +139,9 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
 
     @app.exception_handler(HTTPException)
     async def http_error(_request, error):
-        return JSONResponse({'error':'Authentication required' if error.status_code == 401 else 'Request denied'},
+        message = ('Authentication required' if error.status_code == 401 else
+            'Too many sign-in attempts. Please try again shortly.' if error.status_code == 429 else 'Request denied')
+        return JSONResponse({'error':message},
             status_code=error.status_code, headers=error.headers)
 
     @router.post('/accounts', status_code=201, response_model=AccountDTO, tags=['Accounts'])
@@ -155,8 +159,13 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             raise HTTPException(409) from None
         return {'id':row.id, 'email':row.email}
 
-    @router.post('/sessions', response_model=SessionDTO, tags=['Accounts'])
-    def sign_in(command: Credentials):
+    @router.post('/sessions', response_model=SessionDTO, tags=['Accounts'], responses={
+        429: {'description': 'Sign-in rate limit exceeded', 'headers': {
+            'Retry-After': {'description': 'Seconds before another sign-in attempt', 'schema': {'type': 'integer'}}}},
+    })
+    def sign_in(command: Credentials, request: Request):
+        source = request.client.host if request.client else 'unknown'
+        login_throttle.reserve(source, command.email)
         with sessions() as session:
             row = session.scalar(select(Account).where(Account.email == command.email))
             valid = authentication.verify_password(row.password_hash if row else None, command.password)
@@ -165,6 +174,7 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             if PASSWORDS.check_needs_rehash(row.password_hash):
                 row.password_hash = hash_password(command.password)
                 session.commit()
+            login_throttle.succeeded(source, command.email)
             return {'token':authentication.issue(row.id)}
 
     @router.get('/profile/preferences', response_model=PreferenceCommand, tags=['Preferences'])

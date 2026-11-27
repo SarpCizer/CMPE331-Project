@@ -1,0 +1,9 @@
+{
+  "source_revision": "45a6b0d8481b8524e3d61add59647aaaef483e6f",
+  "run_id": 45892798683,
+  "job_id": 140159316988,
+  "outcome": "SETUP_FAILED_NO_SCAN",
+  "cause": "ZAP file outputs required /zap/wrk; the container did not contain it.",
+  "fix": "Create the work directory inside the disposable container before invoking the scanner.",
+  "counted_as_security_pass": false
+}

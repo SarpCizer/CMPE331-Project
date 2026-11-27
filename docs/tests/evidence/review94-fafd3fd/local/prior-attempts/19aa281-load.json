@@ -1,0 +1,83 @@
+{
+  "started_utc": "2026-11-26T21:01:02.732057+00:00",
+  "revision": "19aa28197b078287f04cae9ef946f5fa49b85215",
+  "environment": "Windows-x86_64-SQLite-one-worker-sequential-profile",
+  "client": {
+    "system": "Windows",
+    "architecture": "AMD64",
+    "python": "3.12.14",
+    "cpu_count": 22
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 302.4184024999995,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 16592,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 1801.5910999965854,
+    "max_ms": 5373.492099999567,
+    "mean_ms": 650.4738414175687,
+    "statuses": {
+      "200": 16592
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 4148,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1899.7785999963526,
+      "max_ms": 5373.492099999567,
+      "mean_ms": 729.9827140550484,
+      "statuses": {
+        "200": 4148
+      }
+    },
+    "profile": {
+      "requests": 4148,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1787.6497999968706,
+      "max_ms": 4520.410900004208,
+      "mean_ms": 623.8699645128675,
+      "statuses": {
+        "200": 4148
+      }
+    },
+    "shopping": {
+      "requests": 4148,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1751.3685000012629,
+      "max_ms": 5119.028699991759,
+      "mean_ms": 618.7691586789259,
+      "statuses": {
+        "200": 4148
+      }
+    },
+    "favorites": {
+      "requests": 4148,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 1790.9786000091117,
+      "max_ms": 5005.630200001178,
+      "mean_ms": 629.2735284234329,
+      "statuses": {
+        "200": 4148
+      }
+    }
+  },
+  "passed": false,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}
