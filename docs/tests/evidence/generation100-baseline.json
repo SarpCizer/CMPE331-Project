@@ -1,0 +1,43 @@
+{
+  "observed_source": "4284552d6f04d5c1170dadf16b0de4f711523c75",
+  "real_user_accounts_used": false,
+  "calls": [
+    {
+      "mood": null,
+      "status": 503,
+      "seconds": 28.24,
+      "recipe_count": 0,
+      "inventory_unchanged": true,
+      "preferences_unchanged": true
+    },
+    {
+      "mood": "quick",
+      "status": 200,
+      "seconds": 24.16,
+      "recipe_count": 21,
+      "inventory_unchanged": true,
+      "preferences_unchanged": true
+    },
+    {
+      "mood": null,
+      "status": 503,
+      "seconds": 28.07,
+      "recipe_count": 0,
+      "inventory_unchanged": true,
+      "preferences_unchanged": true
+    }
+  ],
+  "content_review": [
+    "unmeasured salt packet cooking doses",
+    "toast without a bread ingredient",
+    "protein steps rely on browning without thermometer endpoint"
+  ],
+  "wire_comparison": {
+    "source_of_recipe_content": "4284552 live quick probe, 21 recipes unchanged",
+    "legacy_bytes": 8860,
+    "compact_bytes": 5609,
+    "reduction_percent": 36.69,
+    "actual_latency_measured": false
+  },
+  "followup_live_improvement_verified": false
+}
