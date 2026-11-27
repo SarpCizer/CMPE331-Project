@@ -64,3 +64,6 @@ e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/me
 e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:generic-api-key:250
 e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:cloudflare-api-key:70
 e0f74ca469231b3a98320967ccc0daab79af25bc:docs/tests/evidence/review94-fafd3fd/measured-source-equivalence.json:cloudflare-api-key:198
+
+# Synthetic header-test signing value in the retained red commit; no external account/privilege.
+ab3e80c154e312dc831a6a824ca89633c69cdaf0:backend/tests/test_final_security.py:generic-api-key:67

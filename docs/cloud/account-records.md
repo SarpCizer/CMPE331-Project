@@ -11,7 +11,7 @@ Authorized administrators: open Render Dashboard, select **fridgely-postgres**,
 then **Connect**, and use its connection method in psql, DBeaver or a PostgreSQL
 client. External clients need TLS and an allowed source IP; do not open access to
 all IPs. Keep connection strings outside chat, Git and browser code.
-[Render connection guide](https://render.com/docs/connect-to-postgres).
+[Render connection guide](https://render.com/docs/postgresql-creating-connecting).
 
 A read-only query that omits password hashes and session information:
 

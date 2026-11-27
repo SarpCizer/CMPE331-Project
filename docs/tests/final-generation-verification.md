@@ -152,3 +152,16 @@ result; code changes alone do not prove that a scanner finding disappeared.
 The final Software Testing Report is generated after source-pinned CI and live
 verification, includes current graphs/dashboard and links raw evidence. Historical
 reports, failures and frozen submission artifacts remain separately labelled.
+
+The first final-security CI at `a477d395404368e79f960de29c26dae6d06afdfa`
+(run 46056542907) observed **zero high, medium or low ZAP alerts**, with three
+informational groups retained; all 18 seeded source mutants were killed. That
+run also exposed two release-bookkeeping failures: the expanded protected-method
+matrix needed a new immutable assertion revision, and the secret scanner flagged
+one synthetic header-test signing value in the retained red commit. The current
+fixture uses a visibly synthetic repeated value; only the exact historical
+false-positive fingerprint is excluded, and the synthetic scanner canary remains.
+Current mappings are in `coverage/final/traceability.*`, pinned to the expanded
+assertion source `a477d395404368e79f960de29c26dae6d06afdfa`. Historical matrix bytes
+and their indexed report evidence remain unchanged. The 20 report/export/mapping
+regressions pass with both historical evidence and the new current matrix.

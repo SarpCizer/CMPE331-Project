@@ -64,7 +64,7 @@ def test_control_characters_in_preferences_are_validation_errors_not_storage_err
 def test_same_origin_resource_policy_on_pages_api_and_errors(tmp_path):
     (tmp_path/'index.html').write_text('<!doctype html><title>Test</title>')
     with TestClient(create_app(database_url=f'sqlite:///{tmp_path}/headers.db',
-            jwt_secret='synthetic-header-signing-key-at-least-32-bytes',frontend_dir=tmp_path)) as client:
+            jwt_secret='header-test-' + '0'*32,frontend_dir=tmp_path)) as client:
         for path in ['/','/api/openapi.json','/api/inventory','/missing']:
             assert client.get(path).headers.get('Cross-Origin-Resource-Policy') == 'same-origin'
 

@@ -9,7 +9,7 @@ import criterion_assertions as mapping
 
 class TraceabilityTests(unittest.TestCase):
     def test_all_approved_criteria_have_a_concrete_immutable_assertion(self):
-        saved=json.loads((mapping.ROOT/'docs/tests/coverage/traceability.json').read_text(encoding='utf-8'))
+        saved=json.loads((mapping.ROOT/'docs/tests/coverage/final/traceability.json').read_text(encoding='utf-8'))
         rows,count=mapping.build(saved['assertion_revision'])
         self.assertEqual(rows,saved['rows'])
         self.assertEqual(count,saved['unique_physical_acceptance_ids'])

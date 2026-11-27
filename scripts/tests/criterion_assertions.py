@@ -131,9 +131,10 @@ def build(revision):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--revision',required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--revision',required=True)
+    parser.add_argument('--output',type=Path,default=ROOT/'docs/tests/coverage');args=parser.parse_args()
     rows,count=build(args.revision)
-    target=ROOT/'docs/tests/coverage';target.mkdir(parents=True,exist_ok=True)
+    target=args.output;target.mkdir(parents=True,exist_ok=True)
     with (target/'traceability.csv').open('w',encoding='utf-8',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=rows[0]);writer.writeheader();writer.writerows(rows)
     (target/'traceability.json').write_text(json.dumps({'assertion_revision':args.revision,'acceptance_criteria':48,
