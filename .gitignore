@@ -3,6 +3,10 @@ node_modules/
 .env.*
 !.env.example
 coverage/
+!docs/tests/evidence/review94-fafd3fd/coverage/
+docs/tests/evidence/review94-fafd3fd/coverage/*
+!docs/tests/evidence/review94-fafd3fd/coverage/coverage-gate.json
+!docs/tests/evidence/review94-fafd3fd/coverage/coverage-gate-canary.json
 __pycache__/
 *.pyc
 .venv/
