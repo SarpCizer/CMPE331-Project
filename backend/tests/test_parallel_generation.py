@@ -153,3 +153,30 @@ def test_requested_weekly_dish_with_large_fridge_uses_one_request():
         assert result == [RECIPE]
 
     asyncio.run(scenario())
+
+
+def test_large_pantry_accepts_more_than_six_recipes_without_numeric_prompt_target():
+    async def scenario():
+        requests = []
+        names = tuple(f'food-{i}' for i in range(14))
+
+        def respond(request):
+            payload = json.loads(request.content)
+            body = json.loads(payload['messages'][1]['content'])
+            requests.append((payload, body))
+            # Provider can return any useful batch size, including >6 in total.
+            recipes = [{**RECIPE, 'title': f'{body["priorityIngredients"][0]} dish {i}'} for i in range(4)]
+            return httpx.Response(200, json={'success': True, 'result': {'response': {'recipes': recipes}}})
+
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            result = await CloudflareRecipeProvider(client, account_id='synthetic', api_token='synthetic').generate(
+                GenerationInput(names, (), ()))
+        assert len(requests) == 4 and len(result) == 16
+        assert set().union(*(set(body['priorityIngredients']) for _, body in requests)) == set(names)
+        for payload, body in requests:
+            instructions = payload['messages'][0]['content']
+            assert 'six distinct' not in instructions and 'three distinct' not in instructions
+            assert 'no fixed recipe count' in instructions
+            assert body['ingredients'] == list(names)
+
+    asyncio.run(scenario())
