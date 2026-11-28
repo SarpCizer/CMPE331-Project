@@ -187,3 +187,18 @@ def test_completed_bad_response_remains_hard_failure_with_no_save(monkeypatch):
                 await service.generate('owner')
         assert failure.value.status == 502 and writes == []
     asyncio.run(scenario())
+
+
+def test_declared_upstream_failure_does_not_erase_healthy_group(caplog):
+    async def scenario():
+        async def respond(request):
+            if request_group(request) == 'a':
+                return httpx.Response(200, json={'success': False, 'errors': ['private provider detail']})
+            await asyncio.sleep(.01)
+            return batch('Healthy')
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            result = await CloudflareRecipeProvider(client, account_id='test', api_token='test').generate(
+                GenerationInput(NAMES, (), ()))
+        assert len(result) == 4 and result.incomplete is True
+    asyncio.run(scenario())
+    assert 'private provider detail' not in caplog.text
