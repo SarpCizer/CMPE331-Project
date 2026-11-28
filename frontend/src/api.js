@@ -60,6 +60,11 @@ client.interceptors.response.use(
     }
     if (response.status < 200 || response.status >= 300)
       throw new ApiError(errorMessage(response.status, data), response.status);
+    if (
+      Array.isArray(data) &&
+      response.headers?.get("X-Fridgely-Generation-Incomplete") === "true"
+    )
+      Object.defineProperty(data, "incomplete", { value: true });
     return data;
   },
   (error) => {

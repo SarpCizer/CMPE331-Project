@@ -75,3 +75,53 @@ skips from exact-head CI. The original report author and peer approvals are
 preserved. Codex initially let a missing policy-output read obscure the desired
 RED assertion; the test was corrected and rerun before changing the exporter.
 No teammate approval, owner setting or course upload is attributed to the tool.
+
+
+## 2026-11-28: recipe transport resilience after observed live 503
+
+Codex assisted Berfin on `fix/recipe-generation-resilience`, continuing from
+main abdca3f and integrating Sarp's separately reviewed PR103 source for testing.
+The actual normal live run returned503/28.30s; Quick returned18 recipes/20.54s.
+Five new failures and one passing total-outage guard were recorded before the
+implementation in 6e1fe608. The fix retains completed whole candidate groups,
+bounds transport retries and signals incomplete searches explicitly. Full
+pantry/amounts/exclusions, no fixed recipe count, quality/atomic hard-error
+validation, 28-second outer deadline and the free provider/model are preserved.
+
+Initial isolated runs:698 backend passes/403 PostgreSQL variants skipped locally,
+57 browser passes and29 selected mutants killed. These measurements precede
+integration of PR103's password race fix and are not relabelled as final CI.
+The combined campaign adds Sarp's password-race mutant for30 selected mutants.
+Final CI, legitimate independent reviews, actual main/deploy source and real
+provider checks remain required. Automated approval review rejected assistant
+approval/merge of PR103 under general merge authorization; no workaround or
+protection change was attempted. No school upload or final reliability is claimed.
+
+After Berfin explicitly requested the assistant review and approval on her behalf,
+the transparent Codex-assisted review6099376504 was accepted for Sarp's unchanged
+be5dd3b PR103. Normal expected-head merge produced f3a6246; no protection setting
+changed. The combined working source then passed702 backend cases locally, with
+405 PostgreSQL variants explicitly skipped, and all30 targeted mutants were killed
+(zero survivor/invalid/timeout). This does not substitute for final-source CI or
+actual provider measurements.
+
+Final UI review found incomplete-search metadata survived in shared results while
+its duplicate page-local notice state reset after navigation. Both viewport cases
+failed against37055e4, retained in red847faa6b. Deriving the notice from shared
+results fixes the mismatch without changing provider budgets/counts. Final44
+focused backend cases and both browser cases passed; full CI is rerun for this
+new exact source, rather than relabelling earlier runs.
+
+A final provider-envelope sweep reproduced200/success:false erasing a healthy
+group in red8ee70dd7 against90ee26b. A typed upstream-unavailable result now
+marks only that group unavailable without retrying opaque upstream errors or
+exposing their private message. All45 focused backend regressions pass. This
+checkpoint is separately source-qualified; final CI/review/live gates remain.
+
+Independent review by Sarp (review6099442885/comment4728200488) identified
+RemoteProtocolError outside the timeout/network handler. Againstf2fc9de the
+ReadError control passed and the remote disconnect failed; red8cb654f9 preserves
+the observed failure. The narrow handler addition passes all47 focused backend
+cases. M31 specifically removes this exception coverage; the expanded31-mutant
+campaign and final CI/review/live checks are required, not inferred from earlier
+30-mutant results. The review was not dismissed or replaced by self-approval.

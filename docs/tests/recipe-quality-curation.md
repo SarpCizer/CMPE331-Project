@@ -66,3 +66,11 @@ faults in total. This remains a scoped experiment, not whole-project mutation
 coverage. CI, independent final-head review, exact-source automatic deployment
 and actual normal/quick recipe review must pass before final readiness or the
 syllabus-aligned Software Testing Report PDF is claimed.
+
+## Later transport resilience extension
+
+[Recipe generation resilience](recipe-generation-resilience.md) supersedes this
+snapshot's sibling-cancellation behavior. Completed valid search groups may now
+be retained with explicit incomplete-search metadata after a transport outage.
+Hard completed-response schema/measurement/allergen errors remain atomic failures;
+no partial recipe is accepted. Earlier measured results above are unchanged.

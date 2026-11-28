@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Annotated, Callable, Sequence
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
@@ -80,11 +80,15 @@ def build_recipes(
 
     @router.post("/recipes/generate", response_model=list[RecipeDTO])
     async def generate(
+        response: Response,
         principal: Annotated[AccountPrincipal, Depends(require_account)],
         command: GenerationCommand | None = None,
     ):
         if not isinstance(principal, AccountPrincipal):
             raise RecipeError(503, "Authentication integration must return AccountPrincipal.")
-        return await service.generate(principal.account_id, command.mood if command else None)
+        recipes = await service.generate(principal.account_id, command.mood if command else None)
+        if getattr(recipes, "incomplete", False):
+            response.headers['X-Fridgely-Generation-Incomplete'] = 'true'
+        return recipes
 
     return RecipesModule(router, store, service)

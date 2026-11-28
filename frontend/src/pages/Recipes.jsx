@@ -44,7 +44,9 @@ export default function RecipesPage() {
                 }),
               "Recipes are ready.",
             );
-            if (Array.isArray(result)) setGenerated(result);
+            if (Array.isArray(result)) {
+              setGenerated(result);
+            }
           }}
         >
           <Icon />
@@ -57,6 +59,12 @@ export default function RecipesPage() {
           Edit your preferences
         </Link>
       </section>
+      {generated.incomplete === true && visibleRecipes.length > 0 && (
+        <p role="status" className="panel">
+          These recipes are ready. Some additional suggestions could not finish.
+          Generate again to explore more recipes.
+        </p>
+      )}
       <SurpriseWheel
         key={visibleRecipes.map((recipe) => recipe.id).join(",")}
         visibleRecipes={visibleRecipes}

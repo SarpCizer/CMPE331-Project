@@ -38,20 +38,20 @@ def test_large_fridge_groups_overlap_and_keep_full_input_and_all_recipe_fields()
     asyncio.run(scenario())
 
 
-def test_failed_parallel_group_cancels_its_sibling():
+def test_non_retryable_auth_failure_cancels_its_sibling():
     async def scenario():
         started=asyncio.Event();cancelled=asyncio.Event()
         async def respond(request):
             data=json.loads(json.loads(request.content)['messages'][1]['content'])
             if data['priorityIngredients'][0]=='a':
                 await started.wait()
-                return httpx.Response(429,json={'error':'synthetic quota'})
+                return httpx.Response(403,json={'error':'synthetic authorization failure'})
             started.set()
             try:await asyncio.sleep(10)
             except asyncio.CancelledError:cancelled.set();raise
         async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
             provider=CloudflareRecipeProvider(client,account_id='synthetic',api_token='synthetic')
-            with pytest.raises(ExceptionGroup):
+            with pytest.raises(httpx.HTTPStatusError):
                 await asyncio.wait_for(provider.generate(GenerationInput(tuple('abcdefgh'),(),())),1)
         assert cancelled.is_set()
     asyncio.run(scenario())

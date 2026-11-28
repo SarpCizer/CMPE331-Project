@@ -15,6 +15,13 @@ from .quality import RecipeQualityError, review_recipe
 MAX_PROVIDER_SECONDS = 28
 
 
+class RecipeCandidates(list):
+    """Complete recipe records, plus a transport-completion flag (never a dose guess)."""
+    def __init__(self, recipes, *, incomplete=False):
+        super().__init__(recipes)
+        self.incomplete = incomplete
+
+
 class RecipeError(Exception):
     def __init__(self, status: int, message: str, *, retryable: bool = False):
         super().__init__(message)
@@ -103,7 +110,9 @@ class RecipeGenerationService:
         try:
             async with asyncio.timeout(self.timeout_seconds):
                 candidates = await self.provider.generate(data)
-        except Exception:
+        except Exception as error:
+            code = 'deadline' if isinstance(error, TimeoutError) else 'provider_failure'
+            logging.getLogger(__name__).warning('Recipe generation unavailable code=%s', code)
             raise RecipeError(503, "The recipe service is temporarily unavailable.", retryable=True) from None
 
         recipes = validate_batch(candidates, data.allergens, curate=True)
@@ -111,7 +120,7 @@ class RecipeGenerationService:
         if limit is not None and any(recipe.cookingMinutes > limit for recipe in recipes):
             raise RecipeError(502, 'The recipe suggestions exceed your selected time limit. Please try again.')
         await run_in_threadpool(self.insert_batch, owner_id, recipes)
-        return recipes
+        return RecipeCandidates(recipes, incomplete=getattr(candidates, "incomplete", False))
 
 
 async def requested_recipe(data: GenerationInput, provider, timeout_seconds):
