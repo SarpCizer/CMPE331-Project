@@ -27,6 +27,8 @@ class SourceArchiveTests(unittest.TestCase):
         self.write("README.md", b"Committed documentation\n")
         self.write("first-revision.txt", b"Only in the first revision\n")
         self.write("run.sh", b"#!/bin/sh\nexit 0\n")
+        self.write('backend/pyproject.toml',b'[project]\nversion = "0.1.0"\n')
+        self.write('frontend/package.json',b'{"version":"0.1.0"}\n')
         (self.repo / "run.sh").chmod(0o755)
         self.revision = self.commit("First fixture revision")
 
@@ -85,6 +87,24 @@ class SourceArchiveTests(unittest.TestCase):
                 self.assertEqual(metadata["bytes"], len(payload))
         self.assertEqual(self.git("rev-parse", "HEAD"), later)
         self.assertEqual(self.git("status", "--porcelain"), before)
+
+    def test_manifest_version_comes_from_requested_commit_not_working_checkout(self):
+        self.write('backend/pyproject.toml',b'[project]\nversion = "0.6.0"\n')
+        self.write('frontend/package.json',b'{"version":"0.6.0"}\n')
+        selected = self.commit('Release 0.6.0 fixture')
+        self.write('backend/pyproject.toml',b'[project]\nversion = "0.7.0"\n')
+        self.write('frontend/package.json',b'{"version":"0.7.0"}\n')
+        with zipfile.ZipFile(self.build(revision=selected)) as archive:
+            manifest = json.loads(archive.read('Fridgely/SUBMISSION-MANIFEST.json'))
+            self.assertEqual(manifest['version'],'0.6.0')
+            self.assertEqual(manifest['source_revision'],selected)
+
+    def test_conflicting_committed_component_versions_fail_before_archive_creation(self):
+        self.write('frontend/package.json',b'{"version":"0.7.0"}\n')
+        selected = self.commit('Inconsistent fixture versions')
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            self.build(revision=selected)
+        self.assertFalse((self.directory/'source.zip').exists())
 
     def test_same_revision_has_identical_digest_and_normalized_metadata(self):
         with patch.object(zipfile.time, "localtime", return_value=(2020, 1, 1, 0, 0, 0, 2, 1, -1)):
