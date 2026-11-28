@@ -85,13 +85,18 @@ def test_kilogram_salt_dose_is_not_accepted_as_a_measured_recipe():
     with pytest.raises(RecipeError):validate_batch([candidate],())
 
 
-def test_quality_failure_rejects_whole_batch_without_stock_or_history_writes(cloudflare_host):
+def test_discovery_withholds_unusable_content_but_saves_complete_usable_choices_atomically(cloudflare_host):
     bad={**RECIPE,'ingredients':['rice','salt'],'ingredientAmounts':['150 g','1 pack']}
     cloudflare_host.respond=lambda:cloudflare_result({'recipes':[RECIPE,bad]})
     with TestClient(cloudflare_host.new_app()) as client:
         headers=sign_in(client)
         before=client.get('/api/inventory',headers=headers).json()
-        assert client.post('/api/recipes/generate',headers=headers,json={}).status_code==502
+        response=client.post('/api/recipes/generate',headers=headers,json={})
+        assert response.status_code==200
+        rows=response.json()
+        assert len(rows)==1 and rows[0]['ingredientAmounts']==RECIPE['ingredientAmounts']
+        assert rows[0]['ingredients']==RECIPE['ingredients'] and rows[0]['steps']==RECIPE['steps']
+        assert client.get('/api/recipes/'+rows[0]['id'],headers=headers).json()==rows[0]
         assert client.get('/api/inventory',headers=headers).json()==before
         assert client.get('/api/history',headers=headers).json()==[]
 
