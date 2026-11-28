@@ -1,0 +1,647 @@
+{
+  "revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "scope": "27 seeded source mutations in recipe validation/concurrency, compact transport, wire recovery/aliases, usable content curation, password rotation/rehash, input/security headers and login throttling",
+  "whole_project_mutation_coverage": false,
+  "real_provider_used": false,
+  "baseline": {
+    "status": "survived",
+    "returncode": 0,
+    "seconds": 17.086,
+    "failed_tests": [],
+    "summary": [
+      "159 passed, 2 skipped, 1 warning in 15.24s"
+    ]
+  },
+  "source_sha256": {
+    "backend/src/fridgely_recipes/provider.py": "7a5cfe7993576d00e97d13d1b0fc5f950df0ac2620b315ec37d35f20f93d67ed",
+    "backend/src/fridgely_recipes/service.py": "d432ecd80bafe8a160404d636f0ff4d8240b3e4752f973061d9a4b5f7c4918cc",
+    "backend/src/fridgely_app/login_throttle.py": "4472108d63f1f1d5e99991512e0a4ff8b36531e7f156f68650f4f9daf91ee8c2",
+    "backend/src/fridgely_app/security.py": "fb1dab53dfd0b2d5e38086b67d408a4d383f371af1fdda671e1c804f971634f1",
+    "backend/src/fridgely_app/host.py": "0004cab8979082fa3c7bb33d7c32928ae4522fe2f1f0344e922a0543ff6a9ed9",
+    "backend/src/fridgely_app/core.py": "3d745589077038b6587a0c434bd25cbed017e5b7902b6838d1e01e53f5bb2a32",
+    "backend/src/fridgely_app/availability.py": "84f8d42c702396d56ca898e75320bd7d27426a5e2c037249185747d58cb46ac8",
+    "backend/src/fridgely_recipes/quality.py": "c916ab17a73565f44ffe8b2e2f1c80eeeabfb92d0b2b0d1b2bd8c19fa7dd1d17",
+    "backend/src/fridgely_recipes/wire.py": "6343fa8dc96d425ab7768cff389c1475243dd47d6741f00edf905661e42cd853"
+  },
+  "counts": {
+    "killed": 27,
+    "survived": 0,
+    "invalid": 0,
+    "timeout": 0
+  },
+  "score": 1.0,
+  "mutants": [
+    {
+      "id": "M01",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 260,
+      "before": "len(data.ingredients) < 6",
+      "after": "len(data.ingredients) < 600",
+      "tests": [
+        "backend/tests/test_parallel_generation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.909,
+      "failed_tests": [
+        "backend/tests/test_parallel_generation.py::test_large_fridge_groups_overlap_and_keep_full_input_and_all_recipe_fields",
+        "backend/tests/test_parallel_generation.py::test_failed_parallel_group_cancels_its_sibling",
+        "backend/tests/test_parallel_generation.py::test_service_deadline_cancels_both_requests_and_writes_nothing",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe0-502]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe1-422]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe2-502]",
+        "backend/tests/test_parallel_generation.py::test_duplicate_results_do_not_hide_distinct_preparations_with_same_title",
+        "backend/tests/test_parallel_generation.py::test_large_pantry_accepts_more_than_six_recipes_without_numeric_prompt_target"
+      ],
+      "summary": [
+        "8 failed, 1 passed, 1 warning in 0.80s"
+      ]
+    },
+    {
+      "id": "M02",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 268,
+      "before": "for offset in range(group_count)",
+      "after": "for offset in range(1)",
+      "tests": [
+        "backend/tests/test_parallel_generation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.944,
+      "failed_tests": [
+        "backend/tests/test_parallel_generation.py::test_large_fridge_groups_overlap_and_keep_full_input_and_all_recipe_fields",
+        "backend/tests/test_parallel_generation.py::test_failed_parallel_group_cancels_its_sibling",
+        "backend/tests/test_parallel_generation.py::test_service_deadline_cancels_both_requests_and_writes_nothing",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe0-502]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe1-422]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe2-502]",
+        "backend/tests/test_parallel_generation.py::test_duplicate_results_do_not_hide_distinct_preparations_with_same_title",
+        "backend/tests/test_parallel_generation.py::test_large_pantry_accepts_more_than_six_recipes_without_numeric_prompt_target"
+      ],
+      "summary": [
+        "8 failed, 1 passed, 1 warning in 1.79s"
+      ]
+    },
+    {
+      "id": "M03",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 276,
+      "before": "if signature not in seen:",
+      "after": "if True:",
+      "tests": [
+        "backend/tests/test_parallel_generation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.433,
+      "failed_tests": [
+        "backend/tests/test_parallel_generation.py::test_duplicate_results_do_not_hide_distinct_preparations_with_same_title"
+      ],
+      "summary": [
+        "1 failed, 8 passed, 1 warning in 0.29s"
+      ]
+    },
+    {
+      "id": "M04",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 301,
+      "before": "body[\"priorityIngredients\"] = priorities",
+      "after": "body[\"priorityIngredients\"] = data.ingredients",
+      "tests": [
+        "backend/tests/test_parallel_generation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.407,
+      "failed_tests": [
+        "backend/tests/test_parallel_generation.py::test_large_fridge_groups_overlap_and_keep_full_input_and_all_recipe_fields",
+        "backend/tests/test_parallel_generation.py::test_failed_parallel_group_cancels_its_sibling",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe0-502]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe1-422]",
+        "backend/tests/test_parallel_generation.py::test_one_bad_group_rejects_every_recipe_before_saving[bad_recipe2-502]",
+        "backend/tests/test_parallel_generation.py::test_large_pantry_accepts_more_than_six_recipes_without_numeric_prompt_target"
+      ],
+      "summary": [
+        "6 failed, 3 passed, 1 warning in 1.28s"
+      ]
+    },
+    {
+      "id": "M05",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 161,
+      "before": "return format(number.normalize(), 'f') + ' ' + unit",
+      "after": "return format(number.normalize(), 'f') + ' g'",
+      "tests": [
+        "backend/tests/test_metric_recipe_amounts.py",
+        "backend/tests/test_generation_output_reliability.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.757,
+      "failed_tests": [
+        "backend/tests/test_generation_output_reliability.py::test_structured_metric_amounts_are_converted_without_inventing_units",
+        "backend/tests/test_generation_output_reliability.py::test_six_structured_recipes_save_atomically_through_real_host"
+      ],
+      "summary": [
+        "2 failed, 22 passed, 1 warning in 0.54s"
+      ]
+    },
+    {
+      "id": "M06",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 183,
+      "before": "converted = [metric_amount(amount) for amount in amounts]",
+      "after": "converted = [\"1 g\" for amount in amounts]",
+      "tests": [
+        "backend/tests/test_metric_recipe_amounts.py",
+        "backend/tests/test_generation_output_reliability.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.78,
+      "failed_tests": [
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[1",
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[2",
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[to",
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[2",
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[0",
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[-2",
+        "backend/tests/test_metric_recipe_amounts.py::test_provider_accepts_metric_and_explicit_count_measurements",
+        "backend/tests/test_metric_recipe_amounts.py::test_malformed_measurements_are_rejected_without_throwing[amounts3]",
+        "backend/tests/test_metric_recipe_amounts.py::test_malformed_measurements_are_rejected_without_throwing[amounts4]",
+        "backend/tests/test_metric_recipe_amounts.py::test_malformed_measurements_are_rejected_without_throwing[amounts5]",
+        "backend/tests/test_metric_recipe_amounts.py::test_malformed_measurements_are_rejected_without_throwing[amounts6]",
+        "backend/tests/test_generation_output_reliability.py::test_structured_metric_amounts_are_converted_without_inventing_units",
+        "backend/tests/test_generation_output_reliability.py::test_single_json_code_fence_is_accepted_but_extra_text_is_not",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value0]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value1]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value2]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value3]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value4]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value5]",
+        "backend/tests/test_generation_output_reliability.py::test_bad_structured_measurements_remain_rejected[value6]",
+        "backend/tests/test_generation_output_reliability.py::test_six_structured_recipes_save_atomically_through_real_host"
+      ],
+      "summary": [
+        "21 failed, 3 passed, 1 warning in 0.56s"
+      ]
+    },
+    {
+      "id": "M07",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 189,
+      "before": "not 0 < value <= 1000000",
+      "after": "not -1 < value <= 1000000",
+      "tests": [
+        "backend/tests/test_metric_recipe_amounts.py",
+        "backend/tests/test_generation_output_reliability.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.15,
+      "failed_tests": [
+        "backend/tests/test_metric_recipe_amounts.py::test_new_provider_recipes_reject_ambiguous_or_nonpositive_measurements[0"
+      ],
+      "summary": [
+        "1 failed, 23 passed, 1 warning in 0.71s"
+      ]
+    },
+    {
+      "id": "M08",
+      "path": "backend/src/fridgely_recipes/service.py",
+      "line": 100,
+      "before": "if not data.ingredients:",
+      "after": "if False:",
+      "tests": [
+        "backend/tests/test_recipe_integration.py",
+        "backend/tests/test_recipe_moods.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 6.247,
+      "failed_tests": [
+        "backend/tests/test_recipe_integration.py::test_unknown_owner_and_empty_fridge_stop_before_provider",
+        "backend/tests/test_recipe_moods.py::test_mood_never_bypasses_empty_fridge_auth_or_allergen_validation"
+      ],
+      "summary": [
+        "2 failed, 36 passed, 1 warning in 4.55s"
+      ]
+    },
+    {
+      "id": "M09",
+      "path": "backend/src/fridgely_recipes/service.py",
+      "line": 75,
+      "before": "exclusions = {name.strip().casefold() for name in allergens}",
+      "after": "exclusions = set()",
+      "tests": [
+        "backend/tests/test_recipe_integration.py",
+        "backend/tests/test_recipe_moods.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 5.705,
+      "failed_tests": [
+        "backend/tests/test_recipe_integration.py::test_invalid_recipe_rejects_whole_batch[change0-422]",
+        "backend/tests/test_recipe_moods.py::test_mood_never_bypasses_empty_fridge_auth_or_allergen_validation"
+      ],
+      "summary": [
+        "2 failed, 36 passed, 1 warning in 4.03s"
+      ]
+    },
+    {
+      "id": "M10",
+      "path": "backend/src/fridgely_recipes/service.py",
+      "line": 111,
+      "before": "recipe.cookingMinutes > limit",
+      "after": "recipe.cookingMinutes < limit",
+      "tests": [
+        "backend/tests/test_recipe_integration.py",
+        "backend/tests/test_recipe_moods.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 6.074,
+      "failed_tests": [
+        "backend/tests/test_recipe_moods.py::test_mood_reaches_provider_with_owned_preferences_without_changing_stock[lazy]",
+        "backend/tests/test_recipe_moods.py::test_mood_reaches_provider_with_owned_preferences_without_changing_stock[quick]",
+        "backend/tests/test_recipe_moods.py::test_cloudflare_receives_mood_and_time_guidance[lazy]",
+        "backend/tests/test_recipe_moods.py::test_cloudflare_receives_mood_and_time_guidance[quick]"
+      ],
+      "summary": [
+        "4 failed, 34 passed, 1 warning in 4.43s"
+      ]
+    },
+    {
+      "id": "M11",
+      "path": "backend/src/fridgely_app/login_throttle.py",
+      "line": 10,
+      "before": "account_limit=5",
+      "after": "account_limit=6",
+      "tests": [
+        "backend/tests/test_login_throttle.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 4.627,
+      "failed_tests": [
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[True]",
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[False]",
+        "backend/tests/test_login_throttle.py::test_retry_window_expires_and_other_accounts_remain_usable",
+        "backend/tests/test_login_throttle.py::test_spoofed_forwarded_headers_cannot_reset_the_guess_limit",
+        "backend/tests/test_login_throttle.py::test_successful_signin_resets_only_the_account_guess_bucket",
+        "backend/tests/test_login_throttle.py::test_simultaneous_guesses_cannot_reserve_more_than_the_allowed_window"
+      ],
+      "summary": [
+        "6 failed, 1 passed, 1 warning in 3.38s"
+      ]
+    },
+    {
+      "id": "M12",
+      "path": "backend/src/fridgely_app/login_throttle.py",
+      "line": 21,
+      "before": "events[0] <= now - self.window",
+      "after": "events[0] >= now - self.window",
+      "tests": [
+        "backend/tests/test_login_throttle.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 4.908,
+      "failed_tests": [
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[True]",
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[False]",
+        "backend/tests/test_login_throttle.py::test_retry_window_expires_and_other_accounts_remain_usable",
+        "backend/tests/test_login_throttle.py::test_spoofed_forwarded_headers_cannot_reset_the_guess_limit",
+        "backend/tests/test_login_throttle.py::test_successful_signin_resets_only_the_account_guess_bucket",
+        "backend/tests/test_login_throttle.py::test_simultaneous_guesses_cannot_reserve_more_than_the_allowed_window",
+        "backend/tests/test_login_throttle.py::test_rotating_accounts_is_bounded_and_expired_buckets_release_capacity"
+      ],
+      "summary": [
+        "7 failed, 1 warning in 3.56s"
+      ]
+    },
+    {
+      "id": "M13",
+      "path": "backend/src/fridgely_app/login_throttle.py",
+      "line": 35,
+      "before": "self._buckets.pop(('account', source, email), None)",
+      "after": "self._buckets.get(('account', source, email), None)",
+      "tests": [
+        "backend/tests/test_login_throttle.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 4.103,
+      "failed_tests": [
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[True]",
+        "backend/tests/test_login_throttle.py::test_retry_window_expires_and_other_accounts_remain_usable",
+        "backend/tests/test_login_throttle.py::test_spoofed_forwarded_headers_cannot_reset_the_guess_limit",
+        "backend/tests/test_login_throttle.py::test_successful_signin_resets_only_the_account_guess_bucket",
+        "backend/tests/test_login_throttle.py::test_rotating_accounts_is_bounded_and_expired_buckets_release_capacity"
+      ],
+      "summary": [
+        "5 failed, 2 passed, 1 warning in 2.79s"
+      ]
+    },
+    {
+      "id": "M14",
+      "path": "backend/src/fridgely_app/login_throttle.py",
+      "line": 28,
+      "before": "if retry or len(self._buckets)",
+      "after": "if False or len(self._buckets)",
+      "tests": [
+        "backend/tests/test_login_throttle.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 4.716,
+      "failed_tests": [
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[True]",
+        "backend/tests/test_login_throttle.py::test_repeated_bad_passwords_are_throttled_with_retry_after[False]",
+        "backend/tests/test_login_throttle.py::test_retry_window_expires_and_other_accounts_remain_usable",
+        "backend/tests/test_login_throttle.py::test_spoofed_forwarded_headers_cannot_reset_the_guess_limit",
+        "backend/tests/test_login_throttle.py::test_successful_signin_resets_only_the_account_guess_bucket",
+        "backend/tests/test_login_throttle.py::test_simultaneous_guesses_cannot_reserve_more_than_the_allowed_window",
+        "backend/tests/test_login_throttle.py::test_rotating_accounts_is_bounded_and_expired_buckets_release_capacity"
+      ],
+      "summary": [
+        "7 failed, 1 warning in 3.37s"
+      ]
+    },
+    {
+      "id": "M15",
+      "path": "backend/src/fridgely_app/security.py",
+      "line": 74,
+      "before": "claims.get('ver', 0) != account.auth_version",
+      "after": "False",
+      "tests": [
+        "backend/tests/test_final_security.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 5.117,
+      "failed_tests": [
+        "backend/tests/test_final_security.py::test_password_change_reauthenticates_revokes_old_sessions_and_preserves_other_user",
+        "backend/tests/test_final_security.py::test_security_migration_preserves_existing_accounts_and_legacy_sessions"
+      ],
+      "summary": [
+        "2 failed, 12 passed, 1 warning in 3.79s"
+      ]
+    },
+    {
+      "id": "M16",
+      "path": "backend/src/fridgely_app/host.py",
+      "line": 72,
+      "before": "response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'",
+      "after": "response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'",
+      "tests": [
+        "backend/tests/test_final_security.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 5.278,
+      "failed_tests": [
+        "backend/tests/test_final_security.py::test_same_origin_resource_policy_on_pages_api_and_errors"
+      ],
+      "summary": [
+        "1 failed, 13 passed, 1 warning in 3.91s"
+      ]
+    },
+    {
+      "id": "M17",
+      "path": "backend/src/fridgely_app/core.py",
+      "line": 57,
+      "before": "unicodedata.category(char) == 'Cc'",
+      "after": "False",
+      "tests": [
+        "backend/tests/test_final_security.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 5.077,
+      "failed_tests": [
+        "backend/tests/test_final_security.py::test_control_characters_in_preferences_are_validation_errors_not_storage_errors[\\x00vegan]",
+        "backend/tests/test_final_security.py::test_control_characters_in_preferences_are_validation_errors_not_storage_errors[ve\\x00gan]",
+        "backend/tests/test_final_security.py::test_control_characters_in_preferences_are_validation_errors_not_storage_errors[\\x01]",
+        "backend/tests/test_final_security.py::test_control_characters_in_preferences_are_validation_errors_not_storage_errors[vegan\\x01raw]",
+        "backend/tests/test_final_security.py::test_control_characters_in_preferences_are_validation_errors_not_storage_errors[\\x7f]"
+      ],
+      "summary": [
+        "5 failed, 9 passed, 1 warning in 3.77s"
+      ]
+    },
+    {
+      "id": "M18",
+      "path": "backend/src/fridgely_app/availability.py",
+      "line": 35,
+      "before": "len(text) > 64",
+      "after": "len(text) > 6400",
+      "tests": [
+        "backend/tests/test_final_security.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 5.185,
+      "failed_tests": [
+        "backend/tests/test_final_security.py::test_measurement_parser_rejects_overlong_legacy_input_before_number_conversion"
+      ],
+      "summary": [
+        "1 failed, 13 passed, 1 warning in 3.80s"
+      ]
+    },
+    {
+      "id": "M19",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 124,
+      "before": "row = {long: row[short] for short, long in COMPACT_NAMES.items()}",
+      "after": "row = row",
+      "tests": [
+        "backend/tests/test_live_generation_followup.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.022,
+      "failed_tests": [
+        "backend/tests/test_live_generation_followup.py::test_compact_parallel_wire_round_trips_more_than_six_full_recipes",
+        "backend/tests/test_live_generation_followup.py::test_compact_wire_keeps_existing_measure_validation[0",
+        "backend/tests/test_live_generation_followup.py::test_compact_wire_keeps_existing_measure_validation[1",
+        "backend/tests/test_live_generation_followup.py::test_compact_wire_keeps_existing_measure_validation[NaN",
+        "backend/tests/test_live_generation_followup.py::test_compact_wire_keeps_existing_measure_validation[1.5"
+      ],
+      "summary": [
+        "5 failed, 9 passed, 1 warning in 0.62s"
+      ]
+    },
+    {
+      "id": "M20",
+      "path": "backend/src/fridgely_recipes/quality.py",
+      "line": 76,
+      "before": "if unit not in {'g', 'kg'}:",
+      "after": "if False:",
+      "tests": [
+        "backend/tests/test_live_generation_followup.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.028,
+      "failed_tests": [
+        "backend/tests/test_live_generation_followup.py::test_observed_unmeasured_seasoning_or_missing_toast_ingredient_is_rejected[candidate0]",
+        "backend/tests/test_live_generation_followup.py::test_discovery_withholds_unusable_content_but_saves_complete_usable_choices_atomically"
+      ],
+      "summary": [
+        "2 failed, 12 passed, 1 warning in 0.64s"
+      ]
+    },
+    {
+      "id": "M21",
+      "path": "backend/src/fridgely_recipes/service.py",
+      "line": 43,
+      "before": "recipe = review_recipe(recipe)",
+      "after": "recipe = recipe",
+      "tests": [
+        "backend/tests/test_live_generation_followup.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.892,
+      "failed_tests": [
+        "backend/tests/test_live_generation_followup.py::test_observed_unmeasured_seasoning_or_missing_toast_ingredient_is_rejected[candidate0]",
+        "backend/tests/test_live_generation_followup.py::test_observed_unmeasured_seasoning_or_missing_toast_ingredient_is_rejected[candidate1]",
+        "backend/tests/test_live_generation_followup.py::test_protein_steps_include_thermometer_endpoint_without_losing_generated_steps[chicken-74]",
+        "backend/tests/test_live_generation_followup.py::test_protein_steps_include_thermometer_endpoint_without_losing_generated_steps[fish-63]",
+        "backend/tests/test_live_generation_followup.py::test_kilogram_salt_dose_is_not_accepted_as_a_measured_recipe",
+        "backend/tests/test_live_generation_followup.py::test_discovery_withholds_unusable_content_but_saves_complete_usable_choices_atomically"
+      ],
+      "summary": [
+        "6 failed, 8 passed, 1 warning in 0.56s"
+      ]
+    },
+    {
+      "id": "M22",
+      "path": "backend/src/fridgely_recipes/wire.py",
+      "line": 74,
+      "before": "if not allow_prefix:",
+      "after": "if False:",
+      "tests": [
+        "backend/tests/test_cloudflare_wire_variants.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.371,
+      "failed_tests": [
+        "backend/tests/test_cloudflare_wire_variants.py::test_unconfirmed_truncation_never_recovers_or_writes[None]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_unconfirmed_truncation_never_recovers_or_writes[usage1]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_unconfirmed_truncation_never_recovers_or_writes[usage2]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_unconfirmed_truncation_never_recovers_or_writes[usage3]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_unconfirmed_truncation_never_recovers_or_writes[usage4]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_requested_weekly_dish_never_recovers_an_unfinished_batch"
+      ],
+      "summary": [
+        "6 failed, 32 passed, 1 warning in 0.14s"
+      ]
+    },
+    {
+      "id": "M23",
+      "path": "backend/src/fridgely_recipes/wire.py",
+      "line": 92,
+      "before": "row[short] != row[long]",
+      "after": "False",
+      "tests": [
+        "backend/tests/test_cloudflare_wire_variants.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 1.311,
+      "failed_tests": [
+        "backend/tests/test_cloudflare_wire_variants.py::test_token_limit_never_repairs_invalid_complete_candidates_or_arbitrary_text[raw2]",
+        "backend/tests/test_cloudflare_wire_variants.py::test_normalization_keeps_validation_and_allergen_rejection_atomic[change0]"
+      ],
+      "summary": [
+        "2 failed, 36 passed, 1 warning in 0.13s"
+      ]
+    },
+    {
+      "id": "M24",
+      "path": "backend/src/fridgely_recipes/provider.py",
+      "line": 270,
+      "before": "any(batch is None for batch in batches)",
+      "after": "any(not batch for batch in batches)",
+      "tests": [
+        "backend/tests/test_recipe_candidate_curation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 3.715,
+      "failed_tests": [
+        "backend/tests/test_recipe_candidate_curation.py::test_valid_empty_complementary_group_does_not_discard_other_complete_recipes"
+      ],
+      "summary": [
+        "1 failed, 12 passed, 1 warning in 2.31s"
+      ]
+    },
+    {
+      "id": "M25",
+      "path": "backend/src/fridgely_recipes/quality.py",
+      "line": 46,
+      "before": "if missing:",
+      "after": "if False:",
+      "tests": [
+        "backend/tests/test_recipe_candidate_curation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 3.319,
+      "failed_tests": [
+        "backend/tests/test_recipe_candidate_curation.py::test_optional_unlisted_side_or_garnish_is_omitted_without_inventing_ingredients[Serve",
+        "backend/tests/test_recipe_candidate_curation.py::test_optional_unlisted_side_or_garnish_is_omitted_without_inventing_ingredients[Garnish",
+        "backend/tests/test_recipe_candidate_curation.py::test_optional_unlisted_side_or_garnish_is_omitted_without_inventing_ingredients[Garnish",
+        "backend/tests/test_recipe_candidate_curation.py::test_mandatory_unlisted_oil_cannot_be_converted_to_an_invented_dose",
+        "backend/tests/test_recipe_candidate_curation.py::test_discovery_retains_every_usable_recipe_and_withholds_undosed_extra",
+        "backend/tests/test_recipe_candidate_curation.py::test_all_content_candidates_unusable_returns_failure_without_stock_or_history_writes[candidate0]"
+      ],
+      "summary": [
+        "6 failed, 7 passed, 1 warning in 2.15s"
+      ]
+    },
+    {
+      "id": "M26",
+      "path": "backend/src/fridgely_recipes/service.py",
+      "line": 45,
+      "before": "if not curate or not isinstance(error, RecipeQualityError):",
+      "after": "if True:",
+      "tests": [
+        "backend/tests/test_recipe_candidate_curation.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 3.385,
+      "failed_tests": [
+        "backend/tests/test_recipe_candidate_curation.py::test_discovery_retains_every_usable_recipe_and_withholds_undosed_extra"
+      ],
+      "summary": [
+        "1 failed, 12 passed, 1 warning in 2.11s"
+      ]
+    },
+    {
+      "id": "M27",
+      "path": "backend/src/fridgely_app/core.py",
+      "line": 191,
+      "before": "update(Account).where(Account.id == account_id,\n                    Account.password_hash == row.password_hash, Account.auth_version == row.auth_version)",
+      "after": "update(Account).where(Account.id == account_id)",
+      "tests": [
+        "backend/tests/test_password_rehash_race.py"
+      ],
+      "status": "killed",
+      "returncode": 1,
+      "seconds": 2.298,
+      "failed_tests": [
+        "backend/tests/test_password_rehash_race.py::test_sign_in_rehash_cannot_restore_password_after_concurrent_rotation[sqlite]"
+      ],
+      "summary": [
+        "1 failed, 1 passed, 2 skipped, 1 warning in 1.08s"
+      ]
+    }
+  ],
+  "passed": true
+}

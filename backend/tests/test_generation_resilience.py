@@ -133,3 +133,57 @@ def test_compact_prompt_has_one_unambiguous_amount_contract():
             await CloudflareRecipeProvider(client, account_id='test', api_token='test').generate(
                 GenerationInput(NAMES, (), ()))
     asyncio.run(scenario())
+
+
+from fastapi.testclient import TestClient
+from sqlalchemy import func, select
+from fridgely_recipes.storage import Recipe
+from test_cloudflare_recipe_provider import cloudflare_host, sign_in
+
+
+def test_incomplete_transport_result_is_explicit_and_saved_atomically(cloudflare_host, monkeypatch):
+    monkeypatch.setattr(module, 'GROUP_DEADLINE_SECONDS', .04)
+    arrived = 0
+    async def respond():
+        nonlocal arrived
+        arrived += 1
+        if arrived == 1:
+            return batch('Ready')
+        await asyncio.sleep(10)
+    cloudflare_host.respond = respond
+    app = cloudflare_host.new_app()
+    with TestClient(app) as client:
+        headers = sign_in(client)
+        for name in 'abcdefg':
+            assert client.post('/api/inventory', headers=headers, json={'name': name}).status_code == 201
+        before = client.get('/api/inventory', headers=headers).json()
+        response = client.post('/api/recipes/generate', headers=headers, json={})
+        assert response.status_code == 200
+        assert response.headers['X-Fridgely-Generation-Incomplete'] == 'true'
+        rows = response.json()
+        assert len(rows) == 4
+        assert client.get('/api/inventory', headers=headers).json() == before
+        assert client.get('/api/history', headers=headers).json() == []
+        with app.state.sessions() as session:
+            assert session.scalar(select(func.count()).select_from(Recipe)) == 4
+        for recipe in rows:
+            assert client.get('/api/recipes/' + recipe['id'], headers=headers).json() == recipe
+            assert client.get('/api/recipes/' + recipe['id']).status_code == 401
+
+
+def test_completed_bad_response_remains_hard_failure_with_no_save(monkeypatch):
+    monkeypatch.setattr(module, 'GROUP_DEADLINE_SECONDS', .04)
+    async def scenario():
+        async def respond(request):
+            if request_group(request) == 'a':
+                return batch('Good')
+            return httpx.Response(200, json={'success': True, 'result': {'response': 'not valid JSON'}})
+        writes = []
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            service = RecipeGenerationService(lambda owner: GenerationInput(NAMES, (), ()),
+                CloudflareRecipeProvider(client, account_id='test', api_token='test'),
+                lambda *args: writes.append(args))
+            with pytest.raises(RecipeError) as failure:
+                await service.generate('owner')
+        assert failure.value.status == 502 and writes == []
+    asyncio.run(scenario())

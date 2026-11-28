@@ -46,6 +46,17 @@ Codex helped compare the recipe and shopping contracts, replay the ingredient va
 
 Sarp's [published contribution and incident record](../backend/docs/ai-traceability.md) documents Codex assistance with the collections implementation and the owner-scoped history correction. The regression commit is `fc2a560`, followed by `63dcd7a`. The record reached main in #57.
 
+### Final verification follow-up, 28 November 2026
+
+Under Sarp's explicit finalization instruction, Codex continued from Berfin's
+merged PR #102 without repeating those changes. PR #103 retains a genuine
+RED/GREEN fix for sign-in rehash undoing a concurrent password rotation, adds
+tested public deployed-source metadata, and prepares the syllabus/instructor
+test-report edition from current source-pinned CI artifacts. The raw RED/GREEN
+provenance, 27-mutant campaign, current inventories, failed historical benchmark
+and real Sonar/ZAP results remain inspectable. Review, merge, live verification
+and Learn submission are distinct states; no human approval or grade is invented.
+
 ## Kerem Sönmez
 
 The [merged #71 description](https://github.com/SarpCizer/CMPE331-Project/pull/71) discloses Codex assistance with Kerem's original deployment documentation at `62894a6`. It records Berfin's subsequent verification and follow-up separately.
@@ -64,3 +75,32 @@ skips from exact-head CI. The original report author and peer approvals are
 preserved. Codex initially let a missing policy-output read obscure the desired
 RED assertion; the test was corrected and rerun before changing the exporter.
 No teammate approval, owner setting or course upload is attributed to the tool.
+
+
+## 2026-11-28: recipe transport resilience after observed live 503
+
+Codex assisted Berfin on `fix/recipe-generation-resilience`, continuing from
+main abdca3f and integrating Sarp's separately reviewed PR103 source for testing.
+The actual normal live run returned503/28.30s; Quick returned18 recipes/20.54s.
+Five new failures and one passing total-outage guard were recorded before the
+implementation in 6e1fe608. The fix retains completed whole candidate groups,
+bounds transport retries and signals incomplete searches explicitly. Full
+pantry/amounts/exclusions, no fixed recipe count, quality/atomic hard-error
+validation, 28-second outer deadline and the free provider/model are preserved.
+
+Initial isolated runs:698 backend passes/403 PostgreSQL variants skipped locally,
+57 browser passes and29 selected mutants killed. These measurements precede
+integration of PR103's password race fix and are not relabelled as final CI.
+The combined campaign adds Sarp's password-race mutant for30 selected mutants.
+Final CI, legitimate independent reviews, actual main/deploy source and real
+provider checks remain required. Automated approval review rejected assistant
+approval/merge of PR103 under general merge authorization; no workaround or
+protection change was attempted. No school upload or final reliability is claimed.
+
+After Berfin explicitly requested the assistant review and approval on her behalf,
+the transparent Codex-assisted review6099376504 was accepted for Sarp's unchanged
+be5dd3b PR103. Normal expected-head merge produced f3a6246; no protection setting
+changed. The combined working source then passed702 backend cases locally, with
+405 PostgreSQL variants explicitly skipped, and all30 targeted mutants were killed
+(zero survivor/invalid/timeout). This does not substitute for final-source CI or
+actual provider measurements.

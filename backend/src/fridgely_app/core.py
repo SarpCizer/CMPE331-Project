@@ -185,8 +185,20 @@ def create_core_app(*, database_url, jwt_secret, clock=utc_now, token_lifetime=3
             if not valid or row is None:
                 raise HTTPException(401, headers={'WWW-Authenticate':'Bearer'})
             if PASSWORDS.check_needs_rehash(row.password_hash):
-                row.password_hash = hash_password(command.password)
-                session.commit()
+                account_id = row.id
+                # A rotation may commit while Argon2 runs. Never replace a
+                # newer password/version with this request's older snapshot.
+                changed = session.execute(update(Account).where(Account.id == account_id,
+                    Account.password_hash == row.password_hash, Account.auth_version == row.auth_version)
+                    .values(password_hash=hash_password(command.password)),
+                    execution_options={'synchronize_session': False})
+                if changed.rowcount == 1:
+                    session.commit()
+                else:
+                    session.rollback()
+                    row = session.get(Account, account_id, populate_existing=True)
+                    if row is None or not authentication.verify_password(row.password_hash, command.password):
+                        raise HTTPException(401, headers={'WWW-Authenticate':'Bearer'})
             login_throttle.succeeded(source, command.email)
             return {'token':authentication.issue(row.id, row.auth_version)}
 

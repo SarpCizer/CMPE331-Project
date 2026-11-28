@@ -1,0 +1,161 @@
+[
+  {
+    "id": 15268896535,
+    "name": "sonarqube-evidence-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 221885,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268896535",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268896535/zip",
+    "expired": false,
+    "created_at": "2026-11-28T15:10:55Z",
+    "expires_at": "2026-12-28T15:10:54Z",
+    "updated_at": "2026-11-28T15:10:55Z",
+    "digest": "sha256:c1f26391cfc0e2cef6d5f8854ad052054d5e0910e3bdab5f69106e8264d6c59c",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "c1f26391cfc0e2cef6d5f8854ad052054d5e0910e3bdab5f69106e8264d6c59c"
+  },
+  {
+    "id": 15268676105,
+    "name": "integrated-evidence-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 9987149,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268676105",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268676105/zip",
+    "expired": false,
+    "created_at": "2026-11-28T15:08:33Z",
+    "expires_at": "2026-12-28T15:08:30Z",
+    "updated_at": "2026-11-28T15:08:33Z",
+    "digest": "sha256:25c219001149c61dc0ff80e38ab368eaaf9420cff571750259e6398a8de303a5",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "25c219001149c61dc0ff80e38ab368eaaf9420cff571750259e6398a8de303a5"
+  },
+  {
+    "id": 15268626385,
+    "name": "coverage-policy-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 568,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268626385",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268626385/zip",
+    "expired": false,
+    "created_at": "2026-11-28T15:08:43Z",
+    "expires_at": "2026-12-28T15:08:43Z",
+    "updated_at": "2026-11-28T15:08:43Z",
+    "digest": "sha256:7ee14b0c4ada5cd3bff0f7d47bb5c5775f4164bd4924b91ea56fcffa6d252fd4",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "7ee14b0c4ada5cd3bff0f7d47bb5c5775f4164bd4924b91ea56fcffa6d252fd4"
+  },
+  {
+    "id": 15268225840,
+    "name": "source-archive-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 647103,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268225840",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15268225840/zip",
+    "expired": false,
+    "created_at": "2026-11-28T14:55:04Z",
+    "expires_at": "2026-12-28T14:55:03Z",
+    "updated_at": "2026-11-28T14:55:04Z",
+    "digest": "sha256:1c65b06abaed57b62ab5304c9b95b5aa448c4a3d12f4c4e79159ccc4e4c872cc",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    }
+  },
+  {
+    "id": 15267759000,
+    "name": "zap-evidence-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 24087,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267759000",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267759000/zip",
+    "expired": false,
+    "created_at": "2026-11-28T14:56:31Z",
+    "expires_at": "2026-12-28T14:56:30Z",
+    "updated_at": "2026-11-28T14:56:31Z",
+    "digest": "sha256:bf4aed94de23d671d1ef3213578f2670119611491188f1d8e5a83601a00e57f0",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "bf4aed94de23d671d1ef3213578f2670119611491188f1d8e5a83601a00e57f0"
+  },
+  {
+    "id": 15267733840,
+    "name": "container-evidence-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 563,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267733840",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267733840/zip",
+    "expired": false,
+    "created_at": "2026-11-28T14:55:40Z",
+    "expires_at": "2027-02-26T14:54:49Z",
+    "updated_at": "2026-11-28T14:55:40Z",
+    "digest": "sha256:bacc180bcaafce84419935e9590f199933e9f890e7e7ba4f90ec72bcd337a128",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "bacc180bcaafce84419935e9590f199933e9f890e7e7ba4f90ec72bcd337a128"
+  },
+  {
+    "id": 15267644275,
+    "name": "mutation-evidence-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 4636,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267644275",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267644275/zip",
+    "expired": false,
+    "created_at": "2026-11-28T14:57:18Z",
+    "expires_at": "2026-12-28T14:57:17Z",
+    "updated_at": "2026-11-28T14:57:18Z",
+    "digest": "sha256:2198deb487fbee59a5b2e939052b4a32732663acbcf85d33b96f886b8e47ca27",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "2198deb487fbee59a5b2e939052b4a32732663acbcf85d33b96f886b8e47ca27"
+  },
+  {
+    "id": 15267599367,
+    "name": "secret-scan-93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+    "size_in_bytes": 356,
+    "url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267599367",
+    "archive_download_url": "https://api.github.com/repos/SarpCizer/CMPE331-Project/actions/artifacts/15267599367/zip",
+    "expired": false,
+    "created_at": "2026-11-28T14:55:03Z",
+    "expires_at": "2026-12-28T14:55:02Z",
+    "updated_at": "2026-11-28T14:55:03Z",
+    "digest": "sha256:20acd5cad64f0748e1ab31afe317d324751ceddd93c1c83e2543333fdf6a9510",
+    "workflow_run": {
+      "id": 46157083697,
+      "repository_id": 1386339700,
+      "head_repository_id": 1386339700,
+      "head_branch": "fix/sarp-final-release-verification",
+      "head_sha": "93d60d0c425f2ba1b6e61d13b03db484982be0b5"
+    },
+    "verified_archive_sha256": "20acd5cad64f0748e1ab31afe317d324751ceddd93c1c83e2543333fdf6a9510"
+  }
+]

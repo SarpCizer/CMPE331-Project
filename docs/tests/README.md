@@ -2,7 +2,13 @@
 
 This folder contains the requirement traceability, executed results, non-functional
 measurements, code-quality evidence and review report for the integrated application.
-Read `software-test-report.md` or its PDF first. Screenshots are embedded in the PDF.
+The latest final verification candidate is
+[`final-software-test-report.md`](final-software-test-report.md) and its companion
+PDF. It identifies measured source `93d60d0`, actual nine-job CI 46157083697,
+the current browser/module inventories and 57 assertion mappings. Deployment
+and review status are explicit; isolated passes do not imply a live release.
+The source-pinned historical `software-test-report.md` and PDF remain intact.
+All report figures and the actual Sonar dashboard are embedded in the PDF.
 
 For current assignment and integration status, read
 [Kerem's QA handoff](kerem-qa-handoff.md). Report #67 was merged before the

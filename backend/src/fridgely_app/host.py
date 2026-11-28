@@ -56,9 +56,16 @@ def create_app(*, database_url=None, jwt_secret=None, clock=utc_now, recipe_prov
     app.state.engine, app.state.sessions = api.state.engine, api.state.sessions
     app.state.authentication = api.state.authentication
 
+    # Render supplies the deployed Git SHA. It is public source metadata, never
+    # a token/configuration dump, and cannot be selected by request headers.
+    revision = os.getenv('RENDER_GIT_COMMIT', '')
+    public_revision = revision if len(revision) == 40 and all(c in '0123456789abcdef' for c in revision) else None
+
     @app.middleware('http')
     async def response_headers(request, call_next):
         response = await call_next(request)
+        if public_revision:
+            response.headers['X-Fridgely-Revision'] = public_revision
         response.headers['Cache-Control'] = 'no-store'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['Referrer-Policy'] = 'same-origin'

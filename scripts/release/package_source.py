@@ -7,6 +7,7 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+import tomllib
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -84,15 +85,29 @@ def archive_entry(name, mode):
     return info
 
 
+def release_version(files):
+    """Read matching component versions from the selected immutable Git blobs."""
+    blobs = {name:data for name,_mode,data in files}
+    try:
+        backend = tomllib.loads(blobs['backend/pyproject.toml'].decode('utf-8'))['project']['version']
+        frontend = json.loads(blobs['frontend/package.json'])['version']
+    except (KeyError,UnicodeError,ValueError,TypeError) as error:
+        raise ValueError('Selected source must contain valid backend/frontend version metadata') from error
+    if not isinstance(backend,str) or not backend or len(backend)>100 or backend!=frontend:
+        raise ValueError('Selected backend/frontend release versions must match')
+    return backend
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--revision',required=True,help='Reviewed GitHub source SHA, not a reconstructed local commit')
-    parser.add_argument('--output',default=str(ROOT/'build/release/Fridgely-source-0.1.0.zip'))
+    parser.add_argument('--output',default=str(ROOT/'build/release/Fridgely-source.zip'))
     args = parser.parse_args()
     if not re.fullmatch('[0-9a-f]{40}',args.revision):
         parser.error('Use a complete 40-character source revision')
     try:
         files, tracked = committed_sources(args.revision)
+        version = release_version(files)
         output = Path(args.output).resolve()
         checksum = output.with_suffix('.zip.sha256').resolve()
         git_dir = Path(git_read('rev-parse','--absolute-git-dir').decode().strip()).resolve()
@@ -108,7 +123,7 @@ def main():
             parser.error(str(error))
         parser.error('Cannot read the declared commit. Use Git and fetch its objects into the project checkout first')
     output.parent.mkdir(parents=True,exist_ok=True)
-    manifest = {'source_revision':args.revision,'version':'0.1.0',
+    manifest = {'source_revision':args.revision,'version':version,
         'scope':'source, documentation and deployment definitions; no libraries, databases, credentials, reports PDF or raster evidence',
         'files':{name:{'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'mode':mode}
                  for name,mode,data in files}}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="499" height="213" preserveAspectRatio="xMinYMin meet" viewBox="0 0 499 213" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="499" height="213"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-213)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="198" style="font-family: ReportBold; font-size: 10px;fill: rgb(9%,24%,18%); stroke:none;" transform="translate(0,396) scale(1,-1)">Historical non-AI p95: different sources/environments</text>
+			<text x="0" y="174" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,348) scale(1,-1)">9f43e3a local SQLite</text>
+			<rect x="190" y="170" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="170" width="5.322470040991902" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="174" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,348) scale(1,-1)">44.35 ms</text>
+			<text x="0" y="143" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,286) scale(1,-1)">25c111a CI PostgreSQL</text>
+			<rect x="190" y="139" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="139" width="44.576114159999634" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="143" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,286) scale(1,-1)">371.47 ms</text>
+			<text x="0" y="112" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,224) scale(1,-1)">6cc96e7 Windows SQLite</text>
+			<rect x="190" y="108" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="108" width="212.72962799936067" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(71%,30%,20%); fill-rule: evenodd;"/>
+			<text x="436" y="112" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,224) scale(1,-1)">1772.75 ms</text>
+			<text x="0" y="81" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,162) scale(1,-1)">fafd3fd CI PostgreSQL</text>
+			<rect x="190" y="77" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="77" width="17.286193559998537" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="81" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,162) scale(1,-1)">144.05 ms</text>
+			<text x="0" y="50" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,100) scale(1,-1)">93d60d0 final CI PostgreSQL</text>
+			<rect x="190" y="46" width="240" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="190" y="46" width="14.986015559993575" height="16" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,45%,34%); fill-rule: evenodd;"/>
+			<text x="436" y="50" style="font-family: Report; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,100) scale(1,-1)">124.88 ms</text>
+			<path d="M 250,22 L 250,187 Z" style="stroke: rgb(71%,30%,20%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="215.0" y="6" style="font-family: Report; font-size: 7px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,12) scale(1,-1)">Limit 500 ms</text>
+		</g>
+	</g>
+</svg>

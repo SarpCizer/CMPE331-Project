@@ -1,0 +1,80 @@
+{
+  "source_revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "files": [
+    {
+      "path": "frontend/tests/completion.spec.js",
+      "cases": 10,
+      "git_blob_sha": "a6354553bea8d380aacfa1a65967fef7c62392ed"
+    },
+    {
+      "path": "frontend/tests/cooking.spec.js",
+      "cases": 6,
+      "git_blob_sha": "d1eeb3d7a0da5ec93d9c9e1c2326633e66d5ec10"
+    },
+    {
+      "path": "frontend/tests/entry-units.spec.js",
+      "cases": 2,
+      "git_blob_sha": "9eb56cae2507b847107909b7897e1e3f4960a704"
+    },
+    {
+      "path": "frontend/tests/kitchen.spec.js",
+      "cases": 8,
+      "git_blob_sha": "4b6c63dbd404c243518cae43b408c238ecfb15de"
+    },
+    {
+      "path": "frontend/tests/moods.spec.js",
+      "cases": 3,
+      "git_blob_sha": "63dda17b252f7abcc13e3f40bee4fe914738828b"
+    },
+    {
+      "path": "frontend/tests/password.spec.js",
+      "cases": 2,
+      "git_blob_sha": "47576119cee4a28b8c2716fad1615497ad0ddc3e"
+    },
+    {
+      "path": "frontend/tests/preferences-fidelity.spec.js",
+      "cases": 2,
+      "git_blob_sha": "9c07393f8d8cd4a780beaab95caeeb7224cdd633"
+    },
+    {
+      "path": "frontend/tests/quantities.spec.js",
+      "cases": 2,
+      "git_blob_sha": "0689baeb17e12e162542854dae1f8e6bab3a0966"
+    },
+    {
+      "path": "frontend/tests/shopping-quantity.spec.js",
+      "cases": 7,
+      "git_blob_sha": "36829171342fb093aaea3f06819b405c0d8c11ee"
+    },
+    {
+      "path": "frontend/tests/shortage.spec.js",
+      "cases": 1,
+      "git_blob_sha": "1aba5c6413f104521c01bc259ee5794d0179e9fc"
+    },
+    {
+      "path": "frontend/tests/surprise.spec.js",
+      "cases": 3,
+      "git_blob_sha": "f6d61bbedc70d87146c46fd4a0d9b96ff89bff65"
+    },
+    {
+      "path": "frontend/tests/text-format.spec.js",
+      "cases": 2,
+      "git_blob_sha": "c453f8a56819f9ea2ea11b7d4058d92fe9e7398c"
+    },
+    {
+      "path": "frontend/tests/weekly-plan.spec.js",
+      "cases": 7,
+      "git_blob_sha": "209b3338a78bb90f99f4fb75eb0bb3abf2448370"
+    }
+  ],
+  "support_files": [
+    {
+      "path": "frontend/tests/fixtures.js",
+      "git_blob_sha": "d22f16019296e51348911c39e1379473eeb41a57"
+    },
+    {
+      "path": "frontend/tests/global-setup.js",
+      "git_blob_sha": "80ddf92b1501903e94c95a242eb8774ac919bdcf"
+    }
+  ]
+}

@@ -8,11 +8,15 @@ from urllib.parse import quote
 
 import httpx
 
-from .service import GenerationInput, RecipeProvider
+from .service import GenerationInput, RecipeProvider, RecipeCandidates
 from .moods import MOOD_GUIDANCE
 from .wire import WireError, canonical_fields, decode_response, explicit_amount, token_limit_reached
 
 RESPONSES_URL = "https://api.openai.com/v1/responses"
+GROUP_DEADLINE_SECONDS = 26
+GROUP_RETRY_DELAY_SECONDS = 0.2
+UNAVAILABLE_GROUP = object()
+
 CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4"
 CLOUDFLARE_RECIPE_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
@@ -258,30 +262,77 @@ class CloudflareRecipeProvider:
     async def generate(self, data: GenerationInput) -> object:
         # Keep small pantries and requested weekly dishes on one provider call.
         if data.requested_dish or len(data.ingredients) < 6:
-            return await self._generate_group(data)
+            result = await self._retry_group(data, None)
+            if result is UNAVAILABLE_GROUP:
+                raise RuntimeError("Recipe group is temporarily unavailable.")
+            return result
 
-        # Both groups see the full pantry. Alternating priorities spread attention
-        # across recent and earlier entries without removing cooking context.
+        # Every complementary request still sees the entire pantry and all
+        # quantities/exclusions. A slow transport must not cancel healthy work.
         group_count = min(4, (len(data.ingredients) + 3) // 4)
-        async with asyncio.TaskGroup() as group:
-            tasks = [group.create_task(self._generate_group(data, data.ingredients[offset::group_count]))
-                     for offset in range(group_count)]
-        batches = [task.result() for task in tasks]
-        if any(batch is None for batch in batches):
-            return None
-        recipes, seen = [], set()
-        for batch in batches:
-            for recipe in batch:
-                signature = json.dumps(recipe, sort_keys=True, ensure_ascii=False)
-                if signature not in seen:
-                    seen.add(signature)
-                    recipes.append(recipe)
-        return recipes
+        tasks = [asyncio.create_task(self._retry_group(data, data.ingredients[offset::group_count]))
+                 for offset in range(group_count)]
+        try:
+            done, pending = await asyncio.wait(tasks, timeout=GROUP_DEADLINE_SECONDS, return_when=asyncio.FIRST_EXCEPTION)
+            # A bad *completed* response remains a hard failure. Never launder
+            # malformed fields or an allergen conflict as a transport outage.
+            batches = [task.result() for task in tasks if task in done]
+            if any(batch is None for batch in batches):
+                return None
+            available = [batch for batch in batches if batch is not UNAVAILABLE_GROUP]
+            incomplete = bool(pending) or len(available) != len(batches)
+            if not available:
+                raise RuntimeError("Recipe groups are temporarily unavailable.")
+            recipes, seen = [], set()
+            for batch in available:
+                for recipe in batch:
+                    signature = json.dumps(recipe, sort_keys=True, ensure_ascii=False)
+                    if signature not in seen:
+                        seen.add(signature)
+                        recipes.append(recipe)
+            if incomplete:
+                logging.getLogger(__name__).warning('Recipe groups incomplete completed=%d total=%d',
+                    len(available), len(tasks))
+            return RecipeCandidates(recipes, incomplete=incomplete)
+        finally:
+            # Covers our own soft deadline, caller disconnect, and the outer
+            # 28-second service deadline; no orphaned provider tasks or writes.
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def _retry_group(self, data, priorities):
+        for attempt in range(2):
+            try:
+                return await self._generate_group(data, priorities)
+            except (httpx.TimeoutException, httpx.NetworkError):
+                code = 'transport'
+            except httpx.HTTPStatusError as error:
+                if error.response.status_code == 429:
+                    # A quota/rate-limit response must not trigger an immediate
+                    # retry burst against the same account.
+                    logging.getLogger(__name__).warning('Recipe group unavailable code=rate_limit')
+                    return UNAVAILABLE_GROUP
+                if error.response.status_code < 500:
+                    raise
+                code = 'upstream_status'
+            logging.getLogger(__name__).warning('Recipe group transient failure code=%s attempt=%d',
+                code, attempt + 1)
+            if attempt == 0:
+                await asyncio.sleep(GROUP_RETRY_DELAY_SECONDS)
+        return UNAVAILABLE_GROUP
 
     async def _generate_group(self, data: GenerationInput, priorities=None) -> object:
         instructions = recipe_instructions(data)
         body = json.loads(recipe_input(data))
         if priorities is not None:
+            start = instructions.index("Supply a cooking amount object")
+            end = instructions.index("Use g for solids", start)
+            instructions = instructions[:start] + (
+                "Supply measured amount strings for every ingredient in a, in the same order, "
+                "for the full recipe, for example 150 g or 2 pcs. "
+            ) + instructions[end:]
             instructions = instructions.replace(
                 'Represent each available main protein in at least one suggestion when compatible with preferences.',
                 'Across complementary groups the priority lists cover the full pantry; this group only needs to cover its own priority ingredients.')
@@ -294,7 +345,7 @@ class CloudflareRecipeProvider:
                 "a=measured amount strings in the same order (e.g. 150 g, 2 pcs), s=ordered steps, "
                 "m=total minutes, k=estimated kcal per serving, p=servings. "
                 "Focus this group's main ingredients on its priorities rather than repeating every other group's mains."
-                " Keep JSON concise and finish the enclosing JSON before the output budget. "
+                " Return minified JSON without indentation. Finish the enclosing JSON before the output budget. "
                 "Never start another dish unless its complete ingredients, amounts and steps fit. "
                 "Counted pcs amounts must be whole numbers. Use g/ml when an ingredient needs a fraction."
             )
