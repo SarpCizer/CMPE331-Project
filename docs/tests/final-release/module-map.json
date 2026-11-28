@@ -1,0 +1,356 @@
+{
+  "source_revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "modules": [
+    {
+      "path": "backend/tests/test_accounts_database.py",
+      "group": "Accounts and security",
+      "requirements": "US-01/02/15; NFR-01/02",
+      "purpose": "Hashes, JWT/version revocation, ownership, throttling and password rotation/rehash races.",
+      "passed": 21,
+      "skipped": 0,
+      "git_blob_sha": "783c8849bbd0cc8b5005bff1fe59dd8e0a872d09"
+    },
+    {
+      "path": "backend/tests/test_api_documentation.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "0861350beb5ca299fba1008c7895085fdb9f4dad"
+    },
+    {
+      "path": "backend/tests/test_cloudflare_recipe_provider.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 14,
+      "skipped": 0,
+      "git_blob_sha": "9d625c0dfd830603768fa8ced5c4efb0033686d8"
+    },
+    {
+      "path": "backend/tests/test_cloudflare_wire_variants.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 38,
+      "skipped": 0,
+      "git_blob_sha": "c79bd06adf98670ce568a44049975fdda1cd0414"
+    },
+    {
+      "path": "backend/tests/test_collections_api.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 48,
+      "skipped": 0,
+      "git_blob_sha": "b6eca41a00da51b461f8f86146c16c8b305aafb8"
+    },
+    {
+      "path": "backend/tests/test_default_timeout.py",
+      "group": "Provider deadline",
+      "requirements": "US-09; NFR-04",
+      "purpose": "Actual default timeout/cancellation and unchanged five collections.",
+      "passed": 1,
+      "skipped": 0,
+      "git_blob_sha": "e71dbc54708122b410a84d495c65d6d5a9b7e36d"
+    },
+    {
+      "path": "backend/tests/test_final_security.py",
+      "group": "Accounts and security",
+      "requirements": "US-01/02/15; NFR-01/02",
+      "purpose": "Hashes, JWT/version revocation, ownership, throttling and password rotation/rehash races.",
+      "passed": 14,
+      "skipped": 0,
+      "git_blob_sha": "7cc23cf3111387292c3b932d6418103a1aa50b3c"
+    },
+    {
+      "path": "backend/tests/test_flexible_plan_slots.py",
+      "group": "Weekly planning",
+      "requirements": "US-07/08/09/15 extensions; NFR-07/08",
+      "purpose": "Owned flexible slots, exact requested dishes, state fidelity, retries and SQLite/PostgreSQL races.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "bae601b2aa0bd02b8312b32ab237f2c203ff99b8"
+    },
+    {
+      "path": "backend/tests/test_generation_output_reliability.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 10,
+      "skipped": 0,
+      "git_blob_sha": "a6157fae71b162064bb94a383accd71374eb1374"
+    },
+    {
+      "path": "backend/tests/test_history_dependency_failures.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 5,
+      "skipped": 0,
+      "git_blob_sha": "877017e8f12543b03ba532d8445717decb354489"
+    },
+    {
+      "path": "backend/tests/test_host_integration.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "777c9500d5a3acc42872ffbad6814ca2b09ea3a8"
+    },
+    {
+      "path": "backend/tests/test_inventory_quantities.py",
+      "group": "Stock and consumption",
+      "requirements": "US-04/05/06 extensions; NFR-07/08",
+      "purpose": "Quantity boundaries, legacy upgrades, explicit confirmed cooking and no unintended deductions.",
+      "passed": 7,
+      "skipped": 0,
+      "git_blob_sha": "8292886ea5224f49bd86379b9e4753162fc95a50"
+    },
+    {
+      "path": "backend/tests/test_live_generation_followup.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 14,
+      "skipped": 0,
+      "git_blob_sha": "7b872991003686070c11c8593f30b94d811787cd"
+    },
+    {
+      "path": "backend/tests/test_login_throttle.py",
+      "group": "Accounts and security",
+      "requirements": "US-01/02/15; NFR-01/02",
+      "purpose": "Hashes, JWT/version revocation, ownership, throttling and password rotation/rehash races.",
+      "passed": 7,
+      "skipped": 0,
+      "git_blob_sha": "c24b3492532fcd2eb199ffac7ac60f9d61ebea08"
+    },
+    {
+      "path": "backend/tests/test_metric_recipe_amounts.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 14,
+      "skipped": 0,
+      "git_blob_sha": "6deb8af1062d11c32f9bed303866a48795e97f59"
+    },
+    {
+      "path": "backend/tests/test_parallel_generation.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 9,
+      "skipped": 0,
+      "git_blob_sha": "0d8c034b13a33228f1dc767d4575674b4e285b37"
+    },
+    {
+      "path": "backend/tests/test_password_rehash_race.py",
+      "group": "Accounts and security",
+      "requirements": "US-01/02/15; NFR-01/02",
+      "purpose": "Hashes, JWT/version revocation, ownership, throttling and password rotation/rehash races.",
+      "passed": 4,
+      "skipped": 0,
+      "git_blob_sha": "45f5e7c480bc9bffc49fd3a5f3e77266b697098a"
+    },
+    {
+      "path": "backend/tests/test_planner_legacy_units.py",
+      "group": "Weekly planning",
+      "requirements": "US-07/08/09/15 extensions; NFR-07/08",
+      "purpose": "Owned flexible slots, exact requested dishes, state fidelity, retries and SQLite/PostgreSQL races.",
+      "passed": 11,
+      "skipped": 0,
+      "git_blob_sha": "74dcd38fbeb064cc9a33f5117cf45d2b3c601ab9"
+    },
+    {
+      "path": "backend/tests/test_planner_requested_recipes.py",
+      "group": "Weekly planning",
+      "requirements": "US-07/08/09/15 extensions; NFR-07/08",
+      "purpose": "Owned flexible slots, exact requested dishes, state fidelity, retries and SQLite/PostgreSQL races.",
+      "passed": 32,
+      "skipped": 0,
+      "git_blob_sha": "bea14a7132d6b468778675013d29eda37d51dc03"
+    },
+    {
+      "path": "backend/tests/test_planner_sqlite_race.py",
+      "group": "Weekly planning",
+      "requirements": "US-07/08/09/15 extensions; NFR-07/08",
+      "purpose": "Owned flexible slots, exact requested dishes, state fidelity, retries and SQLite/PostgreSQL races.",
+      "passed": 3,
+      "skipped": 3,
+      "git_blob_sha": "48d8b1137c34b6e4bed6e1c032fbd5e383783a1d"
+    },
+    {
+      "path": "backend/tests/test_preference_snapshot.py",
+      "group": "Preferences and migration",
+      "requirements": "US-03/07/15; NFR-07",
+      "purpose": "Ordered preferences/allergens, normalization, atomic snapshots and schema upgrades.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "887956da4389e6e8837db5e66e4f78676056caf3"
+    },
+    {
+      "path": "backend/tests/test_process_persistence.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "14f93dc74220671209e849f9040fe35c624e1b20"
+    },
+    {
+      "path": "backend/tests/test_quantity_migration.py",
+      "group": "Stock and consumption",
+      "requirements": "US-04/05/06 extensions; NFR-07/08",
+      "purpose": "Quantity boundaries, legacy upgrades, explicit confirmed cooking and no unintended deductions.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "d575beea0b202f0a272f89bcd31991250fae2455"
+    },
+    {
+      "path": "backend/tests/test_recipe_candidate_curation.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 13,
+      "skipped": 0,
+      "git_blob_sha": "56ce3bbee19896dd67bbd5923ea691451f187e79"
+    },
+    {
+      "path": "backend/tests/test_recipe_consumption.py",
+      "group": "Stock and consumption",
+      "requirements": "US-04/05/06 extensions; NFR-07/08",
+      "purpose": "Quantity boundaries, legacy upgrades, explicit confirmed cooking and no unintended deductions.",
+      "passed": 32,
+      "skipped": 0,
+      "git_blob_sha": "c8b7bf4a65b9c43bf3ef0f177bdead4b1a3371a3"
+    },
+    {
+      "path": "backend/tests/test_recipe_ingredient_contract.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 20,
+      "skipped": 0,
+      "git_blob_sha": "0764fee68cfd7f3b0aa9ee0634c1f44ab22b18ff"
+    },
+    {
+      "path": "backend/tests/test_recipe_integration.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 16,
+      "skipped": 0,
+      "git_blob_sha": "3fa25a0de335fda7d19d685f592a38f88511bd2d"
+    },
+    {
+      "path": "backend/tests/test_recipe_moods.py",
+      "group": "Moods and surprise wheel",
+      "requirements": "US-07/08 extensions; NFR-08",
+      "purpose": "Preference-constrained moods and wheel selection from the displayed recipe batch without new inference or stock writes.",
+      "passed": 22,
+      "skipped": 0,
+      "git_blob_sha": "b1fa0b14abf178a086df711010ce31c174c57491"
+    },
+    {
+      "path": "backend/tests/test_recipe_shopping_amounts.py",
+      "group": "Shopping and purchases",
+      "requirements": "US-10/11/15 extensions; NFR-07/08",
+      "purpose": "Missing quantities, unit conversion, atomic purchase, retry/overlap idempotence and stock isolation.",
+      "passed": 26,
+      "skipped": 0,
+      "git_blob_sha": "3030dffce911533dd01fff98f70d7ad69811e339"
+    },
+    {
+      "path": "backend/tests/test_recipe_shortages.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 34,
+      "skipped": 0,
+      "git_blob_sha": "954dd32c62dd4ad8f90462438577c7c1e689e44f"
+    },
+    {
+      "path": "backend/tests/test_recipe_variety.py",
+      "group": "Recipe/provider contracts",
+      "requirements": "US-07/08/09/15; NFR-04/08",
+      "purpose": "Provider input/output validation, declared exclusions, wire variants, concurrency, bounded parsing and content curation.",
+      "passed": 3,
+      "skipped": 0,
+      "git_blob_sha": "5e0e6285653917dca1687e7503429a0f84a2de79"
+    },
+    {
+      "path": "backend/tests/test_relational_preferences.py",
+      "group": "Preferences and migration",
+      "requirements": "US-03/07/15; NFR-07",
+      "purpose": "Ordered preferences/allergens, normalization, atomic snapshots and schema upgrades.",
+      "passed": 3,
+      "skipped": 0,
+      "git_blob_sha": "68cd0a23ab3ebb36f25195e90bd2a5c04e053608"
+    },
+    {
+      "path": "backend/tests/test_release_identity.py",
+      "group": "Deployment identity",
+      "requirements": "NFR-09",
+      "purpose": "Validated public revision header across success/error responses; request spoofing rejected.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "ab9a2a9f52d322f0b10a6000c35ede3502acfdfd"
+    },
+    {
+      "path": "backend/tests/test_security_matrix.py",
+      "group": "Accounts and security",
+      "requirements": "US-01/02/15; NFR-01/02",
+      "purpose": "Hashes, JWT/version revocation, ownership, throttling and password rotation/rehash races.",
+      "passed": 566,
+      "skipped": 0,
+      "git_blob_sha": "e9f1bcba17c19488b9a13f14cbf68a37217954c2"
+    },
+    {
+      "path": "backend/tests/test_shopping_purchase_overlap.py",
+      "group": "Shopping and purchases",
+      "requirements": "US-10/11/15 extensions; NFR-07/08",
+      "purpose": "Missing quantities, unit conversion, atomic purchase, retry/overlap idempotence and stock isolation.",
+      "passed": 2,
+      "skipped": 0,
+      "git_blob_sha": "63a2bb56737f72229a3cfb774e912d37c898dadb"
+    },
+    {
+      "path": "backend/tests/test_shopping_quantities.py",
+      "group": "Shopping and purchases",
+      "requirements": "US-10/11/15 extensions; NFR-07/08",
+      "purpose": "Missing quantities, unit conversion, atomic purchase, retry/overlap idempotence and stock isolation.",
+      "passed": 54,
+      "skipped": 0,
+      "git_blob_sha": "7914cbb30e151dd4cdf0a9f5d2cfa97a38fa323d"
+    },
+    {
+      "path": "backend/tests/test_surprise.py",
+      "group": "Moods and surprise wheel",
+      "requirements": "US-07/08 extensions; NFR-08",
+      "purpose": "Preference-constrained moods and wheel selection from the displayed recipe batch without new inference or stock writes.",
+      "passed": 4,
+      "skipped": 0,
+      "git_blob_sha": "ceeb71eefc88c091ea9ce009289745d9731c4d59"
+    },
+    {
+      "path": "backend/tests/test_transactions_and_integration.py",
+      "group": "Host, collections and persistence",
+      "requirements": "US-08/10-15; NFR-01/07/09",
+      "purpose": "Integrated ports, detail/favorites/history, transactions, two-user process restart and OpenAPI behavior.",
+      "passed": 11,
+      "skipped": 0,
+      "git_blob_sha": "3491ebd6533f038880e5c61b064c23e123896e68"
+    },
+    {
+      "path": "backend/tests/test_weekly_planner.py",
+      "group": "Weekly planning",
+      "requirements": "US-07/08/09/15 extensions; NFR-07/08",
+      "purpose": "Owned flexible slots, exact requested dishes, state fidelity, retries and SQLite/PostgreSQL races.",
+      "passed": 24,
+      "skipped": 0,
+      "git_blob_sha": "558e26039a3d69c185bd3fcc5bc9e3b4083b1b71"
+    }
+  ]
+}

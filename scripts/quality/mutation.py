@@ -30,6 +30,7 @@ WIRE_TESTS = ['backend/tests/test_cloudflare_wire_variants.py']
 CURATION_TESTS = ['backend/tests/test_recipe_candidate_curation.py']
 LIVE_TESTS = ['backend/tests/test_live_generation_followup.py']
 SECURITY_TESTS = ['backend/tests/test_final_security.py']
+REHASH_TESTS = ['backend/tests/test_password_rehash_race.py']
 PARALLEL_TESTS = ['backend/tests/test_parallel_generation.py']
 METRIC_TESTS = ['backend/tests/test_metric_recipe_amounts.py', 'backend/tests/test_generation_output_reliability.py']
 LOGIN_TESTS = ['backend/tests/test_login_throttle.py']
@@ -62,6 +63,8 @@ MUTANTS = [
     ('M24', PROVIDER, 'any(batch is None for batch in batches)', 'any(not batch for batch in batches)', CURATION_TESTS),
     ('M25', QUALITY, 'if missing:', 'if False:', CURATION_TESTS),
     ('M26', SERVICE, 'if not curate or not isinstance(error, RecipeQualityError):', 'if True:', CURATION_TESTS),
+    ('M27', CORE, 'update(Account).where(Account.id == account_id,\n                    Account.password_hash == row.password_hash, Account.auth_version == row.auth_version)',
+     'update(Account).where(Account.id == account_id)', REHASH_TESTS),
 ]
 
 
@@ -124,7 +127,7 @@ def campaign(revision):
             print(f'{identity}: {result["status"]}', flush=True)
     counts = {status: sum(row['status'] == status for row in rows) for status in ('killed', 'survived', 'invalid', 'timeout')}
     denominator = counts['killed'] + counts['survived']
-    return {'revision': revision, 'scope': '26 seeded source mutations in recipe validation/concurrency, compact transport, wire recovery/aliases, usable content curation and observed defects, password revocation, input/security headers and login throttling',
+    return {'revision': revision, 'scope': '27 seeded source mutations in recipe validation/concurrency, compact transport, wire recovery/aliases, usable content curation, password rotation/rehash, input/security headers and login throttling',
             'whole_project_mutation_coverage': False, 'real_provider_used': False, 'baseline': baseline,
             'source_sha256': {name: hashlib.sha256(text.encode()).hexdigest() for name, text in files.items()},
             'counts': counts, 'score': counts['killed'] / denominator if denominator else None, 'mutants': rows,

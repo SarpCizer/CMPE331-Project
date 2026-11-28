@@ -1,0 +1,50 @@
+{
+  "description": "Local runs retain their own source associations; the bundle source identifies the final integrated CI measurement, not every historical RED file.",
+  "runs": [
+    {
+      "path": "local/password-race-red.xml",
+      "application_baseline": "abdca3f5b2e58d7842dacbe83a4c5d2722c13d3a",
+      "test_commit": "03d0f3d7b1a5cc68007f32846fae328f521ad699",
+      "passed": 1,
+      "failed": 1,
+      "skipped": 2,
+      "database": "SQLite",
+      "purpose": "Actual test-first failure before the password compare-and-set fix."
+    },
+    {
+      "path": "local/password-security-green.xml",
+      "implementation_commit": "c3558ba1d2d92fdc4802538ec49ece18a6b119ba",
+      "passed": 44,
+      "failed": 0,
+      "skipped": 2,
+      "database": "SQLite",
+      "purpose": "Focused GREEN validation of the implementation; not a full-suite or PostgreSQL pass."
+    },
+    {
+      "path": "local/release-identity-red.xml",
+      "application_baseline": "c3558ba1d2d92fdc4802538ec49ece18a6b119ba",
+      "test_commit": "601ade96bbc6a59d06e54fa5a663a09c2ed6853b",
+      "passed": 1,
+      "failed": 1,
+      "skipped": 0,
+      "purpose": "Actual missing deployed-source-header failure before the host change."
+    },
+    {
+      "path": "local/release-identity-green.xml",
+      "implementation_commit": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "purpose": "Focused header, API documentation and final-security contract tests."
+    },
+    {
+      "path": "local/sqlite-interleavings.xml",
+      "application_revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 5,
+      "database": "SQLite",
+      "purpose": "Three SQLite planner and two password-race cases complement PostgreSQL CI; skipped PostgreSQL variants are not passes."
+    }
+  ]
+}

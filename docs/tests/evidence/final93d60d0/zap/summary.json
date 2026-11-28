@@ -1,0 +1,45 @@
+{
+  "revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "observed_at_utc": "2026-11-28T14:56:29.998676+00:00",
+  "tool": "OWASP ZAP",
+  "image": "ghcr.io/zaproxy/zaproxy:2.17.0",
+  "image_digest": "[\"ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af\"]",
+  "scan_type": "authenticated OpenAPI API active scan, four-minute active budget",
+  "target": "http://127.0.0.1:8094",
+  "scanner_exit_code": 0,
+  "http_requests_observed": 4370,
+  "authenticated_successful_requests_observed": 514,
+  "alerts_by_risk": {
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "informational": 3
+  },
+  "alert_rules": [
+    {
+      "rule": "100000",
+      "name": "A Client Error response code was returned by the server",
+      "risk": "Informational (High)",
+      "confidence": "3",
+      "instances": 80
+    },
+    {
+      "rule": "10111",
+      "name": "Authentication Request Identified",
+      "risk": "Informational (Low)",
+      "confidence": "1",
+      "instances": 2
+    },
+    {
+      "rule": "10049",
+      "name": "Non-Storable Content",
+      "risk": "Informational (Medium)",
+      "confidence": "2",
+      "instances": 5
+    }
+  ],
+  "policy": "No high, medium or low alerts; retain informational observations without suppressing rules.",
+  "tokens_and_passwords_redacted": true,
+  "production_target": false,
+  "passed": true
+}

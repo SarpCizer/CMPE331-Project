@@ -1,0 +1,83 @@
+{
+  "started_utc": "2026-11-28T15:01:25.354621+00:00",
+  "revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "environment": "GitHub-Actions-Ubuntu-PostgreSQL17-one-worker",
+  "client": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "python": "3.12.16",
+    "cpu_count": 4
+  },
+  "scenario": {
+    "users": 50,
+    "inventory_per_user": 100,
+    "configured_seconds": 300,
+    "measured_seconds": 301.027467053,
+    "think_seconds": 1,
+    "shopping_and_favorites": "empty owned collections",
+    "provider": "not called in measured loop"
+  },
+  "thresholds": {
+    "p95_ms_max": 500,
+    "error_rate_exclusive_max": 0.01
+  },
+  "overall": {
+    "requests": 52256,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 124.88346299994646,
+    "max_ms": 647.1987930000296,
+    "mean_ms": 37.23346592347298,
+    "statuses": {
+      "200": 52256
+    }
+  },
+  "routes": {
+    "inventory": {
+      "requests": 13064,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 132.735002000004,
+      "max_ms": 496.4922309999338,
+      "mean_ms": 39.845444115048274,
+      "statuses": {
+        "200": 13064
+      }
+    },
+    "profile": {
+      "requests": 13064,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 124.12111399999048,
+      "max_ms": 647.1987930000296,
+      "mean_ms": 37.39788412415838,
+      "statuses": {
+        "200": 13064
+      }
+    },
+    "shopping": {
+      "requests": 13064,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 127.92568200006826,
+      "max_ms": 550.9588109999868,
+      "mean_ms": 38.127068838334885,
+      "statuses": {
+        "200": 13064
+      }
+    },
+    "favorites": {
+      "requests": 13064,
+      "errors": 0,
+      "error_rate": 0.0,
+      "p95_ms": 115.5917450000743,
+      "max_ms": 465.0891960000081,
+      "mean_ms": 33.56346661635038,
+      "statuses": {
+        "200": 13064
+      }
+    }
+  },
+  "passed": true,
+  "interpretation": "Evidence for this named environment only; not a production or live-provider benchmark."
+}

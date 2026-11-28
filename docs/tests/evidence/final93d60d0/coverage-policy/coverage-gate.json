@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "actual_percent": {
+    "backend_statements": 94.49497367161321,
+    "backend_branches": 87.59398496240601,
+    "frontend_lines": 100,
+    "frontend_branches": 95.79,
+    "frontend_functions": 90.51
+  },
+  "minimum_percent": {
+    "backend_statements": 90,
+    "backend_branches": 70,
+    "frontend_lines": 90,
+    "frontend_branches": 85,
+    "frontend_functions": 85
+  },
+  "scope": "backend production source and mapped frontend/src; statement coverage is separate from branches"
+}
