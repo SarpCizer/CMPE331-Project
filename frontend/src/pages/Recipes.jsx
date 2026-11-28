@@ -8,7 +8,6 @@ import RecipeCard from "../components/RecipeCard";
 
 export default function RecipesPage() {
   const [mood, setMood] = useState(null);
-  const [incomplete, setIncomplete] = useState(false);
   const { data, api, run, busy, generated, setGenerated, openRecipe } =
     useOutletContext();
   const stocked = data.inventory.filter(
@@ -31,7 +30,6 @@ export default function RecipesPage() {
           onChange={(value) => {
             setMood(value);
             setGenerated([]);
-            setIncomplete(false);
           }}
         />
         <button
@@ -48,7 +46,6 @@ export default function RecipesPage() {
             );
             if (Array.isArray(result)) {
               setGenerated(result);
-              setIncomplete(result.incomplete === true);
             }
           }}
         >
@@ -62,7 +59,7 @@ export default function RecipesPage() {
           Edit your preferences
         </Link>
       </section>
-      {incomplete && visibleRecipes.length > 0 && (
+      {generated.incomplete === true && visibleRecipes.length > 0 && (
         <p role="status" className="panel">
           These recipes are ready. Some additional suggestions could not finish.
           Generate again to explore more recipes.

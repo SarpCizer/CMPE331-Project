@@ -74,3 +74,11 @@ drop completion metadata and discard successful groups: each must be killed.
 Actual integrated CI, peer review, main CI, exact-source automatic deployment
 and real normal/Quick content review remain separate release gates. No live
 success is claimed from these controlled tests.
+
+The final navigation review reproduced a lost incomplete-search notice at both
+360px and1440px after leaving/returning to recipes (red847faa6b). The notice now
+derives from the retained recipe result metadata instead of transient page-local
+state, so it survives navigation and clears only with a complete new result.
+Provider task cleanup is factored into one awaited helper with the same cancellation
+semantics. The final focused44 backend cases and both browser regressions passed;
+full final-head CI remains required.

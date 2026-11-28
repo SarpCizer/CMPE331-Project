@@ -252,6 +252,13 @@ class OpenAIRecipeProvider:
         return read_candidates(payload)
 
 
+async def cancel_group_tasks(tasks):
+    for task in tasks:
+        if not task.done():
+            task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+
+
 class CloudflareRecipeProvider:
     def __init__(self, client: httpx.AsyncClient, *, account_id: str, api_token: str):
         self.client = client
@@ -297,10 +304,7 @@ class CloudflareRecipeProvider:
         finally:
             # Covers our own soft deadline, caller disconnect, and the outer
             # 28-second service deadline; no orphaned provider tasks or writes.
-            for task in tasks:
-                if not task.done():
-                    task.cancel()
-            await asyncio.gather(*tasks, return_exceptions=True)
+            await cancel_group_tasks(tasks)
 
     async def _retry_group(self, data, priorities):
         for attempt in range(2):

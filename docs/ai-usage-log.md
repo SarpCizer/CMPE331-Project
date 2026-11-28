@@ -104,3 +104,10 @@ changed. The combined working source then passed702 backend cases locally, with
 405 PostgreSQL variants explicitly skipped, and all30 targeted mutants were killed
 (zero survivor/invalid/timeout). This does not substitute for final-source CI or
 actual provider measurements.
+
+Final UI review found incomplete-search metadata survived in shared results while
+its duplicate page-local notice state reset after navigation. Both viewport cases
+failed against37055e4, retained in red847faa6b. Deriving the notice from shared
+results fixes the mismatch without changing provider budgets/counts. Final44
+focused backend cases and both browser cases passed; full CI is rerun for this
+new exact source, rather than relabelling earlier runs.

@@ -60,8 +60,14 @@ for (const width of [360, 1440]) {
     });
     await expect(wheel.locator("summary")).toContainText("(1)");
     await expect(wheel.locator("li")).toHaveText(["Warm milk"]);
-    await page.getByRole("link", { name: /^My fridge/ }).first().click();
-    await page.getByRole("link", { name: "Find recipes", exact: true }).first().click();
+    await page
+      .getByRole("link", { name: /^My fridge/ })
+      .first()
+      .click();
+    await page
+      .getByRole("link", { name: "Find recipes", exact: true })
+      .first()
+      .click();
     await expect(notice).toBeVisible();
     incomplete = false;
     await button.click();
