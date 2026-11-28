@@ -1,0 +1,22 @@
+{
+  "measured_revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "evidence_publication_revision": "f7cce4daa812e7d4a4fd226604df9b2f0e629c1e",
+  "scope_paths": [
+    "backend",
+    "frontend",
+    "src",
+    "tests",
+    "scripts/cloud",
+    "Dockerfile",
+    ".dockerignore",
+    "render.yaml",
+    "package.json",
+    "pnpm-lock.yaml",
+    ".coveragerc"
+  ],
+  "compared_blobs": 179,
+  "identical_git_trees": true,
+  "tree_manifest_sha256": "140428e1bf3dc6b1ecc3bf88d0f04188e41e3e765744161f52d8af6ad6cf5f06",
+  "changed_paths": [],
+  "note": "Report publication/export code is separate from the identical measured production, dependency, test and deployment scope. No measurement is relabelled as the publication commit."
+}

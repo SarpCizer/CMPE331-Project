@@ -250,7 +250,7 @@ def export(base=BASE, output=None):
         g = groups.setdefault(row['group'],{'passed':0,'skipped':0,'files':0,'requirements':row['requirements'],'purpose':row['purpose']})
         g['passed']+=row['passed'];g['skipped']+=row['skipped'];g['files']+=1
     table(['Module family / requirements','Executed evidence and purpose'],[
-        [name+'\n'+g['requirements'],f'{g["files"]} modules; {g["passed"]} passed, {g["skipped"]} skipped. '+g['purpose']]
+        [name+'\n'+g['requirements'],f'{g["files"]} '+('module' if g['files']==1 else 'modules')+f'; {g["passed"]} passed, {g["skipped"]} skipped. '+g['purpose']]
         for name,g in groups.items()
     ],[188,311])
     p('Acceptance tests assert real HTTP DTOs/statuses and collection snapshots. Browser tests assert rendered behavior against the built frontend. Unit/adapter tests provide fault injection and fine-grained validation; integration, restart and concurrency tests complement them. No single aggregate is described as purely unit testing.','small')
@@ -330,6 +330,7 @@ def export(base=BASE, output=None):
 
     page('9. Reproducibility and delivery')
     p(f'Raw evidence index: {len(index["files"])} retained files. Each member has an original byte length and SHA-256. Downloaded artifact ZIP digests were checked against GitHub metadata before safe, selected extraction. Git attributes preserve evidence bytes on Windows. The report fails before publication if an indexed file changes, source/run identities differ, JUnit inventory changes, a gate is incomplete or a mandatory result fails.')
+    p('[Retained evidence index]('+REPO+'/blob/'+artifact_ref+'/docs/tests/'+config['evidence_root']+'/evidence-index.json) | [Backend JUnit]('+REPO+'/blob/'+artifact_ref+'/docs/tests/'+config['evidence_root']+'/integrated/backend-junit.xml) | [Browser JUnit]('+REPO+'/blob/'+artifact_ref+'/docs/tests/'+config['evidence_root']+'/integrated/browser-junit.xml)','small')
     table(['Action','Rebuild / interpretation'],[
         ['Install report-only dependencies','python -m pip install -r scripts/tests/requirements-report.txt'],
         ['Export from a full repository checkout','python scripts/tests/export_final_report.py --output build/final-report\nCreates absent parent folders; writes PDF, UTF-8 Markdown and SVG figures; performs no network/provider calls.'],
