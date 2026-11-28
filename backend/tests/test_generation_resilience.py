@@ -202,3 +202,29 @@ def test_declared_upstream_failure_does_not_erase_healthy_group(caplog):
         assert len(result) == 4 and result.incomplete is True
     asyncio.run(scenario())
     assert 'private provider detail' not in caplog.text
+
+
+@pytest.mark.parametrize('transport_error', [httpx.ReadError, httpx.RemoteProtocolError])
+def test_disconnected_group_retries_and_preserves_completed_sibling(transport_error, monkeypatch, caplog):
+    monkeypatch.setattr(module, 'GROUP_RETRY_DELAY_SECONDS', 0)
+    async def scenario():
+        calls = {'a': 0, 'b': 0}
+        async def respond(request):
+            name = request_group(request)
+            calls[name] += 1
+            if name == 'a':
+                return batch('Completed')
+            await asyncio.sleep(.01)
+            raise transport_error('private synthetic disconnect', request=request)
+        writes = []
+        async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+            service = RecipeGenerationService(lambda owner: GenerationInput(NAMES, (), ()),
+                CloudflareRecipeProvider(client, account_id='test', api_token='test'),
+                lambda owner, recipes: writes.append((owner, recipes)))
+            rows = await service.generate('owner')
+        assert calls == {'a': 1, 'b': 2}
+        assert len(rows) == 4 and rows.incomplete is True
+        assert len(writes) == 1 and writes[0][0] == 'owner'
+        assert len(writes[0][1]) == 4
+    asyncio.run(scenario())
+    assert 'private synthetic disconnect' not in caplog.text
