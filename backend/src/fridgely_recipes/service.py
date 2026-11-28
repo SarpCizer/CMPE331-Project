@@ -10,7 +10,7 @@ from starlette.concurrency import run_in_threadpool
 from fridgely_collections.errors import CollectionError
 from fridgely_collections.schemas import RecipeDTO, ingredient_name
 from .moods import Mood, MOOD_MAX_MINUTES
-from .quality import review_recipe
+from .quality import RecipeQualityError, review_recipe
 
 MAX_PROVIDER_SECONDS = 28
 
@@ -36,7 +36,23 @@ class RecipeProvider(Protocol):
     async def generate(self, data: GenerationInput) -> object: ...
 
 
-def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[RecipeDTO]:
+def reviewed_batch(recipes, *, curate):
+    reviewed = []
+    for recipe in recipes:
+        try:
+            recipe = review_recipe(recipe)
+        except ValueError as error:
+            if not curate or not isinstance(error, RecipeQualityError):
+                raise RecipeError(502, 'The recipe service returned an invalid response.') from None
+            logging.getLogger(__name__).warning('Recipe candidate withheld code=%s', error.code)
+            continue
+        reviewed.append(recipe)
+    if not reviewed:
+        raise RecipeError(502, 'The recipe service returned no usable complete recipes. Please try again.')
+    return reviewed
+
+
+def validate_batch(candidates: object, allergens: tuple[str, ...], *, curate=False) -> list[RecipeDTO]:
     if not isinstance(candidates, list) or not candidates:
         raise RecipeError(502, "The recipe service returned an invalid response.")
 
@@ -49,7 +65,6 @@ def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[Recip
             recipe = RecipeDTO(id=uuid4().hex, **fields)
             for name in recipe.ingredients:
                 ingredient_name(name)
-            recipe = review_recipe(recipe)
             recipes.append(recipe)
         except (CollectionError, ValueError) as error:
             if isinstance(error, ValidationError):
@@ -60,7 +75,7 @@ def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[Recip
     exclusions = {name.strip().casefold() for name in allergens}
     if any(name.strip().casefold() in exclusions for recipe in recipes for name in recipe.ingredients):
         raise RecipeError(422, "The recipe suggestions contain an excluded ingredient.")
-    return recipes
+    return reviewed_batch(recipes, curate=curate)
 
 
 class RecipeGenerationService:
@@ -91,7 +106,7 @@ class RecipeGenerationService:
         except Exception:
             raise RecipeError(503, "The recipe service is temporarily unavailable.", retryable=True) from None
 
-        recipes = validate_batch(candidates, data.allergens)
+        recipes = validate_batch(candidates, data.allergens, curate=True)
         limit = MOOD_MAX_MINUTES.get(data.mood)
         if limit is not None and any(recipe.cookingMinutes > limit for recipe in recipes):
             raise RecipeError(502, 'The recipe suggestions exceed your selected time limit. Please try again.')
