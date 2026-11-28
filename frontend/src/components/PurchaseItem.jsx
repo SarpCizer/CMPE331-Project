@@ -24,7 +24,7 @@ export default function PurchaseItem({ item, api, run, busy, refresh, onCancel }
     <div className="flex flex-wrap items-end gap-3">
       <ShoppingAmount id={`purchase-${item.id}`} quantity={quantity} unit={unit}
         setQuantity={value => { setQuantity(value); setError(''); }} setUnit={value => { setUnit(value); setError(''); }}
-        error={error} disabled={busy} required />
+        error={error} disabled={busy} required legacyUnit={item.unit} />
       <button disabled={busy} className="btn-primary mobile:w-full" type="submit">Confirm purchase and add to fridge</button>
       <button disabled={busy} className="btn-secondary mobile:w-full" type="button" onClick={onCancel}>Cancel purchase</button>
     </div>

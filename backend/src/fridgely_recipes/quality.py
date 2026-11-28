@@ -4,16 +4,33 @@ This is not a general food-safety or semantic certification engine.
 Thermometer endpoints: https://www.fda.gov/food/buy-store-serve-safe-food/safe-food-handling
 """
 import re
+import math
+
+
+def known_dose(amount):
+    parts = amount.split()
+    if len(parts) != 2 or parts[1] not in {'g', 'kg', 'ml', 'L', 'pcs', 'pack', 'bunch'}:
+        return None
+    try:
+        number = float(parts[0])
+    except ValueError:
+        return None
+    return (number, parts[1]) if math.isfinite(number) and number > 0 else None
 
 
 def review_seasoning(recipe, names):
     for name, amount in zip(names, recipe.ingredientAmounts or []):
         if 'salt' in re.findall(r'[a-z]+', name):
-            number, unit = amount.split()
+            dose = known_dose(amount)
+            if dose is None:
+                # Preserve legacy display/review; the provider adapter rejects
+                # ambiguous new AI amounts and cooking still requires review.
+                continue
+            number, unit = dose
             if unit not in {'g', 'kg'}:
                 raise ValueError('Seasoning needs a measured cooking amount, not a stock package.')
             # A conservative recipe sanity bound, not a dietary recommendation.
-            grams = float(number) * (1000 if unit == 'kg' else 1)
+            grams = number * (1000 if unit == 'kg' else 1)
             if grams > 10 * recipe.servings:
                 raise ValueError('The seasoning amount needs review before this recipe can be used.')
 

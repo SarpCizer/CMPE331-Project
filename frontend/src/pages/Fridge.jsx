@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { entryUnits } from "../utils/units";
 import { Link, useOutletContext } from "react-router-dom";
 import Empty from "../components/Empty";
 import FieldError from "../components/FieldError";
@@ -150,8 +151,9 @@ function Fridge({ items, shopping, run, api }) {
             <label htmlFor="unit" className="text-[0.8rem]">Unit</label>
             <select id="unit" value={unit} onChange={(e) => { setUnit(e.target.value); setQuantityError(""); }}
               className="w-full rounded-lg border border-line bg-white p-2">
-              {["pcs","kg","g","L","ml","pack","bunch"].map((value) =>
+              {entryUnits.map((value) =>
                 <option key={value} value={value}>{value}</option>)}
+              {editing && unit === "pack" && <option value="pack" disabled>pack (existing item)</option>}
             </select>
           </div>
           {editing && <button type="button" onClick={resetForm}>Cancel edit</button>}

@@ -75,3 +75,31 @@ seasoning and bypassed recipe review: 21 selected mutations in total. This is
 not whole-project mutation coverage. The final Software Testing Report must
 include these actual final-source outcomes and retained live failures, rather
 than declaring the preceding candidate ready.
+
+## CI regression retained and corrected
+
+The first PR100 run 46069957990 on 52527e6 passed 1,038 backend tests
+(three SQLite-only variants skipped), 32 acceptance and 12 HTTP checks, but
+three wheel browser scenarios failed (50 passed). The new salt check had
+rejected the existing 1-pinch legacy review card. A focused display regression
+failed against 52527e6 (one failure in 0.15 seconds), retained in 77c7db27167e1c3d78938cfe8a65edb7beaf6834.
+The correction preserves legacy unknown amounts for display/manual review; it
+does not treat them as measurable cooking deductions. New AI output still
+passes the strict provider amount parser first, and explicit package cooking
+doses remain rejected. The wheel fixture and its three-card expectations are
+unchanged; no failing scenario is removed. Final-source outcomes belong to the
+next CI run, not the earlier green subset or skipped downstream jobs.
+
+## Pack option removed from new entry forms
+
+Berfin's 28 November instruction removes pack from manual fridge and shopping
+entry. The six remaining choices are pcs, kg, g, L, ml and bunch. The shared
+entry list drives both forms. Existing records are preserved: editing an old
+pack inventory row, or confirming purchase of an old pack shopping row, retains
+its current unit as an explicitly labelled disabled legacy option. The new-entry
+forms do not offer it. No package-to-gram conversion, account/data deletion or
+API storage migration is introduced. Decimal L/kg writes and legacy editing
+are asserted at 360px and 1440px. The red tests failed twice against the preceding
+UI and are retained in b0d9bfa67fabc0d0d9475d2a3008488951e31a46. The exact count-
+unit validation message test is updated to the new visible wording; its invalid
+quantity and no-write assertions remain.
