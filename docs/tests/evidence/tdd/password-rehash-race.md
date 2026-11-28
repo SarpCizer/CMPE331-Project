@@ -26,3 +26,11 @@ The tests use only random synthetic accounts and temporary/isolated databases.
 They verify saved password state, token revocation and preserved owned inventory;
 they do not use a live account, provider credential or real AI call. The test
 commit is retained separately from the implementation.
+
+The retained red commit is `03d0f3d` (resolve the full commit in the branch
+history). The conditional hash/version update and conflict re-verification pass
+the two SQLite interleaving cases plus the existing account, password-rotation
+and throttle cases: **44 passed, 2 PostgreSQL parameters skipped in 11.92s**.
+The seeded mutation campaign adds M27, which removes this conditional update;
+the new race test must detect that regression in CI. These local results do not
+replace the required PostgreSQL or full integrated CI run.
