@@ -368,7 +368,7 @@ def export(base=BASE, output=None):
     doc = SimpleDocTemplate(str(pdf),pagesize=A4,rightMargin=48,leftMargin=48,topMargin=43,bottomMargin=55,
         title='Fridgely - Final Software Testing Report',author='Sarp Çizer / Fridgely team; Codex assisted')
     doc.build(story,onFirstPage=footer,onLaterPages=footer)
-    (out/'Fridgely-Final-Software-Test-Report.md').write_text('\n'.join(md)+'\n',encoding='utf-8')
+    (out/'Fridgely-Final-Software-Test-Report.md').write_text('\n'.join(md).rstrip()+'\n',encoding='utf-8')
     print(json.dumps({'pdf':str(pdf),'source_revision':source,'ci_run_id':run,'deployment_verified':config.get('deployment') is not None}))
     return pdf
 
