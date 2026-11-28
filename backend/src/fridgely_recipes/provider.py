@@ -10,6 +10,7 @@ import httpx
 
 from .service import GenerationInput, RecipeProvider
 from .moods import MOOD_GUIDANCE
+from .wire import WireError, canonical_fields, decode_response, explicit_amount, token_limit_reached
 
 RESPONSES_URL = "https://api.openai.com/v1/responses"
 CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4"
@@ -113,19 +114,19 @@ COMPACT_SCHEMA = {'type': 'object', 'properties': {'recipes': {'type': 'array',
     'required': ['recipes'], 'additionalProperties': False}
 
 
-def expand_compact(value):
-    if isinstance(value, str):
-        try:
-            value = json.loads(value)
-        except ValueError:
-            return None
-    if not isinstance(value, dict) or not isinstance(value.get('recipes'), list):
-        return None
+def expand_compact(value, *, allow_prefix=False):
+    value, recovered = decode_response(value, allow_prefix)
     rows = []
     for row in value['recipes']:
         if isinstance(row, dict) and set(row) == set(COMPACT_NAMES):
             row = {long: row[short] for short, long in COMPACT_NAMES.items()}
+        else:
+            row = canonical_fields(row, COMPACT_NAMES)
+        if isinstance(row['ingredientAmounts'], list):
+            row['ingredientAmounts'] = [explicit_amount(amount) for amount in row['ingredientAmounts']]
         rows.append(row)
+    if recovered:
+        logging.getLogger(__name__).warning('Cloudflare complete recipes recovered at token limit count=%d', len(rows))
     return {'recipes': rows}
 
 
@@ -291,6 +292,9 @@ class CloudflareRecipeProvider:
                 "a=measured amount strings in the same order (e.g. 150 g, 2 pcs), s=ordered steps, "
                 "m=total minutes, k=estimated kcal per serving, p=servings. "
                 "Focus this group's main ingredients on its priorities rather than repeating every other group's mains."
+                " Keep JSON concise and finish the enclosing JSON before the output budget. "
+                "Never start another dish unless its complete ingredients, amounts and steps fit. "
+                "Counted pcs amounts must be whole numbers. Use g/ml when an ingredient needs a fraction."
             )
             body["priorityIngredients"] = priorities
         response = await self.client.post(
@@ -317,11 +321,22 @@ class CloudflareRecipeProvider:
         result = payload.get("result")
         if payload.get("success") is not True or not isinstance(result, dict):
             return None
-        raw = result.get("response")
-        recipes = recipe_batch(expand_compact(raw) if priorities is not None else raw)
-        if recipes is None:
-            logging.getLogger(__name__).warning("Cloudflare structured recipe response rejected")
-        return recipes
+        return cloudflare_recipes(result, 3200 if priorities is not None else (2400 if data.requested_dish else 4800),
+                                  allow_prefix=not data.requested_dish)
+
+
+def cloudflare_recipes(result, token_limit, *, allow_prefix):
+    try:
+        normalized = expand_compact(result.get('response'),
+            allow_prefix=allow_prefix and token_limit_reached(result.get('usage'), token_limit))
+        recipes = recipe_batch(normalized)
+    except (WireError, RecursionError) as error:
+        code = str(error) if isinstance(error, WireError) else 'nesting_limit'
+        logging.getLogger(__name__).warning('Cloudflare recipe response rejected code=%s', code)
+        return None
+    if recipes is None:
+        logging.getLogger(__name__).warning('Cloudflare recipe response rejected code=invalid_measurement')
+    return recipes
 
 
 class UnavailableProvider:
