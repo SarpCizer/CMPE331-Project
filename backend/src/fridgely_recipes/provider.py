@@ -314,7 +314,7 @@ class CloudflareRecipeProvider:
         for attempt in range(2):
             try:
                 return await self._generate_group(data, priorities)
-            except (httpx.TimeoutException, httpx.NetworkError):
+            except (httpx.TimeoutException, httpx.NetworkError, httpx.RemoteProtocolError):
                 code = 'transport'
             except UpstreamUnavailable:
                 logging.getLogger(__name__).warning('Recipe group unavailable code=upstream_rejection')

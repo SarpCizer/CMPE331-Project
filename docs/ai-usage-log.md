@@ -117,3 +117,11 @@ group in red8ee70dd7 against90ee26b. A typed upstream-unavailable result now
 marks only that group unavailable without retrying opaque upstream errors or
 exposing their private message. All45 focused backend regressions pass. This
 checkpoint is separately source-qualified; final CI/review/live gates remain.
+
+Independent review by Sarp (review6099442885/comment4728200488) identified
+RemoteProtocolError outside the timeout/network handler. Againstf2fc9de the
+ReadError control passed and the remote disconnect failed; red8cb654f9 preserves
+the observed failure. The narrow handler addition passes all47 focused backend
+cases. M31 specifically removes this exception coverage; the expanded31-mutant
+campaign and final CI/review/live checks are required, not inferred from earlier
+30-mutant results. The review was not dismissed or replaced by self-approval.

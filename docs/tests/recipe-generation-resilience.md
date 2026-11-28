@@ -90,3 +90,15 @@ error payload. Other complete groups remain eligible, and a total outage still
 returns503/no writes. Raw error details remain private. The final focused suite
 passes45 cases. Final exact-source CI/live evidence must replace neither these
 qualified local results nor the retained earlier failures.
+
+## Independent review: remote disconnect without an HTTP response
+
+Sarp review6099442885/comment4728200488 found that HTTPX RemoteProtocolError
+is neither NetworkError nor TimeoutException. The controlled ReadError case
+passed while RemoteProtocolError failed againstf2fc9de (one pass/one failure),
+retained in red8cb654f9. The narrow retry handler now includes RemoteProtocolError;
+LocalProtocolError,403 and completed invalid/schema/allergen responses remain
+hard failures. The final47 focused backend cases pass. MutantM31 removes only
+this remote-disconnect exception and must be killed by the new regression.
+The combined campaign now contains31 selected faults, with final exact-source
+CI results required before publication. Earlier30-mutant evidence is unchanged.

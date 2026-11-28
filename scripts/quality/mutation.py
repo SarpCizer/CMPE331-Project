@@ -69,6 +69,8 @@ MUTANTS = [
     ('M28', PROVIDER, 'for attempt in range(2):', 'for attempt in range(1):', RESILIENCE_TESTS),
     ('M29', SERVICE, 'incomplete=getattr(candidates, "incomplete", False)', 'incomplete=False', RESILIENCE_TESTS),
     ('M30', PROVIDER, 'if not available:', 'if incomplete or not available:', RESILIENCE_TESTS),
+    ('M31', PROVIDER, '(httpx.TimeoutException, httpx.NetworkError, httpx.RemoteProtocolError)',
+     '(httpx.TimeoutException, httpx.NetworkError)', RESILIENCE_TESTS),
 ]
 
 
@@ -131,7 +133,7 @@ def campaign(revision):
             print(f'{identity}: {result["status"]}', flush=True)
     counts = {status: sum(row['status'] == status for row in rows) for status in ('killed', 'survived', 'invalid', 'timeout')}
     denominator = counts['killed'] + counts['survived']
-    return {'revision': revision, 'scope': '30 seeded source mutations in recipe validation/concurrency, compact transport, wire recovery/aliases, usable content curation, password rotation/rehash, input/security headers and login throttling',
+    return {'revision': revision, 'scope': '31 seeded source mutations in recipe validation/concurrency, compact transport, wire recovery/aliases, usable content curation, password rotation/rehash, input/security headers and login throttling',
             'whole_project_mutation_coverage': False, 'real_provider_used': False, 'baseline': baseline,
             'source_sha256': {name: hashlib.sha256(text.encode()).hexdigest() for name, text in files.items()},
             'counts': counts, 'score': counts['killed'] / denominator if denominator else None, 'mutants': rows,
