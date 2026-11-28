@@ -82,3 +82,11 @@ state, so it survives navigation and clears only with a complete new result.
 Provider task cleanup is factored into one awaited helper with the same cancellation
 semantics. The final focused44 backend cases and both browser regressions passed;
 full final-head CI remains required.
+
+The provider sweep also reproduced a200/success:false envelope discarding a
+healthy sibling (red8ee70dd7 against90ee26b). An explicit typed upstream failure
+now marks only that group unavailable, without an immediate retry of an opaque
+error payload. Other complete groups remain eligible, and a total outage still
+returns503/no writes. Raw error details remain private. The final focused suite
+passes45 cases. Final exact-source CI/live evidence must replace neither these
+qualified local results nor the retained earlier failures.

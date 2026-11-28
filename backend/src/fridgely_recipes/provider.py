@@ -252,6 +252,10 @@ class OpenAIRecipeProvider:
         return read_candidates(payload)
 
 
+class UpstreamUnavailable(RuntimeError):
+    """An explicit upstream failure; never includes its private error payload."""
+
+
 async def cancel_group_tasks(tasks):
     for task in tasks:
         if not task.done():
@@ -312,6 +316,9 @@ class CloudflareRecipeProvider:
                 return await self._generate_group(data, priorities)
             except (httpx.TimeoutException, httpx.NetworkError):
                 code = 'transport'
+            except UpstreamUnavailable:
+                logging.getLogger(__name__).warning('Recipe group unavailable code=upstream_rejection')
+                return UNAVAILABLE_GROUP
             except httpx.HTTPStatusError as error:
                 if error.response.status_code == 429:
                     # A quota/rate-limit response must not trigger an immediate
@@ -374,7 +381,7 @@ class CloudflareRecipeProvider:
         if not isinstance(payload, dict):
             return None
         if payload.get("success") is False:
-            raise RuntimeError("Cloudflare recipe generation failed.")
+            raise UpstreamUnavailable("Cloudflare recipe generation failed.")
         result = payload.get("result")
         if payload.get("success") is not True or not isinstance(result, dict):
             return None

@@ -111,3 +111,9 @@ failed against37055e4, retained in red847faa6b. Deriving the notice from shared
 results fixes the mismatch without changing provider budgets/counts. Final44
 focused backend cases and both browser cases passed; full CI is rerun for this
 new exact source, rather than relabelling earlier runs.
+
+A final provider-envelope sweep reproduced200/success:false erasing a healthy
+group in red8ee70dd7 against90ee26b. A typed upstream-unavailable result now
+marks only that group unavailable without retrying opaque upstream errors or
+exposing their private message. All45 focused backend regressions pass. This
+checkpoint is separately source-qualified; final CI/review/live gates remain.
