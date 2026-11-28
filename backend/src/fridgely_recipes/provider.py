@@ -34,6 +34,8 @@ INSTRUCTIONS = (
     "Stock units describe inventory, not a cooking dose: use measured grams for salt, never a packet of salt. "
     "Never rely on browning alone for meat/fish doneness. Include thermometer endpoints for poultry/fish. "
     "Do not silently treat raw rice as already cooked; account for all cooking and preparation time."
+    " Every garnish, accompaniment and cooking fat must already be a named ingredient with a measured amount. "
+    "Do not suggest extra bread, oil, herbs or lemon outside that list, even as an optional serving suggestion."
 )
 
 
@@ -265,7 +267,7 @@ class CloudflareRecipeProvider:
             tasks = [group.create_task(self._generate_group(data, data.ingredients[offset::group_count]))
                      for offset in range(group_count)]
         batches = [task.result() for task in tasks]
-        if any(not batch for batch in batches):
+        if any(batch is None for batch in batches):
             return None
         recipes, seen = [], set()
         for batch in batches:

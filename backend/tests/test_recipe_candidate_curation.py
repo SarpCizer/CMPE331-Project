@@ -5,9 +5,11 @@ import json
 from fastapi.testclient import TestClient
 import httpx
 import pytest
+from sqlalchemy import func, select
 
 from fridgely_recipes.provider import CloudflareRecipeProvider
 from fridgely_recipes.service import GenerationInput, RecipeError, validate_batch
+from fridgely_recipes.storage import Recipe
 from test_cloudflare_recipe_provider import RECIPE, cloudflare_host, cloudflare_result, sign_in
 
 
@@ -51,7 +53,8 @@ def test_discovery_retains_every_usable_recipe_and_withholds_undosed_extra(cloud
     valid = [{**RECIPE, 'title': f'Complete preparation {i}'} for i in range(9)]
     bad = {**RECIPE, 'title': 'private-title-sentinel', 'steps': ['Brush the tomato with oil.', 'Grill.']}
     cloudflare_host.respond = lambda: cloudflare_result({'recipes': [*valid, bad]})
-    with TestClient(cloudflare_host.new_app()) as client:
+    app = cloudflare_host.new_app()
+    with TestClient(app) as client:
         headers = sign_in(client)
         before = client.get('/api/inventory', headers=headers).json()
         response = client.post('/api/recipes/generate', headers=headers, json={})
@@ -59,11 +62,14 @@ def test_discovery_retains_every_usable_recipe_and_withholds_undosed_extra(cloud
         rows = response.json()
         assert [r['title'] for r in rows] == [r['title'] for r in valid]
         assert len(rows) == 9
+        with app.state.sessions() as database:
+            assert database.scalar(select(func.count()).select_from(Recipe)) == 9
+        assert client.get('/api/history', headers=headers).json() == []
         for row in rows:
             assert row['ingredientAmounts'] == RECIPE['ingredientAmounts'] and row['steps'] == RECIPE['steps']
             assert client.get('/api/recipes/' + row['id'], headers=headers).json() == row
         assert client.get('/api/inventory', headers=headers).json() == before
-        assert client.get('/api/history', headers=headers).json() == []
+        assert {entry['recipe']['title'] for entry in client.get('/api/history', headers=headers).json()} == {r['title'] for r in valid}
     assert 'private-title-sentinel' not in caplog.text
 
 

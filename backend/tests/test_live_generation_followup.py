@@ -96,9 +96,10 @@ def test_discovery_withholds_unusable_content_but_saves_complete_usable_choices_
         rows=response.json()
         assert len(rows)==1 and rows[0]['ingredientAmounts']==RECIPE['ingredientAmounts']
         assert rows[0]['ingredients']==RECIPE['ingredients'] and rows[0]['steps']==RECIPE['steps']
+        assert client.get('/api/history',headers=headers).json()==[]
         assert client.get('/api/recipes/'+rows[0]['id'],headers=headers).json()==rows[0]
         assert client.get('/api/inventory',headers=headers).json()==before
-        assert client.get('/api/history',headers=headers).json()==[]
+        assert [entry['recipe']['id'] for entry in client.get('/api/history',headers=headers).json()]==[rows[0]['id']]
 
 
 @pytest.mark.parametrize('amount',['0 g','1 cup','NaN g','1.5 pcs'])
