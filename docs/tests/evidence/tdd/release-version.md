@@ -13,3 +13,8 @@ manifest version. The test-first commit precedes the production fix.
 
 The frozen approved source `a59556e` has matching 0.1.0 component metadata.
 Its source, branch, tag, files and published ZIP/PDF remain unchanged.
+
+After the version is read from those Git blobs, all ten archive regressions
+complete with nine passes and one explicit Windows symlink-privilege skip
+(5.486 seconds). The two previously failing cases pass. The Linux CI job must
+execute the symlink case as well; its result is not inferred from this local run.

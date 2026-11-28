@@ -335,10 +335,11 @@ def export(base=BASE, output=None):
         ['Install report-only dependencies','python -m pip install -r scripts/tests/requirements-report.txt'],
         ['Export from a full repository checkout','python scripts/tests/export_final_report.py --output build/final-report\nCreates absent parent folders; writes PDF, UTF-8 Markdown and SVG figures; performs no network/provider calls.'],
         ['Verify report safeguards','python -B -m unittest discover -s scripts/tests -p test_*.py -v\nIncludes missing-folder rebuild, tampered evidence, source mismatch and browser inventory regressions.'],
-        ['Package reviewed source','python scripts/release/package_source.py --revision FULL_SHA --output build/release/Fridgely-final-source.zip\nUses immutable Git blobs; repeated exports are byte-identical. No dependencies, secrets, scanner dumps or embedded PDF binary in the source ZIP.'],
+        ['Package reviewed source','python scripts/release/package_source.py --revision FULL_SHA --output build/release/Fridgely-final-source.zip\nUses immutable Git blobs and matching committed backend/frontend versions. Repeated exports are byte-identical. No dependencies, secrets, scanner dumps or PDF binary in the source ZIP.'],
         ['Exact live-source observation','GET /api/health and X-Fridgely-Revision. The production host only publishes a valid 40-character Render commit ID; a request header cannot spoof it. Source-tree comparison links publication/merge commits to the measured application.'],
     ],[164,335])
     p('The earlier a59556e course ZIP/PDF, delivery branch and v0.1.0 tag are preserved. This final verification edition does not silently replace their source labels. The new PDF is a companion to the exact selected source ZIP. Report regeneration requires the full checkout with retained evidence; the deliberately source-only ZIP is not a scanner-evidence mirror.','small')
+    p('A final packaging regression also found the manifest hard-coded to 0.1.0 despite current 0.6.0 components. Two tests failed before the correction. The packager now reads the selected commit, rejects mismatched component versions before writing, and ignores dirty working-version changes. Locally nine archive cases pass; one Windows symlink case is explicitly skipped and remains required on Linux CI. The historical 0.1.0 source retains its own version.','small')
     h('Production verification status')
     if config.get('deployment'):
         p(json.dumps(config['deployment'],ensure_ascii=False),'small')
