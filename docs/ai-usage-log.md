@@ -46,6 +46,17 @@ Codex helped compare the recipe and shopping contracts, replay the ingredient va
 
 Sarp's [published contribution and incident record](../backend/docs/ai-traceability.md) documents Codex assistance with the collections implementation and the owner-scoped history correction. The regression commit is `fc2a560`, followed by `63dcd7a`. The record reached main in #57.
 
+### Final verification follow-up, 28 November 2026
+
+Under Sarp's explicit finalization instruction, Codex continued from Berfin's
+merged PR #102 without repeating those changes. PR #103 retains a genuine
+RED/GREEN fix for sign-in rehash undoing a concurrent password rotation, adds
+tested public deployed-source metadata, and prepares the syllabus/instructor
+test-report edition from current source-pinned CI artifacts. The raw RED/GREEN
+provenance, 27-mutant campaign, current inventories, failed historical benchmark
+and real Sonar/ZAP results remain inspectable. Review, merge, live verification
+and Learn submission are distinct states; no human approval or grade is invented.
+
 ## Kerem Sönmez
 
 The [merged #71 description](https://github.com/SarpCizer/CMPE331-Project/pull/71) discloses Codex assistance with Kerem's original deployment documentation at `62894a6`. It records Berfin's subsequent verification and follow-up separately.

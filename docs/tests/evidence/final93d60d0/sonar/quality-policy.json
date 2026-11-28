@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "reported_gate": "OK",
+  "server_conditions_evaluated": true,
+  "security_measures": {
+    "bugs": {
+      "actual": "0",
+      "maximum": 0,
+      "passed": true
+    },
+    "vulnerabilities": {
+      "actual": "0",
+      "maximum": 0,
+      "passed": true
+    },
+    "security_hotspots": {
+      "actual": "0",
+      "maximum": 0,
+      "passed": true
+    }
+  },
+  "failures": [],
+  "scope": "Exported source metrics; zero hotspots does not assert manual hotspot review"
+}

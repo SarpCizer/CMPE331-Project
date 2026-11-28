@@ -1,0 +1,76 @@
+{
+  "revision": "93d60d0c425f2ba1b6e61d13b03db484982be0b5",
+  "started_utc": "2026-11-28T15:06:47.562359+00:00",
+  "completed_utc": "2026-11-28T15:08:21.583340+00:00",
+  "client": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "python": "3.12.16",
+    "cpu_count": 4
+  },
+  "environment": "GitHub-Actions-Ubuntu-PostgreSQL17-one-worker-controlled-provider",
+  "database": "PostgreSQL",
+  "scenario": {
+    "users": 10,
+    "configured_seconds": 60,
+    "measured_seconds": 60.99831244900008,
+    "think_seconds": 1,
+    "provider": "controlled 200 ms response; no external inference",
+    "requests_use_real_http_host": true
+  },
+  "steady": {
+    "requests": 493,
+    "errors": 0,
+    "error_rate": 0.0,
+    "p95_ms": 259.3721920000007,
+    "max_ms": 295.50522299996373,
+    "mean_ms": 224.46578845436142,
+    "statuses": {
+      "200": 493
+    }
+  },
+  "steady_thresholds": {
+    "p95_ms_max": 2000,
+    "error_rate_exclusive_max": 0.01
+  },
+  "concurrent_timeouts": {
+    "users": 5,
+    "deadline_seconds": 28,
+    "maximum_seconds": 30,
+    "results": [
+      {
+        "status": 503,
+        "seconds": 28.025422218000017,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.025844137000036,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.025356332,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.025190799999905,
+        "retryable": true
+      },
+      {
+        "status": 503,
+        "seconds": 28.064583189999894,
+        "retryable": true
+      }
+    ],
+    "provider_cancellations": 5,
+    "passed": true
+  },
+  "inventory_unchanged": true,
+  "successful_recipes_persisted": 493,
+  "no_partial_recipe_on_timeout": true,
+  "malformed_success_responses": 0,
+  "external_model_calls": 0,
+  "passed": true
+}
