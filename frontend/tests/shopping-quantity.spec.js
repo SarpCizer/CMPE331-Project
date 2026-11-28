@@ -64,7 +64,7 @@ test('name-only shopping, validation, replacement and ordinary removal stay safe
   await add(page, 'rice');
   await page.getByRole('button', { name: 'Bought — add to fridge: rice', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm purchase and add to fridge', exact: true }).click();
-  await expect(page.getByText('Enter a positive quantity up to 1,000,000; use whole numbers for pcs, pack and bunch.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Enter a positive quantity up to 1,000,000; use whole numbers for count units.', { exact: true })).toBeVisible();
   expect(await kitchen.stock()).toEqual([]);
   await page.getByLabel('Bought quantity', { exact: true }).fill('500');
   await page.locator('select[id^="purchase-"]').selectOption('g');

@@ -24,6 +24,8 @@ SECURITY = 'backend/src/fridgely_app/security.py'
 HOST = 'backend/src/fridgely_app/host.py'
 CORE = 'backend/src/fridgely_app/core.py'
 AVAILABILITY = 'backend/src/fridgely_app/availability.py'
+QUALITY = 'backend/src/fridgely_recipes/quality.py'
+LIVE_TESTS = ['backend/tests/test_live_generation_followup.py']
 SECURITY_TESTS = ['backend/tests/test_final_security.py']
 PARALLEL_TESTS = ['backend/tests/test_parallel_generation.py']
 METRIC_TESTS = ['backend/tests/test_metric_recipe_amounts.py', 'backend/tests/test_generation_output_reliability.py']
@@ -49,6 +51,9 @@ MUTANTS = [
     ('M16', HOST, "response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'", "response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'", SECURITY_TESTS),
     ('M17', CORE, "unicodedata.category(char) == 'Cc'", 'False', SECURITY_TESTS),
     ('M18', AVAILABILITY, 'len(text) > 64', 'len(text) > 6400', SECURITY_TESTS),
+    ('M19', PROVIDER, 'row = {long: row[short] for short, long in COMPACT_NAMES.items()}', 'row = row', LIVE_TESTS),
+    ('M20', QUALITY, "if unit not in {'g', 'kg'}:", 'if False:', LIVE_TESTS),
+    ('M21', SERVICE, 'recipe = review_recipe(recipe)', 'recipe = recipe', LIVE_TESTS),
 ]
 
 
@@ -111,7 +116,7 @@ def campaign(revision):
             print(f'{identity}: {result["status"]}', flush=True)
     counts = {status: sum(row['status'] == status for row in rows) for status in ('killed', 'survived', 'invalid', 'timeout')}
     denominator = counts['killed'] + counts['survived']
-    return {'revision': revision, 'scope': '18 seeded source mutations in recipe validation/concurrency, password revocation, input/security headers and login throttling',
+    return {'revision': revision, 'scope': '21 seeded source mutations in recipe validation/concurrency, compact transport and observed content defects, password revocation, input/security headers and login throttling',
             'whole_project_mutation_coverage': False, 'real_provider_used': False, 'baseline': baseline,
             'source_sha256': {name: hashlib.sha256(text.encode()).hexdigest() for name, text in files.items()},
             'counts': counts, 'score': counts['killed'] / denominator if denominator else None, 'mutants': rows,

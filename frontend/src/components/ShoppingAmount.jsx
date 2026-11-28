@@ -1,16 +1,17 @@
 import FieldError from './FieldError';
+import { entryUnits } from '../utils/units';
 
 export function amountInput(quantity, unit, required = false) {
   if (quantity.trim() === '' && !required) return { body: {}, error: '' };
   const amount = Number(quantity);
   if (quantity.trim() === '' || !Number.isFinite(amount) || amount <= 0 || amount > 1000000 ||
       (['pcs', 'pack', 'bunch'].includes(unit) && !Number.isInteger(amount))) {
-    return { body: {}, error: 'Enter a positive quantity up to 1,000,000; use whole numbers for pcs, pack and bunch.' };
+    return { body: {}, error: 'Enter a positive quantity up to 1,000,000; use whole numbers for count units.' };
   }
   return { body: { quantity: amount, unit }, error: '' };
 }
 
-export default function ShoppingAmount({ id, quantity, unit, setQuantity, setUnit, error, disabled = false, required = false }) {
+export default function ShoppingAmount({ id, quantity, unit, setQuantity, setUnit, error, disabled = false, required = false, legacyUnit = null }) {
   return <>
     <div className="w-[120px] mobile:flex-1">
       <label htmlFor={`${id}-quantity`} className="text-[0.8rem]">{required ? 'Bought quantity' : 'Quantity (optional)'}</label>
@@ -24,7 +25,8 @@ export default function ShoppingAmount({ id, quantity, unit, setQuantity, setUni
       <label htmlFor={`${id}-unit`} className="text-[0.8rem]">Unit</label>
       <select id={`${id}-unit`} disabled={disabled} value={unit} onChange={event => setUnit(event.target.value)}
         className="w-full rounded-lg border border-line bg-white p-2">
-        {['pcs', 'kg', 'g', 'L', 'ml', 'pack', 'bunch'].map(value => <option key={value} value={value}>{value}</option>)}
+        {entryUnits.map(value => <option key={value} value={value}>{value}</option>)}
+        {legacyUnit === 'pack' && <option value="pack" disabled>pack (existing item)</option>}
       </select>
     </div>
   </>;

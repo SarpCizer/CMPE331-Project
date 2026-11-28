@@ -10,6 +10,7 @@ from starlette.concurrency import run_in_threadpool
 from fridgely_collections.errors import CollectionError
 from fridgely_collections.schemas import RecipeDTO, ingredient_name
 from .moods import Mood, MOOD_MAX_MINUTES
+from .quality import review_recipe
 
 MAX_PROVIDER_SECONDS = 28
 
@@ -48,8 +49,9 @@ def validate_batch(candidates: object, allergens: tuple[str, ...]) -> list[Recip
             recipe = RecipeDTO(id=uuid4().hex, **fields)
             for name in recipe.ingredients:
                 ingredient_name(name)
+            recipe = review_recipe(recipe)
             recipes.append(recipe)
-        except (ValidationError, CollectionError) as error:
+        except (CollectionError, ValueError) as error:
             if isinstance(error, ValidationError):
                 first = error.errors(include_input=False, include_context=False)[0]
                 logging.getLogger(__name__).warning("Recipe validation rejected field=%s code=%s", first["loc"][0] if first["loc"] else "recipe", first["type"])

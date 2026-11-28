@@ -29,6 +29,10 @@ INSTRUCTIONS = (
     "Do not equate grams with milliliters or invent a density conversion. "
     "Return ordered cooking steps, total cooking minutes, estimated kilocalories per serving, and servings. "
     "Avoid claims of guaranteed allergen safety."
+    " Include every ingredient used in the steps, including bread for toast and cooking fat for frying. "
+    "Stock units describe inventory, not a cooking dose: use measured grams for salt, never a packet of salt. "
+    "Never rely on browning alone for meat/fish doneness. Include thermometer endpoints for poultry/fish. "
+    "Do not silently treat raw rice as already cooked; account for all cooking and preparation time."
 )
 
 
@@ -94,6 +98,35 @@ RESPONSE_FORMAT = {
         "additionalProperties": False,
     },
 }
+
+# The parallel-only provider wire uses short keys and measured strings instead
+# of repeating long field names and quantity/unit objects for every ingredient.
+# Public DTOs, stored records and the other provider retain their full contract.
+COMPACT_NAMES = {'t': 'title', 'i': 'ingredients', 'a': 'ingredientAmounts',
+                 's': 'steps', 'm': 'cookingMinutes', 'k': 'caloriesPerServing', 'p': 'servings'}
+COMPACT_FIELDS = {short: RECIPE_FIELDS[long] for short, long in COMPACT_NAMES.items()}
+COMPACT_FIELDS['a'] = {'type': 'array', 'items': {'type': 'string',
+    'pattern': r'^\d+(?:\.\d+)? (?:g|kg|ml|L|pcs)$'}}
+COMPACT_SCHEMA = {'type': 'object', 'properties': {'recipes': {'type': 'array',
+    'items': {'type': 'object', 'properties': COMPACT_FIELDS,
+        'required': list(COMPACT_FIELDS), 'additionalProperties': False}}},
+    'required': ['recipes'], 'additionalProperties': False}
+
+
+def expand_compact(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            return None
+    if not isinstance(value, dict) or not isinstance(value.get('recipes'), list):
+        return None
+    rows = []
+    for row in value['recipes']:
+        if isinstance(row, dict) and set(row) == set(COMPACT_NAMES):
+            row = {long: row[short] for short, long in COMPACT_NAMES.items()}
+        rows.append(row)
+    return {'recipes': rows}
 
 
 def recipe_input(data: GenerationInput) -> str:
@@ -246,11 +279,18 @@ class CloudflareRecipeProvider:
         instructions = recipe_instructions(data)
         body = json.loads(recipe_input(data))
         if priorities is not None:
+            instructions = instructions.replace(
+                'Represent each available main protein in at least one suggestion when compatible with preferences.',
+                'Across complementary groups the priority lists cover the full pantry; this group only needs to cover its own priority ingredients.')
             instructions += (
                 " For this complementary group, prioritize the priorityIngredients data when compatible "
                 "with dietary/allergen restrictions. Use the entire pantry as supporting ingredients. "
                 "Explore different practical dishes for the suitable priority ingredients, with no fixed recipe count. "
                 "Stop when further suggestions would repeat dishes or violate restrictions. Keep all amounts and steps."
+                " Use only these short JSON recipe keys: t=title, i=ingredient names, "
+                "a=measured amount strings in the same order (e.g. 150 g, 2 pcs), s=ordered steps, "
+                "m=total minutes, k=estimated kcal per serving, p=servings. "
+                "Focus this group's main ingredients on its priorities rather than repeating every other group's mains."
             )
             body["priorityIngredients"] = priorities
         response = await self.client.post(
@@ -261,7 +301,7 @@ class CloudflareRecipeProvider:
                     {"role": "system", "content": instructions},
                     {"role": "user", "content": json.dumps(body, ensure_ascii=False)},
                 ],
-                "response_format": {"type": "json_schema", "json_schema": RESPONSE_FORMAT["schema"]},
+                "response_format": {"type": "json_schema", "json_schema": COMPACT_SCHEMA if priorities is not None else RESPONSE_FORMAT["schema"]},
                 "max_tokens": 3200 if priorities is not None else (2400 if data.requested_dish else 4800),
             },
         )
@@ -277,7 +317,8 @@ class CloudflareRecipeProvider:
         result = payload.get("result")
         if payload.get("success") is not True or not isinstance(result, dict):
             return None
-        recipes = recipe_batch(result.get("response"))
+        raw = result.get("response")
+        recipes = recipe_batch(expand_compact(raw) if priorities is not None else raw)
         if recipes is None:
             logging.getLogger(__name__).warning("Cloudflare structured recipe response rejected")
         return recipes
